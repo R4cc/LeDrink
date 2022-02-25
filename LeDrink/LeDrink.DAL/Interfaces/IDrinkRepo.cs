@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LeDrink.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ namespace LeDrink.DAL.Interfaces
 {
     public interface IDrinkRepo
     {
-        //Task<IEnumerable<Drink>> GetDrinks();
-        //Task AddDrink(Drink drink);
-        //Task RemoveDrink(Drink drink);
-        //Task UpdateDrink(Drink drink);
+        Task<IEnumerable<Drink>> GetDrinks();
+        Task<Drink> GetDrink(int Id);
+        Task AddDrink(Drink drink);
+        Task RemoveDrink(Drink drink);
+        Task UpdateDrink(Drink drink);
     }
 }
