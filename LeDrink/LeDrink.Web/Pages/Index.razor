@@ -1,11 +1,72 @@
 ﻿@page "/"
+@using LeDrink.Web.Models
 
 <PageTitle>Lé Drink</PageTitle>
 
-<div class="container" >
+<div class="container">
     <div class="row">
-        
+        <!-- Favourite Drinks -->
+        @foreach(var drink in _favDrinks)
+        {
+            <div class="card" style="width: 18rem;">
+              <img class="card-img-top" src="..." alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">@drink.DrinkName</h5>
+                <button class="btn btn-primary oi oi-pencil" @onclick="(() => EditDrink(drink.Id))"/>
+                <button class="btn btn-primary oi oi-plus" @onclick="(() => FavDrink(drink.Id))"/>
+              </div>
+            </div>
+        }
+    </div>
+    <hr />
+    <div class="row">
+        <!-- Non Favourite Drinks -->
+        @foreach(var drink in _nonFavDrinks)
+        {
+            <div class="card" style="width: 18rem;">
+              <img class="card-img-top" src="..." alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">@drink.DrinkName</h5>
+                <button class="btn btn-primary oi oi-pencil" @onclick="(() => EditDrink(drink.Id))"/>
+                <button class="btn btn-primary oi oi-minus" @onclick="(() => UnFavDrink(drink.Id))"/>
+              </div>
+            </div>
+        }
     </div>
 </div>
+
+@code{
+    private List<Drink> _favDrinks = new List<Drink>();
+    private List<Drink> _nonFavDrinks = new List<Drink>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDrinks();
+    }
+
+    private async Task LoadDrinks()
+    {
+        // Load from repo
+    }
+
+    private async Task EditDrink(int drinkId)
+    {
+
+    }
+    private async Task FavDrink(int drinkId)
+    {
+        
+    }
+
+    private async Task UnFavDrink(int drinkId)
+    {
+        
+    }
+
+    private async Task RemoveDrink(int drinkId)
+    {
+        
+    }
+}
 
 
