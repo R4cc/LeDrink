@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace LeDrink.DAL.Interfaces
 {
-    public class IDrinkRepo
+    public interface IDrinkRepo
     {
+        //Task<IEnumerable<Drink>> GetDrinks();
+        //Task AddDrink(Drink drink);
+        //Task RemoveDrink(Drink drink);
+        //Task UpdateDrink(Drink drink);
     }
 }
