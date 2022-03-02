@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using LeDrink.DAL.Models
 @using LeDrink.Web.Models
 
 <PageTitle>Lé Drink</PageTitle>
@@ -6,41 +7,68 @@
 <div class="container">
     <div class="row">
         <!-- Favourite Drinks -->
+        <h1>Favourite Drinks</h1>
         @foreach(var drink in _favDrinks)
         {
-            <div class="card" style="width: 18rem;">
-              <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">@drink.DrinkName</h5>
-                <button class="btn btn-primary oi oi-pencil" @onclick="(() => EditDrink(drink.Id))"/>
-                <button class="btn btn-primary oi oi-plus" @onclick="(() => FavDrink(drink.Id))"/>
-              </div>
-            </div>
+
+            <RadzenCard class="m-3" style="width: 18rem;">
+                <h3 class="h5">@drink.DrinkName</h3>
+                <div class="d-flex flex-row">
+                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left mr-3" Style="width: 150px; height: 150px;" />
+                    <div>
+                        <div>Composition</div>
+                        @foreach(var mix in drink.Mixes)
+                        {
+                            <b>@(mix.BottleName + ": " + mix.Milliliters + "ml")</b>
+                        }
+                            <RadzenButton Icon="launch" @onclick="(() => EditDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
+                            <RadzenButton Icon="highlight_off" @onclick="(() => FavDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
+                    </div>
+                </div>
+            </RadzenCard>
         }
     </div>
     <hr />
+    <br/>
     <div class="row">
+        <h1>Other Drinks</h1>
         <!-- Non Favourite Drinks -->
-        @foreach(var drink in _nonFavDrinks)
+        @foreach(var drink in _favDrinks)
         {
-            <div class="card" style="width: 18rem;">
-              <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title">@drink.DrinkName</h5>
-                <button class="btn btn-primary oi oi-pencil" @onclick="(() => EditDrink(drink.Id))"/>
-                <button class="btn btn-primary oi oi-minus" @onclick="(() => UnFavDrink(drink.Id))"/>
-              </div>
-            </div>
+            <RadzenCard class="m-3" style="width: 18rem;">
+                <h3 class="h5">@drink.DrinkName</h3>
+                <div class="d-flex flex-row">
+                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left mr-3" Style="width: 150px; height: 150px;" />
+                    <div>
+                        <div>Composition</div>
+                        @foreach(var mix in drink.Mixes)
+                        {
+                            <b>@(mix.BottleName + ": " + mix.Milliliters + "ml")</b>
+                        }
+                        <RadzenButton Icon="launch" @onclick="(() => EditDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
+                        <RadzenButton Icon="grade" @onclick="(() => FavDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
+                    </div>
+                </div>
+            </RadzenCard>
         }
     </div>
 </div>
+
+@if (_showModal && _drinkToEdit != null)
+{
+    <LeDrink.Web.Shared.Components.Modal _drink="_drinkToEdit" OnValidSubmit="SaveDrinkOnValidSubmit"/>
+}
 
 @code{
     private List<Drink> _favDrinks = new List<Drink>();
     private List<Drink> _nonFavDrinks = new List<Drink>();
 
+    private bool _showModal { get; set; }
+    private Drink _drinkToEdit { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        await SeedTestDrinks();
         await LoadDrinks();
     }
 
@@ -49,10 +77,39 @@
         // Load from repo
     }
 
+    private async Task SeedTestDrinks()
+    {
+        for(int i = 0; i <= 10; i++)
+        {
+            var lst = new List<Mix>();
+            lst.Add(new Mix {
+                    BottleId = i,
+                    BottleName = "Cola",
+                    Milliliters = 250d,
+                });
+            var drink = new Drink()
+                {
+                    Id = i,
+                    DrinkName = $"Spezi + {i}",
+                    ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
+                    Price = 25d,
+                    Mixes = lst
+            };
+            _favDrinks.Add(drink);
+        }
+    }
+
     private async Task EditDrink(int drinkId)
     {
-
+        _drinkToEdit = _favDrinks.FirstOrDefault(x => x.Id == drinkId);
+        _showModal = true;
     }
+
+    private async Task SaveDrinkOnValidSubmit(Drink drink)
+    {
+        // Save changes to DB
+    }
+
     private async Task FavDrink(int drinkId)
     {
         

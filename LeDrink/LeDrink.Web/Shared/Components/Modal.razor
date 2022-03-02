@@ -1,0 +1,77 @@
+﻿@using LeDrink.Web.Models
+@inject Radzen.DialogService dialogService
+
+
+<div class="row">
+    <RadzenFieldset Text="Edit Drink">
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Name" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" @bind-Value="_drink.DrinkName" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Image Path(URL only)" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" @bind-Value="_drink.ImgPath"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Price" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" @bind-Value="_drink.Price.ToString()"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Mix" />
+                        </div>
+                        <!-- Mix settings -->
+                        @foreach(var mix in _drink.Mixes)
+                        {
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Bottle ID" />
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenNumeric TValue="int" Min="1" Max="4" style="width: 100%;" @bind-Value="mix.BottleId"/>
+                            </div>
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Bottle Name" />
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenTextBox style="width: 100%;" @bind-Value="mix.BottleName"/>
+                            </div>
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Amount(ml)" />
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenNumeric TValue="double" Min="1" Max="450" style="width: 100%;" @bind-Value="mix.Milliliters"/>
+                            </div>
+                        }
+                    </div>
+                </RadzenFieldset>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <RadzenButton Click="@((args) => dialogService.Close(false))" ButtonStyle="ButtonStyle.Secondary" Text="Cancel" Style="width: 120px" Class="mr-1" />
+            <RadzenButton Click="@SaveChanges" Text="Save" Style="width: 120px" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Drink _drink { get; set; }
+    [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
+
+    private async Task SaveChanges()
+    {
+        dialogService.Close(true);
+        await OnValidSubmit.InvokeAsync(_drink);
+    }
+}

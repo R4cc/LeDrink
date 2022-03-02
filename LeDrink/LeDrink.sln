@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeDrink.Web", "LeDrink.Web\LeDrink.Web.csproj", "{245AA91B-76EA-4357-B3B3-EF77D637D55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeDrink.Web", "LeDrink.Web\LeDrink.Web.csproj", "{245AA91B-76EA-4357-B3B3-EF77D637D55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeDrink.DAL", "LeDrink.DAL\LeDrink.DAL.csproj", "{4917CDE7-BE96-438D-BDEE-3C502C2BD318}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeDrink.DAL", "LeDrink.DAL\LeDrink.DAL.csproj", "{4917CDE7-BE96-438D-BDEE-3C502C2BD318}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

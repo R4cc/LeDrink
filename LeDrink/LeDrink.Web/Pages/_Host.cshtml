@@ -5,4 +5,17 @@
     Layout = "_Layout";
 }
 
-<component type="typeof(App)" render-mode="ServerPrerendered" />
+<head>
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default.css">
+
+</head>
+<body>
+    <app>
+        <component type="typeof(App)" render-mode="ServerPrerendered" />
+    </app>
+  <div id="app"></div>
+
+    <!-- inside of body section and after the div/app tag  -->
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+</body>
