@@ -14,5 +14,10 @@ namespace LeDrink.DAL.Repos
         }
 
         public IDrinkRepo DrinkRepo => _drinkRepo ?? new DrinRepo(_db);
+
+        public async Task SaveChanges()
+        {
+            await _db.SaveChangesAsync();
+        }
     }
 }

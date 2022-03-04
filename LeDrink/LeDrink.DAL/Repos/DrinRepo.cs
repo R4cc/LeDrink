@@ -2,52 +2,47 @@
 using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Models;
 using LeDrink.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeDrink.DAL.Repos
 {
     public class DrinRepo : IDrinkRepo
     {
-        private readonly ApplicationDBContext _applicationDbContext;
+        private readonly ApplicationDBContext _context;
 
         public DrinRepo(ApplicationDBContext applicationDBContext)
         {
-            _applicationDbContext = applicationDBContext;
+            _context = applicationDBContext;
         }
 
-        public Task AddDrink(Drink drink)
+        public async Task AddDrink(Drink drink)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(drink);
         }
 
-        public Task<Drink> GetDrink(int Id)
+        public async Task<Drink> GetDrink(int drinkId)
         {
-            throw new NotImplementedException();
+            return await _context.Drinks.FirstOrDefaultAsync(drink => drink.Id == drinkId);
         }
 
-        public Task<IEnumerable<Drink>> GetDrinks()
+        public async Task<IEnumerable<Drink>> GetDrinks()
         {
-            throw new NotImplementedException();
+            return _context.Drinks;
         }
 
-        public Task RemoveDrink(Drink drink)
+        public async Task RemoveDrink(Drink drink)
         {
-            throw new NotImplementedException();
+            _context.Remove(drink);
         }
 
-        public Task UpdateDrink(Drink drink)
+        public async Task UpdateDrink(Drink drink)
         {
-            throw new NotImplementedException();
+            _context.Update(drink);
         }
 
-        public Task<Bottle> GetBottle(int bottleId)
+        public async Task<Bottle> GetBottle(int bottleId)
         {
-            throw new NotImplementedException();
-            //return _applicationDbContext.
+            return await _context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId);
         }
     }
 }

@@ -106,7 +106,7 @@
 
     private async Task SetSelectedBottle(int bottleId)
     {
-        //_selectedBottle = _uow.DrinkRepo.
+        _selectedBottle = await _uow.DrinkRepo.GetBottle(bottleId);
     }
 
     private async Task SaveChanges()
