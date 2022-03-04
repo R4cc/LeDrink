@@ -1,5 +1,6 @@
 ﻿using LeDrink.DAL.Data;
 using LeDrink.DAL.Interfaces;
+using LeDrink.DAL.Models;
 using LeDrink.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,12 @@ namespace LeDrink.DAL.Repos
         public Task UpdateDrink(Drink drink)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<Bottle> GetBottle(int bottleId)
+        {
+            throw new NotImplementedException();
+            //return _applicationDbContext.
         }
     }
 }

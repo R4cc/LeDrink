@@ -1,4 +1,5 @@
-﻿using LeDrink.Web.Models;
+﻿using LeDrink.DAL.Models;
+using LeDrink.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace LeDrink.DAL.Interfaces
         Task AddDrink(Drink drink);
         Task RemoveDrink(Drink drink);
         Task UpdateDrink(Drink drink);
+        Task<Bottle> GetBottle(int bottleId);
     }
 }
