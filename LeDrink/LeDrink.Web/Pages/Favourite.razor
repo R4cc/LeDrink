@@ -1,0 +1,76 @@
+﻿@page "/favourites"
+@using LeDrink.DAL.Models
+@using LeDrink.Web.Models
+
+<head>
+    <link rel="stylesheet" href="/css/caro.css">
+</head>
+
+<div class="carousel">
+    <ul class="carousel__list">
+    <li class="carousel__item" data-pos="2">5</li>
+    <li class="carousel__item" data-pos="-2">1</li>
+    <li class="carousel__item" data-pos="-1">2</li>
+    <li class="carousel__item" data-pos="0">3</li>
+    <li class="carousel__item" data-pos="1">4</li>
+    </ul>
+</div>
+
+
+@code {
+    private List<Drink> _favDrinks = new List<Drink>();
+    [Inject]
+    public IJSRuntime jsRuntime { get; set; }
+    private IJSObjectReference jsModule;
+
+     protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            jsModule = await jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/caro.js");
+            SeedTestDrinks();
+        }
+    }
+
+    private void change()
+    {
+        Console.WriteLine("debug");
+    }
+
+    private void SeedTestDrinks()
+    {
+        for(int i = 0; i <= 10; i++)
+        {
+            var lst = new List<Mix>();
+            lst.Add(new Mix {
+                    Bottle = new Bottle
+                    {
+                        Id = 1,
+                        BottleName = "Coca Cola",
+                        BottleSlotId = 1,
+                    },
+                    Milliliters = 250d,
+                });
+
+            lst.Add(new Mix {
+                    Bottle = new Bottle
+                    {
+                        Id = 1,
+                        BottleName = "Fanta",
+                        BottleSlotId = 2,
+                    },
+                    Milliliters = 250d,
+                });
+
+            var drink = new Drink()
+                {
+                    Id = i,
+                    DrinkName = $"Spezi + {i}",
+                    ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
+                    Price = 25,
+                    Mixes = lst
+            };
+            _favDrinks.Add(drink);
+        }
+    }
+}

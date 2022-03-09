@@ -10,7 +10,7 @@ namespace LeDrink.DAL.Interfaces
 {
     public interface IDrinkRepo
     {
-        Task<IEnumerable<Drink>> GetDrinks();
+        Task<List<Drink>> GetDrinks();
         Task<Drink> GetDrink(int Id);
         Task AddDrink(Drink drink);
         Task RemoveDrink(Drink drink);

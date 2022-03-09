@@ -25,9 +25,9 @@ namespace LeDrink.DAL.Repos
             return await _context.Drinks.FirstOrDefaultAsync(drink => drink.Id == drinkId);
         }
 
-        public async Task<IEnumerable<Drink>> GetDrinks()
+        public async Task<List<Drink>> GetDrinks()
         {
-            return _context.Drinks;
+            return await _context.Drinks.ToListAsync();
         }
 
         public async Task RemoveDrink(Drink drink)
@@ -44,5 +44,6 @@ namespace LeDrink.DAL.Repos
         {
             return await _context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId);
         }
+
     }
 }
