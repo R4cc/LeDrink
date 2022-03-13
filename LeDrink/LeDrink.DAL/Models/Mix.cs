@@ -1,5 +1,4 @@
-﻿using LeDrink.Web.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LeDrink.DAL.Models
 {

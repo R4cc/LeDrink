@@ -1,18 +1,20 @@
 ﻿using LeDrink.DAL.Data;
 using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Models;
-using LeDrink.Web.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeDrink.DAL.Repos
 {
-    public class DrinRepo : IDrinkRepo
+    /// <summary>
+    /// Direct data interface with DB entries for Drink model
+    /// </summary>
+    public class DrinkRepo : IDrinkRepo
     {
         private readonly ApplicationDBContext _context;
 
-        public DrinRepo(ApplicationDBContext applicationDBContext)
+        public DrinkRepo(ApplicationDBContext context)
         {
-            _context = applicationDBContext;
+            _context = context;
         }
 
         public async Task AddDrink(Drink drink)
@@ -44,6 +46,5 @@ namespace LeDrink.DAL.Repos
         {
             return await _context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId);
         }
-
     }
 }

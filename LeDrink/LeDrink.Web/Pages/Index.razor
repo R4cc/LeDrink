@@ -1,21 +1,21 @@
 ﻿@page "/"
+@using LeDrink.DAL.Interfaces
 @using LeDrink.DAL.Models
-@using LeDrink.Web.Models
+@inject IUnitOfWork _uow
 
 <PageTitle>Lé Drink</PageTitle>
 
-
-
 <div class="container" style="margin-right: 15%; margin-left: 15%; justify-content: center">
     <div class="row">
+        <RadzenButton Icon="plus" Click="(() => UnFavDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
         <!-- Favourite Drinks -->
         <h1>Favourite Drinks</h1>
         @foreach(var drink in _favDrinks)
         {
-            <RadzenCard class="m-3" style="width: 18rem;">
+            <RadzenCard style="width: 15%;">
                 <h3 class="h5">@drink.DrinkName</h3>
                 <div class="d-flex flex-row">
-                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left mr-3" Style="width: 150px; height: 150px;" />
+                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left mr-3" Style="width: 40%; height: 40%;" />
                     <div>
                         <div class="row">
                             <div>Composition</div>
@@ -65,9 +65,13 @@
             </RadzenCard>
         }
     </div>
-    @if (_showModal && _drinkToEdit != null)
+    @if (_showModal && _drinkInModal != null && !isEdit)
     {
-        <LeDrink.Web.Shared.Components.Modal _drink="_drinkToEdit" OnValidSubmit="SaveDrinkOnValidSubmit" HeaderText="Edit Drink"/>
+        <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitCreate" HeaderText="Create Drink"/>
+    }
+    @if (_showModal && _drinkInModal != null && isEdit)
+    {
+        <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitEdit" HeaderText="Edit Drink"/>
     }
 </div>
 
@@ -79,7 +83,8 @@
     private List<Drink> _nonFavDrinks = new List<Drink>();
 
     private bool _showModal { get; set; }
-    private Drink _drinkToEdit { get; set; }
+    private Drink _drinkInModal { get; set; }
+    private bool isEdit { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,6 +95,9 @@
     private async Task LoadDrinks()
     {
         // Load from repo
+        var _allDrinks = await _uow.DrinkRepo.GetDrinks();
+        _favDrinks = _allDrinks.Where(d => d.IsFavourite == true).ToList();
+        _nonFavDrinks = _allDrinks.Where(d => d.IsFavourite == false).ToList();
     }
 
     private async Task SeedTestDrinks()
@@ -129,15 +137,36 @@
         }
     }
 
-    private void EditDrink(int? drinkId = 0)
+    private void EditDrink(int drinkId)
     {
-        _drinkToEdit = _favDrinks.FirstOrDefault(x => x.Id == drinkId);
+        isEdit = true;
+        _drinkInModal = _favDrinks.FirstOrDefault(x => x.Id == drinkId);
         _showModal = true;
     }
 
-    private async Task SaveDrinkOnValidSubmit(Drink drink)
+    private async Task SaveEditDrinkOnValidSubmit(Drink drink)
     {
         // Save changes to DB
+        await _uow.DrinkRepo.UpdateDrink(drink);
+    }
+
+    private void CreateDrink()
+    {
+        isEdit = false;
+        _drinkInModal = new();
+        _showModal = true;
+    }
+
+    private async Task OnValidSubmitCreate(Drink drink)
+    {
+        // Create new Drink
+        await _uow.DrinkRepo.UpdateDrink(drink);
+    }
+
+    private async Task OnValidSubmitEdit(Drink drink)
+    {
+        // Update existing Drink
+        await _uow.DrinkRepo.UpdateDrink(drink);
     }
 
     private async Task FavDrink(int drinkId)

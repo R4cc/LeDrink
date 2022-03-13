@@ -1,5 +1,4 @@
 ﻿using LeDrink.DAL.Models;
-using LeDrink.Web.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeDrink.DAL.Data

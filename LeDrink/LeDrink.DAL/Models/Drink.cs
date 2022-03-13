@@ -1,7 +1,6 @@
-﻿using LeDrink.DAL.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace LeDrink.Web.Models
+namespace LeDrink.DAL.Models
 {
     public class Drink
     {
@@ -12,5 +11,6 @@ namespace LeDrink.Web.Models
         public int? Price { get; set; }
         public string ImgPath { get; set; }
         public ICollection<Mix> Mixes { get; set; }
+        public bool IsFavourite { get; set; }
     }
 }

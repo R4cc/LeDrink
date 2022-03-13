@@ -5,6 +5,9 @@ using System.Diagnostics;
 
 namespace LeDrink.DAL.Repos
 {
+    /// <summary>
+    /// Direct interface with raspberry pi to controll pins
+    /// </summary>
     public class RaspiRepo : IRaspiRepo
     {
         private GpioController controller = new GpioController(PinNumberingScheme.Board);
