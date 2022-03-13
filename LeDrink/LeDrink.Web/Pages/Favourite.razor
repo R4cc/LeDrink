@@ -1,45 +1,88 @@
 ﻿@page "/favourites"
 @using LeDrink.DAL.Models
 @using LeDrink.Web.Models
+@using Blazorise.Animate
 
 <head>
     <link rel="stylesheet" href="/css/caro.css">
 </head>
 
-<div class="carousel">
-    <ul class="carousel__list">
-    <li class="carousel__item" data-pos="2">5</li>
-    <li class="carousel__item" data-pos="-2">1</li>
-    <li class="carousel__item" data-pos="-1">2</li>
-    <li class="carousel__item" data-pos="0">3</li>
-    <li class="carousel__item" data-pos="1">4</li>
-    </ul>
-</div>
+<div class="container" >
+    <div class="row">
+        <div class="col-2">
+            <button class="btn btn-primary"  @onclick="LastCard">Last</button>
+        </div>
+        <div class="col-8">
+            @if(_currentDrink != null){
+		        <RadzenCard  style="width: 100%;">
+                <h3 class="h5">@_currentDrink.DrinkName</h3>
+                <div class="d-flex flex-row">
+                    <RadzenImage Path="@_currentDrink.ImgPath" Class="rounded-circle float-left mr-3" Style="width: 150px; height: 150px;" />
+                    <div>
+                        <div class="row">
+                            <div>Composition</div>
+                            @foreach(var mix in _currentDrink.Mixes)
+                            {
+                                <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </RadzenCard>
+            }
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary" @onclick="NextCard">Next</button>
+        </div>
+    </div>
+    </div>
 
 
 @code {
-    private List<Drink> _favDrinks = new List<Drink>();
-    [Inject]
-    public IJSRuntime jsRuntime { get; set; }
-    private IJSObjectReference jsModule;
+    private List<Drink> _favDrinks = null;
+    private Drink _currentDrink = null;
+    private int _currentDrinkIndex = 0;
 
-     protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            jsModule = await jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/caro.js");
-            SeedTestDrinks();
+            await SeedTestDrinks();
         }
     }
 
-    private void change()
+    private async Task LastCard()
     {
-        Console.WriteLine("debug");
+        if(_currentDrinkIndex - 1  < 0)
+        {
+            // Sets cur index to max if its the first drink in the index
+            _currentDrinkIndex = _favDrinks.Count()-1;
+            _currentDrink = _favDrinks[_currentDrinkIndex];
+            return;
+        }
+        _currentDrinkIndex--;
+        _currentDrink = _favDrinks[_currentDrinkIndex];
     }
 
-    private void SeedTestDrinks()
+    private async Task NextCard()
     {
-        for(int i = 0; i <= 10; i++)
+        if(_currentDrinkIndex + 1  > _favDrinks.Count() - 1)
+        {
+            // Sets cur index to first if its the last drink in the index
+            _currentDrinkIndex = 0;
+            _currentDrink = _favDrinks[_currentDrinkIndex];
+            return;
+        }
+        _currentDrinkIndex++;
+        _currentDrink = _favDrinks[_currentDrinkIndex];
+    }
+
+
+
+    private async Task SeedTestDrinks()
+    {
+        _favDrinks = new();
+        for(int i = 0; i <= 5; i++)
         {
             var lst = new List<Mix>();
             lst.Add(new Mix {
@@ -72,5 +115,7 @@
             };
             _favDrinks.Add(drink);
         }
+        _currentDrinkIndex = 0;
+        _currentDrink = _favDrinks[_currentDrinkIndex];
     }
 }

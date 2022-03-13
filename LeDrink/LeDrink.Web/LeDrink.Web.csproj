@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AntDesign" Version="0.10.4" />
+    <PackageReference Include="Blazorise.Animate" Version="1.0.1" />
+    <PackageReference Include="Blazorise.AntDesign" Version="1.0.1" />
+    <PackageReference Include="Blazorise.Bootstrap" Version="1.0.1" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.0.1" />
     <PackageReference Include="BuildWebCompiler2022" Version="1.14.5" />
     <PackageReference Include="Delegate.SassBuilder" Version="1.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">

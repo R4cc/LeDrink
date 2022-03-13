@@ -1,3 +1,6 @@
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Repos;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddAntDesign();
+
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<Radzen.DialogService>();
@@ -15,6 +20,14 @@ builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(options =>
 {
     options.UseSqlite("Data Source = Drinks.db");
 });
+
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
 
 var app = builder.Build();
 
