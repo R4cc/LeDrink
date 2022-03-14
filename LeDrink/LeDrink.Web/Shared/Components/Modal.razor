@@ -45,8 +45,15 @@
                             <div class="row">
                                 <div>
                                     <div>
+                                    @if(mix.Bottle is null)
+                                    {
+                                        <h3 style="float: left">New Mix</h3>
+                                    }
+                                    else
+                                    {
                                         <h3 style="float: left">@mix.Bottle.BottleName</h3>
-                                        <AntDesign.Button Danger class="oi oi-trash" style="float: right;"  @onclick="(() => RemoveMix(mix.Id))"/>
+                                    }
+                                    <Button Danger Type="ButtonType.Primary" style="float: right;"  @onclick="(() => RemoveMix(mix.Id))">-</Button>
                                     </div>
                                     <Select DataSource="@_bottles"
                                             @bind-Value="@mix.Bottle"
