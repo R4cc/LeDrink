@@ -9,6 +9,7 @@ namespace LeDrink.DAL.Repos
         private IDrinkRepo? _drinkRepo;
         private IBottleRepo? _bottleRepo;
         private IRaspiRepo? _raspiRepo;
+        private IMixRepo? _mixRepo;
 
         public UnitOfWork(ApplicationDBContext db)
         {
@@ -18,6 +19,7 @@ namespace LeDrink.DAL.Repos
         public IDrinkRepo DrinkRepo => _drinkRepo ?? new DrinkRepo(_db);
         public IBottleRepo BottleRepo => _bottleRepo ?? new BottleRepo(_db);
         public IRaspiRepo RaspiRepo => _raspiRepo ?? new RaspiRepo();
+        public IMixRepo MixRepo => _mixRepo ?? new MixRepo(_db);
 
         public async Task SaveChanges()
         {

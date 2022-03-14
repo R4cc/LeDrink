@@ -3,115 +3,127 @@
 @inject IUnitOfWork _uow
 
 
-<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay; width: 100%" >
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">@HeaderText</h5>
-        <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close" @onclick="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <EditForm Model="@_drink" OnValidSubmit="@SaveChanges">
+<AntDesign.Modal Title="@HeaderText"
+       Visible="@_modalVisible"
+       OnOk="@OkSubmit"
+       OnCancel="@CancelModalSubmit">
+       <EditForm Model="@_drinkViewModel"
+       >
             <div class="row">
                     <div class="row">
                         <div >
-                            <RadzenLabel Text="Name" />
-                            <RadzenTextBox style="width: 100%;" @bind-value=_drink.DrinkName />
+                            <Title Level="4">Name</Title>
+                            <Input Placeholder="Enter a drink name..." style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
                             <br />
                         </div>
                     </div>
                     <div class="row">
                         <div >
-                            <RadzenLabel Text="Image Path(URL only)" />
-                            <RadzenTextBox style="width: 100%;" @bind-value=_drink.ImgPath/>
+                            <Title Level="4">Image Path(URL only)</Title>
+                            <Input Placeholder="Enter an Image URL..." style="width: 100%;" @bind-Value="@_drinkViewModel.ImgPath"  />
                             <br />
                         </div>
                     </div>
                     <div class="row">
                         <div>
-                            <RadzenLabel Text="Price" />
-                            <RadzenNumeric TValue="int?" style="width: 100%;" @bind-value=_drink.Price/>
+                            <Title Level="4">Price</Title>
+                            <AntDesign.InputNumber style="width: 100%" @bind-Value="_drinkViewModel.Price"/>
                             <br />
                         </div>
                     </div>
                     <br/>
                     <div class="row">
                         <div>
-                            <h2>Bottle Mix</h2>
+                            <br />
+                            <Title Level="2" >Drink Mixer</Title>
                             <hr/>
                         </div>
+                        <div class="container">
                         <!-- Mix settings -->
-                        @foreach(var mix in _drink.Mixes)
+                        @foreach(var mix in _drinkViewModel.Mixes)
                         {
-                            <RadzenDropDown AllowClear="true" TValue="string" Class="w-100" 
-                                Data=@(_bottles)
-                                Change=@(args => SetSelectedBottle(mix.Bottle.Id)) />
-                            <div>
-                                <RadzenLabel Text="Amount(ml)" />
-                                <RadzenNumeric TValue="double" Min="1" Max="450" style="width: 100%;" @bind-value="mix.Milliliters"/>
+                            <div class="row">
+                                <div>
+                                    <div>
+                                        <h3 style="float: left">@mix.Bottle.BottleName</h3>
+                                        <AntDesign.Button Danger class="oi oi-trash" style="float: right;"  @onclick="(() => RemoveMix(mix.Id))"/>
+                                    </div>
+                                    <Select DataSource="@_bottles"
+                                            @bind-Value="@mix.Bottle"
+                                            LabelName="@nameof(_selectedBottle.BottleName)"
+                                            Placeholder="Select a Bottle">
+                                    </Select>
+                                </div>
+                                <div>
+                                    <RadzenLabel Text="Amount(ml)" />
+                                    <div style="width: 100%">
+                                        <AntDesign.InputNumber style="width: 100%" @bind-Value="mix.Milliliters" Min="1" Max="450" DefaultValue="100"/>
+                                    </div>
+                                    <br />
+                                </div>
+                                <br />
+                                <hr/>
                             </div>
-                            <br />
                         }
+                        <AntDesign.Button  @onclick="AddMixToDrink">➕ Add new Mix</AntDesign.Button>
+                    </div>
                     </div>
             </div>
         </EditForm>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
+</AntDesign.Modal>
 
 @code {
     [Parameter] public Drink _drink { get; set; } = new();
     [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
+    [Parameter] public EventCallback CancelSubmit { get; set; }
     [Parameter] public string HeaderText { get; set; }
 
+    // Modal Params
+    private bool _modalVisible;
+
+    public Drink _drinkViewModel { get; set; } = new();
     private List<Bottle> _bottles { get; set; }
     private Bottle _selectedBottle { get; set; }
 
-    // Modal Parameters
-    public Guid Guid = Guid.NewGuid();
-    public string ModalDisplay = "none;";
-    public string ModalClass = "";
-    public bool ShowBackdrop = true;
 
     protected override async Task OnInitializedAsync()
     {
-        Open();
+        _bottles = await _uow.BottleRepo.GetBottles();
+        _drinkViewModel = _drink;
+        _modalVisible = true;
     }
 
-    private void Open()
+    private async Task AddMixToDrink()
     {
-        ModalDisplay = "block;";
-        ModalClass = "Show";
-        ShowBackdrop = true;
-        StateHasChanged();
-    }
-
-    private void Close()
-    {
-        ModalDisplay = "none";
-        ModalClass = "";
-        ShowBackdrop = false;
-        StateHasChanged();
+        _drinkViewModel.Mixes.Add(new Mix
+            {
+                drinkId = _drinkViewModel.Id,
+                Milliliters = 0,
+                bottleId = 1
+        });
     }
 
     private async Task SetSelectedBottle(int bottleId)
     {
-        _selectedBottle = await _uow.DrinkRepo.GetBottle(bottleId);
+        _selectedBottle = await _uow.BottleRepo.GetBottle(bottleId);
     }
 
-    private async Task SaveChanges()
+    // End Methods
+    private async Task OkSubmit()
     {
-        Close();
-        await OnValidSubmit.InvokeAsync(_drink);
+        _modalVisible = false;
+        await OnValidSubmit.InvokeAsync(_drinkViewModel);
+    }
+
+    private async Task CancelModalSubmit()
+    {
+        _modalVisible = false;
+        await OnValidSubmit.InvokeAsync(null);
+    }
+
+    private async Task RemoveMix(int mixId)
+    {
+        _drinkViewModel.Mixes.Remove(await _uow.MixRepo.GetMix(mixId));
     }
 }
 

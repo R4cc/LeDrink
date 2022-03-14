@@ -41,10 +41,5 @@ namespace LeDrink.DAL.Repos
         {
             _context.Update(drink);
         }
-
-        public async Task<Bottle> GetBottle(int bottleId)
-        {
-            return await _context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId);
-        }
     }
 }

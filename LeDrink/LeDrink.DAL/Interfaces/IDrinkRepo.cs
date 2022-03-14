@@ -9,6 +9,5 @@ namespace LeDrink.DAL.Interfaces
         Task AddDrink(Drink drink);
         Task RemoveDrink(Drink drink);
         Task UpdateDrink(Drink drink);
-        Task<Bottle> GetBottle(int bottleId);
     }
 }

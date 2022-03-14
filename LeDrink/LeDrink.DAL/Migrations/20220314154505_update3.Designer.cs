@@ -3,6 +3,7 @@ using System;
 using LeDrink.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220314154505_update3")]
+    partial class update3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -126,99 +128,37 @@ namespace LeDrink.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("BottleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DrinkId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<double>("Milliliters")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("bottleId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("drinkId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("bottleId");
+                    b.HasIndex("BottleId");
 
-                    b.HasIndex("drinkId");
+                    b.HasIndex("DrinkId");
 
                     b.ToTable("Mixes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 7,
-                            Milliliters = 250.0,
-                            bottleId = 4,
-                            drinkId = 4
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Milliliters = 250.0,
-                            bottleId = 1,
-                            drinkId = 4
-                        },
-                        new
-                        {
-                            Id = 1,
-                            Milliliters = 250.0,
-                            bottleId = 4,
-                            drinkId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Milliliters = 250.0,
-                            bottleId = 1,
-                            drinkId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Milliliters = 250.0,
-                            bottleId = 2,
-                            drinkId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Milliliters = 250.0,
-                            bottleId = 1,
-                            drinkId = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Milliliters = 300.0,
-                            bottleId = 2,
-                            drinkId = 3
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Milliliters = 200.0,
-                            bottleId = 3,
-                            drinkId = 3
-                        });
                 });
 
             modelBuilder.Entity("LeDrink.DAL.Models.Mix", b =>
                 {
                     b.HasOne("LeDrink.DAL.Models.Bottle", "Bottle")
                         .WithMany()
-                        .HasForeignKey("bottleId")
+                        .HasForeignKey("BottleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LeDrink.DAL.Models.Drink", "Drink")
+                    b.HasOne("LeDrink.DAL.Models.Drink", null)
                         .WithMany("Mixes")
-                        .HasForeignKey("drinkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DrinkId");
 
                     b.Navigation("Bottle");
-
-                    b.Navigation("Drink");
                 });
 
             modelBuilder.Entity("LeDrink.DAL.Models.Drink", b =>

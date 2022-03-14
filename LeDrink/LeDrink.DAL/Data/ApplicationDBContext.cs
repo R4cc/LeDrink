@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeDrink.DAL.Data
 {
-    public  class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : DbContext
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
         : base(options)
@@ -39,152 +39,139 @@ namespace LeDrink.DAL.Data
             {
                 Id = 4,
                 BottleName = "Vodka",
-                BottleSlotId = 4
+                BottleSlotId = 4,
             };
 
+            // Drink seeding
+            Drink VodkaBull = new Drink
+            {
+                Id = 1,
+                DrinkName = "VodkaBull",
+                IsFavourite = true,
+                ImgPath = "https://media.kaufland.com/images/PPIM/AP_Content_1010/std.lang.all/54/80/Asset_1895480.jpg",
+                Price = 20
+            };
+
+            Drink Spezi = new Drink
+            {
+                Id = 2,
+                DrinkName = "Spezi",
+                IsFavourite = true,
+                ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
+                Price = 10
+            };
+
+            Drink FantaBull = new Drink
+            {
+                Id = 3,
+                DrinkName = "Fantabull",
+                IsFavourite = false,
+                ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615",
+                Price = 15
+            };
+
+            Drink VodkaCoke = new Drink
+            {
+                Id = 4,
+                DrinkName = "VodkaCoke",
+                IsFavourite = true,
+                ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg",
+                Price = 35
+            };
+
+            // Seed Mixes
+            List<Mix> VodkaBullMix = new();
+            List<Mix> SpeziMix = new();
+            List<Mix> VodkaCokeMix = new();
+            List<Mix> FantaBullMix = new();
+
+            // Vodka Bull
+            VodkaBullMix.Add(new Mix
+            {
+                Id = 1,
+                bottleId = Vodka.Id,
+                Milliliters = 250,
+                drinkId = 1
+            });
+
+            VodkaBullMix.Add(new Mix
+            {
+                Id = 2,
+                bottleId = CocaCola.Id,
+                Milliliters = 250,
+                drinkId = 1
+            });
+
+            // Spezi
+            SpeziMix.Add(new Mix
+            {
+                Id = 3,
+                bottleId = Fanta.Id,
+                Milliliters = 250,
+                drinkId = 2
+            });
+
+            SpeziMix.Add(new Mix
+            {
+                Id = 4,
+                bottleId = CocaCola.Id,
+                Milliliters = 250,
+                drinkId = 2
+            });
+
+            // Fanta Bull
+            FantaBullMix.Add(new Mix
+            {
+                Id = 5,
+                bottleId = Fanta.Id,
+                Milliliters = 300,
+                drinkId = 3
+            });
+
+            FantaBullMix.Add(new Mix
+            {
+                Id = 6,
+                bottleId = RedBull.Id,
+                Milliliters = 200,
+                drinkId = 3
+            });
+
+            // VodkaCoke
+            VodkaCokeMix.Add(new Mix
+            {
+                Id = 7,
+                bottleId = Vodka.Id,
+                Milliliters = 250,
+                drinkId = 4
+            });
+
+            VodkaCokeMix.Add(new Mix
+            {
+                Id = 8,
+                bottleId = CocaCola.Id,
+                Milliliters = 250,
+                drinkId = 4
+            });
+
+            
+
+            // Bottles
             modelBuilder.Entity<Bottle>().HasData(CocaCola);
             modelBuilder.Entity<Bottle>().HasData(Fanta);
             modelBuilder.Entity<Bottle>().HasData(RedBull);
             modelBuilder.Entity<Bottle>().HasData(Vodka);
 
-            // Seed Mixes
-            List<Mix> VodkaBull = new();
-            List<Mix> Spezi = new();
-            List<Mix> VodkaCoke = new();
-            List<Mix> FantaBull = new();
+            // Drinks
+            modelBuilder.Entity<Drink>().HasData(VodkaBull);
+            modelBuilder.Entity<Drink>().HasData(FantaBull);
+            modelBuilder.Entity<Drink>().HasData(VodkaCoke);
+            modelBuilder.Entity<Drink>().HasData(Spezi);
 
-            // Vodka Bull
-            VodkaBull.Add(new Mix
-            {
-                Id = 1,
-                Bottle = Vodka,
-                Milliliters = 250,
-                Drink = new Drink
-                {
-                    Id = 1
-                }
-            });
-
-            VodkaBull.Add(new Mix
-            {
-                Id = 2,
-                Bottle = CocaCola,
-                Milliliters = 250,
-                Drink = new Drink
-                {
-                    Id = 1
-                }
-            });
-
-            modelBuilder.Entity<Drink>().HasData(new Drink
-            {
-                Id = 1,
-                DrinkName = "VodkaBull",
-                IsFavourite = true,
-                Mixes = VodkaBull,
-                ImgPath = "https://media.kaufland.com/images/PPIM/AP_Content_1010/std.lang.all/54/80/Asset_1895480.jpg",
-                Price = 20
-            });
-
-            // Spezi
-            Spezi.Add(new Mix
-            {
-                Id = 3,
-                Bottle = Fanta,
-                Milliliters = 250,
-                Drink = new Drink
-                {
-                    Id = 2
-                }
-            });
-
-            Spezi.Add(new Mix
-            {
-                Id = 4,
-                Bottle = CocaCola,
-                Milliliters = 250,
-                Drink = new Drink
-                {
-                    Id = 2
-                }
-            });
-
-            modelBuilder.Entity<Drink>().HasData(new Drink
-            {
-                Id = 2,
-                DrinkName = "Spezi",
-                IsFavourite = true,
-                Mixes = Spezi,
-                ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
-                Price = 10
-            });
-
-            // 
-            FantaBull.Add(new Mix
-            {
-                Id = 5,
-                Bottle = Fanta,
-                Milliliters = 300,
-                Drink = new Drink
-                {
-                    Id = 3
-                }
-            });
-
-            FantaBull.Add(new Mix
-            {
-                Id = 6,
-                Bottle = RedBull,
-                Milliliters = 200,
-                Drink = new Drink
-                {
-                    Id = 3
-                }
-            });
-
-            modelBuilder.Entity<Drink>().HasData(new Drink
-            {
-                Id = 3,
-                DrinkName = "Fantabull",
-                IsFavourite = false,
-                Mixes = FantaBull,
-                ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615",
-                Price = 15
-            });
-
-            // VodkaCoke
-            VodkaCoke.Add(new Mix
-            {
-                Id = 7,
-                Bottle = Vodka,
-                Milliliters = 250,
-                Drink = new Drink
-                {
-                    Id = 4
-                }
-            });
-
-            FantaBull.Add(new Mix
-            {
-                Id = 8,
-                Bottle = CocaCola,
-                Milliliters = 250,
-                Drink = new Drink
-                {
-                    Id = 4
-                }
-            });
-
-            modelBuilder.Entity<Drink>().HasData(new Drink
-            {
-                Id = 4,
-                DrinkName = "VodkaCoke",
-                IsFavourite = true,
-                Mixes = VodkaCoke,
-                ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg",
-                Price = 35
-            });
-
+            // Mixes
+            modelBuilder.Entity<Mix>().HasData(VodkaCokeMix);
+            modelBuilder.Entity<Mix>().HasData(VodkaBullMix);
+            modelBuilder.Entity<Mix>().HasData(SpeziMix);
+            modelBuilder.Entity<Mix>().HasData(FantaBullMix);
         }
 
         public DbSet<Drink> Drinks { get; set; }
