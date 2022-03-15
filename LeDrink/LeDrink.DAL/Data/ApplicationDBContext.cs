@@ -193,6 +193,8 @@ namespace LeDrink.DAL.Data
             modelBuilder.Entity<Bottle>().HasData(Fanta);
             modelBuilder.Entity<Bottle>().HasData(RedBull);
             modelBuilder.Entity<Bottle>().HasData(Vodka);
+            modelBuilder.Entity<Bottle>().HasData(Gin);
+            modelBuilder.Entity<Bottle>().HasData(OrangeJuice);
 
             // Drinks
             modelBuilder.Entity<Drink>().HasData(VodkaBull);

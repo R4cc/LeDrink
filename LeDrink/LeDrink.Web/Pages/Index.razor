@@ -12,7 +12,7 @@
 <!-- BOTTLES -->
     <div class="row" >
         <Title Type="1">Current Bottles in Machine</Title>
-        @foreach (var bottle in _bottles)
+        @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
         {
         <div class="col-sm" style="margin-bottom: 5%">
             <RadzenCard style="width: 100%; height: 100%;">
@@ -26,7 +26,8 @@
                     </div>
                         <br/>
                     <div class="row">
-                        <h4>@bottle.BottleName</h4 >
+
+                            <h4>@bottle.BottleName</h4 
                     </div>
                     <div class="row">
                         <Text>@($"{bottle.CurrentMl}ml REMAINING")</Text>
@@ -34,9 +35,7 @@
                         <br/>
                     </div>
                     <div class="row align-items-end">
-                        <Button Style="width: 100%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round">
-                            <Icon Type="edit" Theme="fill"/>
-                        </Button>
+                        <Button Style="width: 100%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round" @onclick="@(() => ChangeBottleInSlot(bottle))">CHANGE SLOT BOTTLE</Button>
                     </div>
                 </div>
             </RadzenCard>
@@ -144,14 +143,29 @@
 
 
 
-    <!-- MODAL LOGIC-->
-    @if (_showModal && _drinkInModal != null && !isEdit)
+    <!-- DRINK MODAL LOGIC-->
+    @if (_showDrinkModal && _drinkInModal != null && !_drinkModalIsEdit)
     {
-        <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitCreate" HeaderText="Create Drink"/>
+        <LeDrink.Web.Shared.Components.DrinkModal _drink="_drinkInModal" OnValidSubmit="OnValidDrinkSubmitCreate" HeaderText="Create Drink"/>
     }
-    @if (_showModal && _drinkInModal != null && isEdit)
+    @if (_showDrinkModal && _drinkInModal != null && _drinkModalIsEdit)
     {
-        <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitEdit" HeaderText="Edit Drink"/>
+        <LeDrink.Web.Shared.Components.DrinkModal _drink="_drinkInModal" OnValidSubmit="OnValidDrinkSubmitEdit" HeaderText="Edit Drink"/>
+    }
+
+    <!-- BOTTLE MODAL LOGIC-->
+    @if (_showBottleCrudModal && _bottleInCrudModal != null && !_bottleCrudModalIsEdit)
+    {
+        <LeDrink.Web.Shared.Components.BottleModal _drink="_drinkInModal" OnValidSubmit="OnValidBottleSubmitCreate" HeaderText="Create Bottle"/>
+    }
+    @if (_showBottleCrudModal && _bottleInCrudModal != null && _bottleCrudModalIsEdit)
+        {
+            <LeDrink.Web.Shared.Components.BottleModal _selectedBottle="_bottleInCrudModal" OnValidSubmit="OnValidBottleSubmitEdit" HeaderText="Edit DrinkBottle"/>
+        }
+
+    @if (_showChangeBottleModal && _selectedSlotId != null)
+    {
+        <LeDrink.Web.Shared.Components.ChangeBottleModal BottleSlotId="_selectedSlotId" _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=OnValidBottleChangeSubmit/>
     }
     </div>
 </div>
@@ -160,11 +174,21 @@
 @code{
     private List<Drink> _favDrinks = new();
     private List<Drink> _nonFavDrinks = new();
-    private List<Bottle> _bottles = new();
+    private List<Bottle> _allBottles = new();
 
-    private bool _showModal { get; set; }
+
+    private bool _showDrinkModal { get; set; }
     private Drink _drinkInModal { get; set; }
-    private bool isEdit { get; set; }
+    private bool _drinkModalIsEdit { get; set; }
+
+    private bool _showBottleCrudModal { get; set; }
+    private Bottle _bottleInCrudModal { get; set; }
+    private bool _bottleCrudModalIsEdit { get; set; }
+
+    // For Bottle changer Modal
+    private bool _showChangeBottleModal { get; set; }
+    private int _selectedSlotId { get; set; }
+    private Bottle _chosenBottle = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -190,24 +214,32 @@
 
     private async Task LoadBottles()
     {
-        _bottles = await _uow.BottleRepo.GetBottles();
+        _allBottles = (await _uow.BottleRepo.GetBottles())
+                                .OrderBy(b => b.BottleSlotId).ToList();
+    }
+
+    private async Task ChangeBottleInSlot(Bottle bottle)
+    {
+        _chosenBottle = bottle;
+        _selectedSlotId = (int)bottle.BottleSlotId;
+        _showChangeBottleModal = true;
     }
 
     private void EditDrink(int drinkId)
     {
-        isEdit = true;
+        _drinkModalIsEdit = true;
         _drinkInModal = _favDrinks.FirstOrDefault(x => x.Id == drinkId);
-        _showModal = true;
+        _showDrinkModal = true;
     }
 
     private void CreateDrink()
     {
-        isEdit = false;
+        _drinkModalIsEdit = false;
         _drinkInModal = new();
-        _showModal = true;
+        _showDrinkModal = true;
     }
 
-    private async Task OnValidSubmitCreate(Drink drink)
+    private async Task OnValidDrinkSubmitCreate(Drink drink)
     {
         if(drink is null)
         {
@@ -218,11 +250,11 @@
         // Create new Drink
         await _uow.DrinkRepo.AddDrink(drink);
         await _uow.SaveChanges();
-        _showModal = false;
+        _showDrinkModal = false;
         _drinkInModal = null;
     }
 
-    private async Task OnValidSubmitEdit(Drink drink)
+    private async Task OnValidDrinkSubmitEdit(Drink drink)
     {
         if(drink is null)
         {
@@ -233,14 +265,66 @@
         // Update existing Drink
         await _uow.DrinkRepo.UpdateDrink(drink);
         await _uow.SaveChanges();
-        _showModal = false;
+        _showDrinkModal = false;
         _drinkInModal = null;
+    }
+
+    private async Task OnValidBottleSubmitCreate(Bottle bottle)
+    {
+        if(bottle is null)
+        {
+            await CancelSubmit();
+            return;
+        }
+
+        // Create new Drink
+        await _uow.BottleRepo.AddBottle(bottle);
+        await _uow.SaveChanges();
+        _showBottleCrudModal = false;
+        _bottleInCrudModal = null;
+    }
+
+    private async Task OnValidBottleSubmitEdit(Bottle bottle)
+    {
+        if(bottle is null)
+        {
+            await CancelSubmit();
+            return;
+        }
+
+        // Update existing Drink
+        await _uow.BottleRepo.UpdateBottle(bottle);
+        await _uow.SaveChanges();
+        _showBottleCrudModal = false;
+        _bottleInCrudModal = null;
+    }
+
+    private async Task OnValidBottleChangeSubmit(Bottle bottle)
+    {
+        
+        if(bottle is null)
+        {
+            await CancelSubmit();
+            return;
+        }
+
+        _chosenBottle.BottleSlotId = null;
+
+        // Update drink
+        await _uow.BottleRepo.UpdateBottle(_chosenBottle);
+        await _uow.BottleRepo.UpdateBottle(bottle);
+        _showChangeBottleModal = false;
+        _chosenBottle = null;
+        _selectedSlotId = 0;
     }
 
     private async Task CancelSubmit()
     {
-        _showModal = false;
+        _showDrinkModal = false;
         _drinkInModal = null;
+
+        _showBottleCrudModal = false;
+        _bottleInCrudModal = null;
     }
 
 

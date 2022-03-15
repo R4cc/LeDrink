@@ -1,0 +1,150 @@
+﻿@using LeDrink.DAL.Models
+<Modal Title="@("Change bottle corresponding to SLOT " + BottleSlotId)"
+       Visible="@_visible"
+       OnOk="@HandleOk"
+       OnCancel="@HandleCancel"
+       ConfirmLoading="@_confirmLoading">
+        <div class="container">
+            <div class="row" >
+                    <Title Type="1">All Bottles</Title>
+                    @foreach (var bottle in _allBottles)
+                    {
+                        @if(bottle.BottleSlotId is null)
+                        {
+                            <div class="col-sm" style="margin-bottom: 5%">
+                            <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")" 
+                                style="width: 100%; height: 100%;" 
+                                @onclick="(()=>ChooseBottle(bottle))">
+
+                                <div class="container" style="text-align: center;">
+                                    <div class="row">
+                                        <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
+                                    </div>
+                                        <br/>
+                                    <div class="row">
+                                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover;" />
+                                    </div>
+                                        <br/>
+                                    <div class="row">
+                                            <h4>@bottle.BottleName</h4> 
+                                    </div>
+                                </div>
+                            </RadzenCard>
+                        </div>  
+                        }
+                    }
+                </div>
+            <div class="row">
+                <div class="col">
+                    <Title Level="2">Bottle capacity (ml)</Title>
+                    <p>Quick Select</p>
+                    <div class="row">
+                        <div class="col">
+                            <Button Type="@AntDesign.ButtonType.Primary" @onclick="@(() => SetBottleMaxCapacity(250))">250</Button>
+                        </div>
+                        <div class="col">
+                            <Button Type="@AntDesign.ButtonType.Primary" @onclick="@(() => SetBottleMaxCapacity(500))">500</Button>
+                        </div>
+                        <div class="col">
+                            <Button Type="@AntDesign.ButtonType.Primary" @onclick="@(() => SetBottleMaxCapacity(700))">700</Button>
+                        </div>
+                        <div class="col">
+                            <Button Type="@AntDesign.ButtonType.Primary" @onclick="@(() => SetBottleMaxCapacity(1000))">1000</Button>
+                        </div>
+                        <div class="col">
+                            <Button Type="@AntDesign.ButtonType.Primary" @onclick="@(() => SetBottleMaxCapacity(1500))">1500</Button>
+                        </div>
+                    </div>
+                    <p>Custom Input</p>
+                    <AntDesign.InputNumber @bind-Value="_bottleMaxCapacityMl" Min="1" Style="width: 100%"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div>
+                        <Title Level="2">Current bottle capacity (ml)</Title>
+                        <RadioGroup @bind-Value="@_bottleIsFull" >
+                            <Radio Value="true">Full bottle</Radio>
+                            <Radio Value="false">Partially Filled Bottle</Radio>
+                        </RadioGroup>
+                     <p>Custom Input (%)</p>
+                    <div>
+                        <Slider @bind-Value="@_bottleCurrentMlAmount" Min="5d" Max="@_bottleMaxCapacityMl" TValue="double" TooltipPlacement="@Placement.Top" TooltipVisible="false" Disabled=_bottleIsFull />
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</Modal>
+
+
+@code{
+    [Parameter] public int BottleSlotId { get; set; }
+    [Parameter] public Bottle _selectedBottle { get; set; }
+    [Parameter] public List<Bottle> _allBottles { get; set; }
+    [Parameter] public EventCallback<Bottle> OnValidSubmit { get; set; }
+    //[Parameter] public EventCallback CancelSubmit { get; set; }
+
+    bool _visible = false;
+    bool _confirmLoading = false;
+
+    private int _bottleMaxCapacityMl;
+    private bool _bottleIsFull = true;
+    private double _bottleCurrentMlAmount = 1d;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ShowModal();
+    }
+
+    private void ShowModal()
+    {
+        _visible = true;
+    }
+
+    private async Task ChooseBottle(Bottle bottle)
+    {
+        _selectedBottle = bottle;
+    }
+
+    private async Task HandleOk(MouseEventArgs e)
+    {
+        _selectedBottle.BottleSlotId = BottleSlotId;
+        _selectedBottle.MaxMl = (int)_bottleMaxCapacityMl;
+
+        if (!_bottleIsFull)
+        {
+            _selectedBottle.CurrentMl = (int)_bottleCurrentMlAmount;
+        }
+        else
+        {
+            _selectedBottle.CurrentMl = _selectedBottle.MaxMl;
+        }
+
+        await OnValidSubmit.InvokeAsync(_selectedBottle);
+
+        _confirmLoading = true;
+        StateHasChanged();
+        await Task.Delay(1000);
+        _visible = false;
+        _confirmLoading = false;
+    }
+
+    private async Task HandleCancel(MouseEventArgs e)
+    {
+
+        await OnValidSubmit.InvokeAsync(null);
+        _visible = false;
+    }
+
+    // For Slider
+    private void SetBottleMaxCapacity(int ml)
+    {
+        _bottleMaxCapacityMl = ml;
+    }
+
+    string tipFormatter(double currentEdgeValue)
+    {
+        return $"{currentEdgeValue}ml";
+    }
+}
