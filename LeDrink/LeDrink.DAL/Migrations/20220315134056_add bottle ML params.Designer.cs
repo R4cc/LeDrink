@@ -3,6 +3,7 @@ using System;
 using LeDrink.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220315134056_add bottle ML params")]
+    partial class addbottleMLparams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -50,7 +52,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "Coca Cola",
                             BottleSlotId = 1,
                             CurrentMl = 1500,
-                            ImgPath = "/images/bottles/cocacola-1500ml.jpg",
+                            ImgPath = "/wwwroot/images/bottles/cocacola-1500ml.jpg",
                             MaxMl = 1500
                         },
                         new
@@ -59,7 +61,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "Fanta",
                             BottleSlotId = 2,
                             CurrentMl = 1500,
-                            ImgPath = "/images/bottles/fanta-1500ml.jpg",
+                            ImgPath = "/wwwroot/images/bottles/fanta-1500ml.jpg",
                             MaxMl = 1500
                         },
                         new
@@ -68,7 +70,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "RedBull",
                             BottleSlotId = 3,
                             CurrentMl = 250,
-                            ImgPath = "/images/bottles/redbull-250ml.jpg",
+                            ImgPath = "/wwwroot/images/bottles/redbull-250ml.jpg",
                             MaxMl = 250
                         },
                         new
@@ -77,7 +79,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "Vodka",
                             BottleSlotId = 4,
                             CurrentMl = 700,
-                            ImgPath = "/images/bottles/vodka-700ml.jpg",
+                            ImgPath = "/wwwroot/images/bottles/vodka-700ml.jpg",
                             MaxMl = 700
                         });
                 });

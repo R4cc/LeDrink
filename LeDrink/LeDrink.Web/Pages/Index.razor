@@ -4,81 +4,163 @@
 @inject IUnitOfWork _uow
 
 <PageTitle>Lé Drink</PageTitle>
-    <div class="container" style="margin-right: 10%; margin-left: 10%;">
 
-        <div class="row">
-            <button class="btn btn-primary oi oi-plus"/>
-            <!-- Favourite Drinks -->
-        <h1>Favourite Drinks</h1>
-            @foreach (var drink in _favDrinks)
-            {
-                <RadzenCard class="m-3" style="width: 18rem;">
-                    <h3 class="h5">@drink.DrinkName</h3>
-                    <div class="d-flex flex-row">
-                        <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left" Style=" width: 150px; height: 150px;" />
-                        <div>
-                            <div class="row">
-                                <div>Composition</div>
-                                @foreach (var mix in drink.Mixes)
-                                {
-                                    <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
-                                }
-                            </div>
-                            <div class="row">
-                                <div >
-                                    <RadzenButton Icon="launch" Click="(() => EditDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
-                                    <RadzenButton Icon="grade" Click="(() => FavDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </RadzenCard>
-            }
-        </div>
-        <hr />
-        <br/>
-        <div class="row">
-            <h1>Other Drinks</h1>
-            <!-- Non Favourite Drinks -->
-            @foreach (var drink in _nonFavDrinks)
-            {
-                <RadzenCard class="m-3" style="width: 18rem;">
-                    <h3 class="h5">@drink.DrinkName</h3>
-                    <div class="d-flex flex-row">
-                        <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left mr-3" Style=" width: 150px; height: 150px;" />
-                        <div>
-                            <div class="row">
-                                <div>Composition</div>
-                                @foreach (var mix in drink.Mixes)
-                                {
-                                    <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
-                                }
-                            </div>
-                            <div class="row">
-                                <div >
-                                    <RadzenButton Icon="launch" Click="(() => EditDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
-                                    <RadzenButton Icon="grade" Click="(() => FavDrink(drink.Id))" ButtonStyle="ButtonStyle.Primary"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </RadzenCard>
-            }
-        </div>
-        @if (_showModal && _drinkInModal != null && !isEdit)
+<div class="container-fluid" >
+    <div style="margin-right: 10%; margin-left: 10%;">
+
+
+<!-- BOTTLES -->
+    <div class="row" >
+        <Title Type="1">Current Bottles in Machine</Title>
+        @foreach (var bottle in _bottles)
         {
-            <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitCreate" HeaderText="Create Drink"/>
-        }
-        @if (_showModal && _drinkInModal != null && isEdit)
-        {
-            <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitEdit" HeaderText="Edit Drink"/>
+        <div class="col-sm" style="margin-bottom: 5%">
+            <RadzenCard style="width: 100%; height: 100%;">
+                <div class="container" style="text-align: center;">
+                    <div class="row">
+                        <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
+                    </div>
+                        <br/>
+                    <div class="row">
+                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover;" />
+                    </div>
+                        <br/>
+                    <div class="row">
+                        <h4>@bottle.BottleName</h4 >
+                    </div>
+                    <div class="row">
+                        <Text>@($"{bottle.CurrentMl}ml REMAINING")</Text>
+                        <br/>
+                        <br/>
+                    </div>
+                    <div class="row align-items-end">
+                        <Button Style="width: 100%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round">
+                            <Icon Type="edit" Theme="fill"/>
+                        </Button>
+                    </div>
+                </div>
+            </RadzenCard>
+        </div>  
         }
     </div>
 
 
+<!-- DRINKS -->
+    <div class="row" >
+        <div class="col">
+            <Title Type="1">Drinks</Title>
+            <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" @onclick="CreateDrink"> Add new Drink</Button>
+            <hr/>
+        </div>
+    </div>
+
+    <div class="row" >
+            <!-- Favourite Drinks -->
+            <Title Type="3">Favourite Drinks</Title>
+            @foreach (var drink in _favDrinks)
+            {
+                <div class="col-sm" style="min-width: 440px; max-width: 440px">
+                    <RadzenCard >
+                        <div class="container">
+                            <div class="row">
+                                <div class="col" style="max-width: 160px">
+                                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left" Style="width:150px; height:150px; object-fit:cover;" />
+                                </div>
+                                <div class="col" style="margin-left: 5%">
+                                    <div class="row">
+                                        <h3 class="h3">@drink.DrinkName</h3>
+                                        <div>Ingredients</div>
+                                        @foreach (var mix in drink.Mixes)
+                                        {
+                                            <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
+                                        }
+                                    </div>
+                                    <div class="row align-items-end">
+                                        <div class="col">
+                                            <Button @onclick="(() => EditDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary"  Style="width: 100%">
+                                                <Icon Type="edit" Theme="fill"/>
+                                            </Button>
+                                        </div>
+                                        <div class="col">
+                                            <Button @onclick="(() => UnFavDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary" Style="width: 100%">
+                                                <Icon Type="star" Theme="fill"/>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </RadzenCard>
+                </div>
+            }
+    </div>
+
+
+    <hr />
+    <br/>
+
+
+
+    <!-- Other Drinks -->
+   <div class="row" >
+            <Title Type="3">Favourite Drinks</Title>
+            @foreach (var drink in _favDrinks)
+            {
+                <div class="col-sm" style="min-width: 440px; max-width: 440px">
+                    <RadzenCard >
+                        <div class="container">
+                            <div class="row">
+                                <div class="col" style="max-width: 160px">
+                                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left" Style="width:150px; height:150px; object-fit:cover;" />
+                                </div>
+                                <div class="col" style="margin-left: 5%">
+                                    <div class="row">
+                                        <h3 class="h3">@drink.DrinkName</h3>
+                                        <div>Ingredients</div>
+                                        @foreach (var mix in drink.Mixes)
+                                        {
+                                            <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
+                                        }
+                                    </div>
+                                    <div class="row align-items-end">
+                                        <div class="col">
+                                            <Button @onclick="(() => EditDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary"  Style="width: 100%">
+                                                <Icon Type="edit" Theme="fill"/>
+                                            </Button>
+                                        </div>
+                                        <div class="col">
+                                            <Button @onclick="(() => FavDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary" Style="width: 100%">
+                                                <Icon Type="star" Theme="outline"/>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </RadzenCard>
+                </div>
+            }
+    </div>
+
+
+
+    <!-- MODAL LOGIC-->
+    @if (_showModal && _drinkInModal != null && !isEdit)
+    {
+        <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitCreate" HeaderText="Create Drink"/>
+    }
+    @if (_showModal && _drinkInModal != null && isEdit)
+    {
+        <LeDrink.Web.Shared.Components.Modal _drink="_drinkInModal" OnValidSubmit="OnValidSubmitEdit" HeaderText="Edit Drink"/>
+    }
+    </div>
+</div>
+
+
 @code{
-    private List<Drink> _favDrinks = new List<Drink>();
-    private List<Drink> _nonFavDrinks = new List<Drink>();
+    private List<Drink> _favDrinks = new();
+    private List<Drink> _nonFavDrinks = new();
+    private List<Bottle> _bottles = new();
 
     private bool _showModal { get; set; }
     private Drink _drinkInModal { get; set; }
@@ -87,6 +169,7 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadDrinks();
+        await LoadBottles();
     }
 
     private async Task LoadDrinks()
@@ -103,6 +186,11 @@
         // Favourite status Loading
         _favDrinks = _allDrinks.Where(d => d.IsFavourite == true).ToList();
         _nonFavDrinks = _allDrinks.Where(d => d.IsFavourite == false).ToList();
+    }
+
+    private async Task LoadBottles()
+    {
+        _bottles = await _uow.BottleRepo.GetBottles();
     }
 
     private void EditDrink(int drinkId)

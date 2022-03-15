@@ -1,5 +1,6 @@
 ﻿using LeDrink.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
 
 namespace LeDrink.DAL.Data
 {
@@ -18,28 +19,60 @@ namespace LeDrink.DAL.Data
             {
                 Id = 1,
                 BottleName = "Coca Cola",
-                BottleSlotId = 1
+                ImgPath = "/images/bottles/cocacola-1500ml.jpg",
+                BottleSlotId = 1,
+                MaxMl = 1500,
+                CurrentMl = 1500
             };
 
             Bottle Fanta = new Bottle
             {
                 Id = 2,
                 BottleName = "Fanta",
-                BottleSlotId = 2
+                ImgPath = "/images/bottles/fanta-1500ml.jpg",
+                BottleSlotId = 2,
+                MaxMl = 1500,
+                CurrentMl = 1500
             };
 
             Bottle RedBull = new Bottle
             {
                 Id = 3,
                 BottleName = "RedBull",
-                BottleSlotId = 3
+                ImgPath= "/images/bottles/redbull-250ml.jpg",
+                BottleSlotId = 3,
+                MaxMl = 250,
+                CurrentMl = 250
             };
 
             Bottle Vodka = new Bottle
             {
                 Id = 4,
                 BottleName = "Vodka",
+                ImgPath = "/images/bottles/vodka-700ml.jpg",
                 BottleSlotId = 4,
+                MaxMl = 700,
+                CurrentMl = 700
+            };
+
+            Bottle Gin = new Bottle
+            {
+                Id = 5,
+                BottleName = "Gin",
+                ImgPath = "/images/bottles/gin-700ml.jpg",
+                BottleSlotId = null,
+                MaxMl = 700,
+                CurrentMl = 700
+            };
+
+            Bottle OrangeJuice = new Bottle
+            {
+                Id = 6,
+                BottleName = "Orange Juice",
+                ImgPath = "/images/bottles/orangejuice-1000ml.jpg",
+                BottleSlotId = null,
+                MaxMl = 1000,
+                CurrentMl = 1000
             };
 
             // Drink seeding

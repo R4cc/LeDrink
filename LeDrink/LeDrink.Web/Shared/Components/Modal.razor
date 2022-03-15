@@ -39,6 +39,10 @@
                             <hr/>
                         </div>
                         <div class="container">
+                        @if(_alert)
+                        {
+                            <Alert Message="Mix amount is over 450ml!"  Type="@AlertType.Error" />
+                        }
                         <!-- Mix settings -->
                         @foreach(var mix in _drinkViewModel.Mixes)
                         {
@@ -53,7 +57,9 @@
                                     {
                                         <h3 style="float: left">@mix.Bottle.BottleName</h3>
                                     }
-                                    <Button Danger Type="ButtonType.Primary" style="float: right;"  @onclick="(() => RemoveMix(mix.Id))">-</Button>
+                                    <Button style="float: right;" Type="@AntDesign.ButtonType.Primary" Danger  @onclick="(() => RemoveMix(mix.Id))">
+                                        <Icon Type="delete" Theme="filled"/>
+                                    </Button>
                                     </div>
                                     <Select DataSource="@_bottles"
                                             @bind-Value="@mix.Bottle"
@@ -72,7 +78,9 @@
                                 <hr/>
                             </div>
                         }
-                        <AntDesign.Button  @onclick="AddMixToDrink">➕ Add new Mix</AntDesign.Button>
+                        <AntDesign.Button  @onclick="AddMixToDrink" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round">
+                            <Icon Type="plus" Theme="filled"/> Add new Mix
+                        </AntDesign.Button>
                     </div>
                     </div>
             </div>
@@ -84,6 +92,12 @@
     [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
     [Parameter] public EventCallback CancelSubmit { get; set; }
     [Parameter] public string HeaderText { get; set; }
+
+    // test
+    private Slider<double> _tValue;
+
+    // alert
+    private bool _alert = false;
 
     // Modal Params
     private bool _modalVisible;
