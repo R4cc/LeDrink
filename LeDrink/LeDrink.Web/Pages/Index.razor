@@ -15,7 +15,7 @@
         @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
         {
         <div class="col-sm" style="margin-bottom: 5%">
-            <RadzenCard style="width: 100%; height: 100%;">
+            <RadzenCard style="width: 100%; height: 100%; cursor: pointer;" class="@(bottle.Id == _chosenBottle.Id ? "text-white border-success" : "")" @onclick="@(() => ChangeBottleInSlot(bottle))">
                 <div class="container" style="text-align: center;">
                     <div class="row">
                         <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
@@ -26,16 +26,12 @@
                     </div>
                         <br/>
                     <div class="row">
-
-                            <h4>@bottle.BottleName</h4 
+                        <h4>@bottle.BottleName</h4 
                     </div>
                     <div class="row">
-                        <Text>@($"{bottle.CurrentMl}ml REMAINING")</Text>
+                        <Text>@($"{bottle.MaxMl} / {bottle.CurrentMl}ml ")</Text>
                         <br/>
                         <br/>
-                    </div>
-                    <div class="row align-items-end">
-                        <Button Style="width: 100%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round" @onclick="@(() => ChangeBottleInSlot(bottle))">CHANGE SLOT BOTTLE</Button>
                     </div>
                 </div>
             </RadzenCard>
@@ -56,45 +52,73 @@
     <div class="row" >
             <!-- Favourite Drinks -->
             <Title Type="3">Favourite Drinks</Title>
-            @foreach (var drink in _favDrinks)
+            @foreach (var drink in _drinks.Where(b => b.IsFavourite == true))
             {
-                <div class="col-sm" style="min-width: 440px; max-width: 440px">
-                    <RadzenCard >
-                        <div class="container">
-                            <div class="row">
-                                <div class="col" style="max-width: 160px">
-                                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left" Style="width:150px; height:150px; object-fit:cover;" />
-                                </div>
-                                <div class="col" style="margin-left: 5%">
-                                    <div class="row">
-                                        <h3 class="h3">@drink.DrinkName</h3>
-                                        <div>Ingredients</div>
-                                        @foreach (var mix in drink.Mixes)
-                                        {
-                                            <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
-                                        }
-                                    </div>
-                                    <div class="row align-items-end">
-                                        <div class="col">
-                                            <Button @onclick="(() => EditDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary"  Style="width: 100%">
-                                                <Icon Type="edit" Theme="fill"/>
-                                            </Button>
-                                        </div>
-                                        <div class="col">
-                                            <Button @onclick="(() => UnFavDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary" Style="width: 100%">
-                                                <Icon Type="star" Theme="fill"/>
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="col-sm" style="min-width: 440px; max-width: 440px; margin-bottom: 30px;">
+                    <RadzenCard class="center" Style="width: 100%; height: 100%">
+                    <div class="d-flex align-items-center">
+                        <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /> </div>
+                        <div class="ml-3 w-100">
+                            <h4 class="mb-0 mt-0">@drink.DrinkName (@drink.TotalMl)</h4>
+                            <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                                @foreach(var mix in drink.Mixes)
+                                {
+                                    <div class="d-flex flex-column"> <span class="articles">@mix.Bottle.BottleName</span> <span class="number1">@mix.Milliliters</span> </div>
+                                }
                             </div>
+                            <div class="button mt-2 d-flex flex-row align-items-center">
+                            <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary"  Class="w-100">
+                                <Icon Type="edit" Theme="fill"/>
+                            </Button>
+                            <Button @onclick="(() => ToggleFavDrink(drink))" Type="@AntDesign.ButtonType.Primary" Class="w-100 ml-2">
+                                <Icon Type="star" Theme="fill"/>
+                            </Button>
+                             </div>
                         </div>
-                    </RadzenCard>
-                </div>
+                    </div>
+                </RadzenCard>
+                    </div>
             }
     </div>
+    
+    <style>
 
 
+.stats {
+    background: #f2f5f8 !important;
+    color: #000 !important
+}
+
+.articles {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number1 {
+    font-weight: 500
+}
+
+.followers {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number2 {
+    font-weight: 500
+}
+
+.rating {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number3 {
+    font-weight: 500
+}
+    </style>
+
+
+    <br/>
     <hr />
     <br/>
 
@@ -102,93 +126,91 @@
 
     <!-- Other Drinks -->
    <div class="row" >
-            <Title Type="3">Favourite Drinks</Title>
-            @foreach (var drink in _favDrinks)
+            <Title Type="3">Other Drinks</Title>
+            @foreach (var drink in _drinks.Where(b => b.IsFavourite == false))
             {
-                <div class="col-sm" style="min-width: 440px; max-width: 440px">
-                    <RadzenCard >
-                        <div class="container">
-                            <div class="row">
-                                <div class="col" style="max-width: 160px">
-                                    <RadzenImage Path="@drink.ImgPath" Class="rounded-circle float-left" Style="width:150px; height:150px; object-fit:cover;" />
-                                </div>
-                                <div class="col" style="margin-left: 5%">
-                                    <div class="row">
-                                        <h3 class="h3">@drink.DrinkName</h3>
-                                        <div>Ingredients</div>
-                                        @foreach (var mix in drink.Mixes)
-                                        {
-                                            <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
-                                        }
-                                    </div>
-                                    <div class="row align-items-end">
-                                        <div class="col">
-                                            <Button @onclick="(() => EditDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary"  Style="width: 100%">
-                                                <Icon Type="edit" Theme="fill"/>
-                                            </Button>
-                                        </div>
-                                        <div class="col">
-                                            <Button @onclick="(() => FavDrink(drink.Id))" Type="@AntDesign.ButtonType.Primary" Style="width: 100%">
-                                                <Icon Type="star" Theme="outline"/>
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="col-sm" style="min-width: 440px; max-width: 440px; margin-bottom: 30px;">
+                    <RadzenCard class="center" Style="width: 100%; height: 100%">
+                    <div class="d-flex align-items-center">
+                        <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /> </div>
+                        <div class="ml-3 w-100">
+                            <h4 class="mb-0 mt-0">@drink.DrinkName (@drink.TotalMl)</h4>
+                            <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                                @foreach(var mix in drink.Mixes)
+                                {
+                                    <div class="d-flex flex-column"> <span class="articles">@mix.Bottle.BottleName</span> <span class="number1">@mix.Milliliters</span> </div>
+                                }
                             </div>
+                            <div class="button mt-2 d-flex flex-row align-items-center">
+                            <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary"  Class="w-100">
+                                <Icon Type="edit" Theme="fill"/>
+                            </Button>
+                            <Button @onclick="(() => ToggleFavDrink(drink))" Type="@AntDesign.ButtonType.Primary" Class="w-100 ml-2">
+                                <Icon Type="star" Theme="outline"/>
+                            </Button>
+                             </div>
                         </div>
-                    </RadzenCard>
-                </div>
+                    </div>
+                </RadzenCard>
+                    </div>
             }
     </div>
 
 
 
     <!-- DRINK MODAL LOGIC-->
-    @if (_showDrinkModal && _drinkInModal != null && !_drinkModalIsEdit)
+    @if (_showCreateDrinkModal && _drinkInModal != null)
     {
-        <LeDrink.Web.Shared.Components.DrinkModal _drink="_drinkInModal" OnValidSubmit="OnValidDrinkSubmitCreate" HeaderText="Create Drink"/>
+        <LeDrink.Web.Shared.Components.CreateDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitCreateDrink"/>
     }
-    @if (_showDrinkModal && _drinkInModal != null && _drinkModalIsEdit)
+    @if (_showEditDrinkModal && _drinkInModal != null)
     {
-        <LeDrink.Web.Shared.Components.DrinkModal _drink="_drinkInModal" OnValidSubmit="OnValidDrinkSubmitEdit" HeaderText="Edit Drink"/>
+        <LeDrink.Web.Shared.Components.EditDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitEditDrink"/>
     }
 
     <!-- BOTTLE MODAL LOGIC-->
     @if (_showBottleCrudModal && _bottleInCrudModal != null && !_bottleCrudModalIsEdit)
     {
-        <LeDrink.Web.Shared.Components.BottleModal _drink="_drinkInModal" OnValidSubmit="OnValidBottleSubmitCreate" HeaderText="Create Bottle"/>
+        <LeDrink.Web.Shared.Components.BottleModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitCreateBottle" HeaderText="Create Bottle"/>
     }
     @if (_showBottleCrudModal && _bottleInCrudModal != null && _bottleCrudModalIsEdit)
         {
-            <LeDrink.Web.Shared.Components.BottleModal _selectedBottle="_bottleInCrudModal" OnValidSubmit="OnValidBottleSubmitEdit" HeaderText="Edit DrinkBottle"/>
+            <LeDrink.Web.Shared.Components.BottleModal _selectedBottle="_bottleInCrudModal" OnValidSubmit="ValidSubmitEditBottle" HeaderText="Edit DrinkBottle"/>
         }
 
     @if (_showChangeBottleModal && _selectedSlotId != null)
     {
-        <LeDrink.Web.Shared.Components.ChangeBottleModal BottleSlotId="_selectedSlotId" _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=OnValidBottleChangeSubmit/>
+        <LeDrink.Web.Shared.Components.ChangeBottleModal BottleSlotId="_selectedSlotId" _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
     }
     </div>
 </div>
 
 
 @code{
-    private List<Drink> _favDrinks = new();
-    private List<Drink> _nonFavDrinks = new();
+    // Global Site Data
+    private List<Drink> _drinks = new();
     private List<Bottle> _allBottles = new();
 
+    /// <summary>
+    /// MODAL VALUES
+    /// </summary>
 
-    private bool _showDrinkModal { get; set; }
+    // Drink Modals
     private Drink _drinkInModal { get; set; }
-    private bool _drinkModalIsEdit { get; set; }
+    private bool _showEditDrinkModal { get; set; }
+    private bool _showCreateDrinkModal { get; set; }
 
+    // Edit Bottle Modal
+    // Create Bottle Modal
     private bool _showBottleCrudModal { get; set; }
     private Bottle _bottleInCrudModal { get; set; }
     private bool _bottleCrudModalIsEdit { get; set; }
 
-    // For Bottle changer Modal
+    // Change Slot Modal
     private bool _showChangeBottleModal { get; set; }
     private int _selectedSlotId { get; set; }
     private Bottle _chosenBottle = new();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -198,18 +220,14 @@
 
     private async Task LoadDrinks()
     {
-        // Load from repo
-        var _allDrinks = await _uow.DrinkRepo.GetDrinks();
+        // load drinks from repo
+        _drinks = await _uow.DrinkRepo.GetDrinks();
 
-        // Add mixes to drinks
-        foreach(var drink in _allDrinks)
-        {
-            drink.Mixes = await _uow.MixRepo.GetMixesFromDrinkId(drink.Id);
-        }
-
-        // Favourite status Loading
-        _favDrinks = _allDrinks.Where(d => d.IsFavourite == true).ToList();
-        _nonFavDrinks = _allDrinks.Where(d => d.IsFavourite == false).ToList();
+        // Add mixes to drinks (Note: now handled in repo)
+        //foreach(var drink in _allDrinks)
+        //{
+        //    drink.Mixes = await _uow.MixRepo.GetMixesFromDrinkId(drink.Id);
+        //}
     }
 
     private async Task LoadBottles()
@@ -225,21 +243,22 @@
         _showChangeBottleModal = true;
     }
 
-    private void EditDrink(int drinkId)
+    private void EditDrink(Drink drink)
     {
-        _drinkModalIsEdit = true;
-        _drinkInModal = _favDrinks.FirstOrDefault(x => x.Id == drinkId);
-        _showDrinkModal = true;
+        _drinkInModal = drink;
+        _showEditDrinkModal = true;
     }
 
     private void CreateDrink()
     {
-        _drinkModalIsEdit = false;
-        _drinkInModal = new();
-        _showDrinkModal = true;
+        _drinkInModal = new()
+        {
+            Mixes = new List<Mix>()
+        };
+        _showCreateDrinkModal = true;
     }
 
-    private async Task OnValidDrinkSubmitCreate(Drink drink)
+    private async Task ValidSubmitCreateDrink(Drink drink)
     {
         if(drink is null)
         {
@@ -250,11 +269,13 @@
         // Create new Drink
         await _uow.DrinkRepo.AddDrink(drink);
         await _uow.SaveChanges();
-        _showDrinkModal = false;
+        _showCreateDrinkModal = false;
         _drinkInModal = null;
+
+        await RefreshData();
     }
 
-    private async Task OnValidDrinkSubmitEdit(Drink drink)
+    private async Task ValidSubmitEditDrink(Drink drink)
     {
         if(drink is null)
         {
@@ -265,11 +286,13 @@
         // Update existing Drink
         await _uow.DrinkRepo.UpdateDrink(drink);
         await _uow.SaveChanges();
-        _showDrinkModal = false;
+        _showEditDrinkModal = false;
         _drinkInModal = null;
+
+        await RefreshData();
     }
 
-    private async Task OnValidBottleSubmitCreate(Bottle bottle)
+    private async Task ValidSubmitCreateBottle(Bottle bottle)
     {
         if(bottle is null)
         {
@@ -282,9 +305,11 @@
         await _uow.SaveChanges();
         _showBottleCrudModal = false;
         _bottleInCrudModal = null;
+
+        await RefreshData();
     }
 
-    private async Task OnValidBottleSubmitEdit(Bottle bottle)
+    private async Task ValidSubmitEditBottle(Bottle bottle)
     {
         if(bottle is null)
         {
@@ -297,11 +322,12 @@
         await _uow.SaveChanges();
         _showBottleCrudModal = false;
         _bottleInCrudModal = null;
+
+        await RefreshData();
     }
 
-    private async Task OnValidBottleChangeSubmit(Bottle bottle)
+    private async Task ValidSubmitSlotChange(Bottle bottle)
     {
-        
         if(bottle is null)
         {
             await CancelSubmit();
@@ -316,30 +342,43 @@
         _showChangeBottleModal = false;
         _chosenBottle = null;
         _selectedSlotId = 0;
+
+        await RefreshData();
     }
 
     private async Task CancelSubmit()
     {
-        _showDrinkModal = false;
+        _showCreateDrinkModal = false;
         _drinkInModal = null;
 
         _showBottleCrudModal = false;
         _bottleInCrudModal = null;
+
+        _showChangeBottleModal = false;
+        _chosenBottle = new();
+        _selectedSlotId = 0;
     }
 
 
-    private async Task FavDrink(int drinkId)
+    private async Task ToggleFavDrink(Drink drink)
     {
-        
+        drink.IsFavourite = !drink.IsFavourite;
+
+        await RefreshData();
     }
 
-    private async Task UnFavDrink(int drinkId)
+
+    private async Task RemoveDrink(Drink drink)
     {
-        
+        await _uow.DrinkRepo.RemoveDrink(drink);
+        await _uow.SaveChanges();
+
+        await RefreshData();
     }
 
-    private async Task RemoveDrink(int drinkId)
+    private async Task RefreshData()
     {
-        
+        await LoadBottles();
+        await LoadDrinks();
     }
 }

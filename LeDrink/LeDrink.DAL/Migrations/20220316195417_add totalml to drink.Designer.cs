@@ -3,6 +3,7 @@ using System;
 using LeDrink.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220316195417_add totalml to drink")]
+    partial class addtotalmltodrink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -115,6 +117,9 @@ namespace LeDrink.DAL.Migrations
                     b.Property<bool?>("IsFavourite")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("Price")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("Drinks");
@@ -125,28 +130,32 @@ namespace LeDrink.DAL.Migrations
                             Id = 1,
                             DrinkName = "VodkaBull",
                             ImgPath = "/images/drinks/template-cup-test.png",
-                            IsFavourite = true
+                            IsFavourite = true,
+                            Price = 20
                         },
                         new
                         {
                             Id = 3,
                             DrinkName = "Fantabull",
                             ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615",
-                            IsFavourite = false
+                            IsFavourite = false,
+                            Price = 15
                         },
                         new
                         {
                             Id = 4,
                             DrinkName = "VodkaCoke",
                             ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg",
-                            IsFavourite = true
+                            IsFavourite = true,
+                            Price = 35
                         },
                         new
                         {
                             Id = 2,
                             DrinkName = "Spezi",
                             ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
-                            IsFavourite = true
+                            IsFavourite = true,
+                            Price = 10
                         });
                 });
 

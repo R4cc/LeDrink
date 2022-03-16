@@ -1,0 +1,142 @@
+﻿@using LeDrink.DAL.Interfaces
+@using LeDrink.DAL.Models
+@inject IUnitOfWork _uow
+
+
+<AntDesign.Modal Title="Edit your Drink"
+       Visible="@_modalVisible"
+       OnOk="@OkSubmit"
+       OnCancel="@CancelModalSubmit">
+       <EditForm Model="@_drinkViewModel"
+       >
+            <div class="row">
+                    <div class="row">
+                        <div >
+                            <Title Level="4">Name</Title>
+                            <Input Placeholder="Enter a name..." style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
+                            <br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div >
+                            <Title Level="4">Image Path</Title>
+                            <Input Placeholder="Enter an Image URL..." style="width: 100%;" @bind-Value="@_drinkViewModel.ImgPath"  />
+                            <br />
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div>
+                            <br />
+                            <Title Level="2" >Drink Mixer</Title>
+                            <span>Configure your Ingredients!</span>
+                            <hr/>
+                        </div>
+                        <div class="container">
+                        @if(_drinkViewModel.TotalMl > 500)
+                        {
+                            <Alert Message="Mix amount is over 450ml!"  Type="@AlertType.Error" />
+                        }
+                        <!-- Mix settings -->
+                        @foreach(var mix in _drinkViewModel.Mixes)
+                        {
+                            <div class="row">
+                                <div>
+                                    <div>
+                                    @if(mix.Bottle is null)
+                                    {
+                                        <h3 style="float: left">Add Ingredient</h3>
+                                    }
+                                    else
+                                    {
+                                        <h3 style="float: left">@mix.Bottle.BottleName</h3>
+                                    }
+                                    <Button style="float: right;" Type="@AntDesign.ButtonType.Primary" Danger  @onclick="(() => RemoveMix(mix.Id))">
+                                        <Icon Type="delete" Theme="filled"/>
+                                    </Button>
+                                    </div>
+                                    <Select DataSource="@_bottles"
+                                            @bind-Value="@mix.Bottle"
+                                            LabelName="@nameof(_selectedBottle.BottleName)"
+                                            Placeholder="Select a Bottle">
+                                    </Select>
+                                </div>
+                                <div>
+                                    <RadzenLabel Text="Amount(ml)" />
+                                    <div style="width: 100%">
+                                        <AutoComplete @bind-Value="@((int)mix.Milliliters)" Options="@_templateMixValues"  Placeholder="Enter Ml Amount"/>
+                                    </div>
+                                    <br />
+                                </div>
+                                <br />
+                                <hr/>
+                            </div>
+                        }
+                        <AntDesign.Button  @onclick="AddMixToDrink" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round">
+                            <Icon Type="plus" Theme="filled"/> Add Ingredient
+                        </AntDesign.Button>
+                    </div>
+                    </div>
+            </div>
+        </EditForm>
+</AntDesign.Modal>
+
+@code {
+    [Parameter] public Drink _drink { get; set; } = new();
+    [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
+
+    // AutoComplete data
+    private List<string> _templateMixValues = new() {"25", "50", "100", "150", "200", "225",  "300", "450"};
+
+    // alert
+    private bool _alert = false;
+
+    // Modal Params
+    private bool _modalVisible;
+
+    public Drink _drinkViewModel { get; set; } = new();
+    private List<Bottle> _bottles { get; set; }
+    private Bottle _selectedBottle { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _bottles = await _uow.BottleRepo.GetBottles();
+        _drinkViewModel = _drink;
+        _modalVisible = true;
+    }
+
+    private async Task AddMixToDrink()
+    {
+        _drinkViewModel.Mixes.Add(new Mix
+            {
+                drinkId = _drinkViewModel.Id,
+                Milliliters = 0,
+                bottleId = 1
+        });
+    }
+
+    private async Task SetSelectedBottle(int bottleId)
+    {
+        _selectedBottle = await _uow.BottleRepo.GetBottle(bottleId);
+    }
+
+    // End Methods
+    private async Task OkSubmit()
+    {
+        _modalVisible = false;
+        await OnValidSubmit.InvokeAsync(_drinkViewModel);
+    }
+
+    private async Task CancelModalSubmit()
+    {
+        _modalVisible = false;
+        await OnValidSubmit.InvokeAsync(null);
+    }
+
+    private async Task RemoveMix(int mixId)
+    {
+        _drinkViewModel.Mixes.Remove(await _uow.MixRepo.GetMix(mixId));
+    }
+}
+

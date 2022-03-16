@@ -78,8 +78,6 @@
         _currentDrink = _favDrinks[_currentDrinkIndex];
     }
 
-
-
     private async Task SeedTestDrinks()
     {
         _favDrinks = new();
@@ -93,7 +91,7 @@
                         BottleName = "Coca Cola",
                         BottleSlotId = 1,
                     },
-                    Milliliters = 250d,
+                    Milliliters = 250,
                 });
 
             lst.Add(new Mix {
@@ -103,7 +101,7 @@
                         BottleName = "Fanta",
                         BottleSlotId = 2,
                     },
-                    Milliliters = 250d,
+                    Milliliters = 250,
                 });
 
             var drink = new Drink()
@@ -111,7 +109,6 @@
                     Id = i,
                     DrinkName = $"Spezi + {i}",
                     ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
-                    Price = 25,
                     Mixes = lst
             };
             _favDrinks.Add(drink);

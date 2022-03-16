@@ -10,7 +10,7 @@ namespace LeDrink.DAL.Models
         public int bottleId { get; set; }
         public Drink Drink { get; set; }
         public int drinkId { get; set; }
-        public double Milliliters { get; set; }
+        public int Milliliters { get; set; }
 
     }
 }

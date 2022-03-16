@@ -81,8 +81,7 @@ namespace LeDrink.DAL.Data
                 Id = 1,
                 DrinkName = "VodkaBull",
                 IsFavourite = true,
-                ImgPath = "https://media.kaufland.com/images/PPIM/AP_Content_1010/std.lang.all/54/80/Asset_1895480.jpg",
-                Price = 20
+                ImgPath = "/images/drinks/template-cup-test.png"
             };
 
             Drink Spezi = new Drink
@@ -90,8 +89,7 @@ namespace LeDrink.DAL.Data
                 Id = 2,
                 DrinkName = "Spezi",
                 IsFavourite = true,
-                ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
-                Price = 10
+                ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg"
             };
 
             Drink FantaBull = new Drink
@@ -99,8 +97,7 @@ namespace LeDrink.DAL.Data
                 Id = 3,
                 DrinkName = "Fantabull",
                 IsFavourite = false,
-                ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615",
-                Price = 15
+                ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615"
             };
 
             Drink VodkaCoke = new Drink
@@ -108,8 +105,7 @@ namespace LeDrink.DAL.Data
                 Id = 4,
                 DrinkName = "VodkaCoke",
                 IsFavourite = true,
-                ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg",
-                Price = 35
+                ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg"
             };
 
             // Seed Mixes

@@ -29,7 +29,7 @@ namespace LeDrink.DAL.Repos
 
         public async Task<List<Drink>> GetDrinks()
         {
-            return await _context.Drinks.ToListAsync();
+            return await _context.Drinks.Include(d => d.Mixes).ToListAsync();
         }
 
         public async Task RemoveDrink(Drink drink)

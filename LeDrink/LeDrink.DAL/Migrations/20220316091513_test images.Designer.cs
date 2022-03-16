@@ -3,6 +3,7 @@ using System;
 using LeDrink.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220316091513_test images")]
+    partial class testimages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -115,6 +117,9 @@ namespace LeDrink.DAL.Migrations
                     b.Property<bool?>("IsFavourite")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("Price")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("Drinks");
@@ -125,28 +130,32 @@ namespace LeDrink.DAL.Migrations
                             Id = 1,
                             DrinkName = "VodkaBull",
                             ImgPath = "/images/drinks/template-cup-test.png",
-                            IsFavourite = true
+                            IsFavourite = true,
+                            Price = 20
                         },
                         new
                         {
                             Id = 3,
                             DrinkName = "Fantabull",
                             ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615",
-                            IsFavourite = false
+                            IsFavourite = false,
+                            Price = 15
                         },
                         new
                         {
                             Id = 4,
                             DrinkName = "VodkaCoke",
                             ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg",
-                            IsFavourite = true
+                            IsFavourite = true,
+                            Price = 35
                         },
                         new
                         {
                             Id = 2,
                             DrinkName = "Spezi",
                             ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
-                            IsFavourite = true
+                            IsFavourite = true,
+                            Price = 10
                         });
                 });
 
@@ -156,8 +165,8 @@ namespace LeDrink.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Milliliters")
-                        .HasColumnType("INTEGER");
+                    b.Property<double>("Milliliters")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("bottleId")
                         .HasColumnType("INTEGER");
@@ -177,56 +186,56 @@ namespace LeDrink.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            Milliliters = 250,
+                            Milliliters = 250.0,
                             bottleId = 4,
                             drinkId = 4
                         },
                         new
                         {
                             Id = 8,
-                            Milliliters = 250,
+                            Milliliters = 250.0,
                             bottleId = 1,
                             drinkId = 4
                         },
                         new
                         {
                             Id = 1,
-                            Milliliters = 250,
+                            Milliliters = 250.0,
                             bottleId = 4,
                             drinkId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Milliliters = 250,
+                            Milliliters = 250.0,
                             bottleId = 1,
                             drinkId = 1
                         },
                         new
                         {
                             Id = 3,
-                            Milliliters = 250,
+                            Milliliters = 250.0,
                             bottleId = 2,
                             drinkId = 2
                         },
                         new
                         {
                             Id = 4,
-                            Milliliters = 250,
+                            Milliliters = 250.0,
                             bottleId = 1,
                             drinkId = 2
                         },
                         new
                         {
                             Id = 5,
-                            Milliliters = 300,
+                            Milliliters = 300.0,
                             bottleId = 2,
                             drinkId = 3
                         },
                         new
                         {
                             Id = 6,
-                            Milliliters = 200,
+                            Milliliters = 200.0,
                             bottleId = 3,
                             drinkId = 3
                         });
