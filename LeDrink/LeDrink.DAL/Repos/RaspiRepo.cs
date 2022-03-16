@@ -1,7 +1,6 @@
 ﻿using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Models;
 using System.Device.Gpio;
-using System.Diagnostics;
 
 namespace LeDrink.DAL.Repos
 {
@@ -28,16 +27,18 @@ namespace LeDrink.DAL.Repos
             controller.ClosePin(pin);
         }
 
-        public void ControlSlot(Slot slot, bool power)
+        public void ControlSlot(Slot slot, int milliliter)
         {
-            if (power)
-            {
-                StartPin((int)slot);
-            }
-            else
-            {
-                StopPin((int)slot);
-            }
+            FillSlot((int)slot, milliliter);
+        }
+
+        private void FillSlot(int pin, int milliliter)
+        {
+            StartPin(pin);
+
+            Task.Delay((milliliter / 25) * 1000).Wait();
+
+            StopPin(pin);
         }
     }
 }

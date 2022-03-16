@@ -4,6 +4,6 @@ namespace LeDrink.DAL.Interfaces
 {
     public interface IRaspiRepo
     {
-        void ControlSlot(Slot slot, bool power);
+        void ControlSlot(Slot slot, int milliliter);
     }
 }
