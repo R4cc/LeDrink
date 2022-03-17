@@ -62,9 +62,10 @@
                                     </Select>
                                 </div>
                                 <div>
+
                                     <RadzenLabel Text="Amount(ml)" />
                                     <div style="width: 100%">
-                                        <AutoComplete @bind-Value="@((int)mix.Milliliters)" Options="@_templateMixValues"  Placeholder="Enter Ml Amount"/>
+                                        <RadzenAutoComplete  Placeholder="Enter Ml Amount"/>
                                     </div>
                                     <br />
                                 </div>
@@ -84,9 +85,6 @@
 @code {
     [Parameter] public Drink _drink { get; set; } = new();
     [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
-
-    // AutoComplete data
-    private List<string> _templateMixValues = new() {"25", "50", "100", "150", "200", "225",  "300", "450"};
 
     // alert
     private bool _alert = false;

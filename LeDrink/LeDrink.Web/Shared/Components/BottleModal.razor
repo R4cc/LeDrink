@@ -4,7 +4,6 @@
        OnOk="@HandleOk"
        OnCancel="@HandleCancel"
        ConfirmLoading="@_confirmLoading">
-    
 </Modal>
 
 
@@ -29,12 +28,10 @@
         _visible = true;
     }
 
-
     private async Task HandleOk(MouseEventArgs e)
     {
         _confirmLoading = true;
         StateHasChanged();
-        await Task.Delay(1000);
         _visible = false;
         _confirmLoading = false;
     }

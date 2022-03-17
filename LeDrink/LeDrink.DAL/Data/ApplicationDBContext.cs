@@ -19,7 +19,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 1,
                 BottleName = "Coca Cola",
-                ImgPath = "/images/bottles/cocacola-1500ml.jpg",
+                ImgPath = "/images/bottles/CocaCola.png",
                 BottleSlotId = 1,
                 MaxMl = 1500,
                 CurrentMl = 1500
@@ -29,7 +29,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 2,
                 BottleName = "Fanta",
-                ImgPath = "/images/bottles/fanta-1500ml.jpg",
+                ImgPath = "/images/bottles/fanta.png",
                 BottleSlotId = 2,
                 MaxMl = 1500,
                 CurrentMl = 1500
@@ -39,7 +39,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 3,
                 BottleName = "RedBull",
-                ImgPath= "/images/bottles/redbull-250ml.jpg",
+                ImgPath= "/images/bottles/redbull.png",
                 BottleSlotId = 3,
                 MaxMl = 250,
                 CurrentMl = 250
@@ -49,7 +49,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 4,
                 BottleName = "Vodka",
-                ImgPath = "/images/bottles/vodka-700ml.jpg",
+                ImgPath = "/images/bottles/vodka_white.png",
                 BottleSlotId = 4,
                 MaxMl = 700,
                 CurrentMl = 700
@@ -59,7 +59,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 5,
                 BottleName = "Gin",
-                ImgPath = "/images/bottles/gin-700ml.jpg",
+                ImgPath = "/images/bottles/Gin.png",
                 BottleSlotId = null,
                 MaxMl = 700,
                 CurrentMl = 700
@@ -69,11 +69,42 @@ namespace LeDrink.DAL.Data
             {
                 Id = 6,
                 BottleName = "Orange Juice",
-                ImgPath = "/images/bottles/orangejuice-1000ml.jpg",
+                ImgPath = "/images/bottles/OrangeJuice.png",
                 BottleSlotId = null,
                 MaxMl = 1000,
                 CurrentMl = 1000
             };
+
+            Bottle Bacardi = new Bottle
+            {
+                Id = 7,
+                BottleName = "Bacardi",
+                ImgPath = "/images/bottles/Bacardi.png",
+                BottleSlotId = null,
+                MaxMl = 1000,
+                CurrentMl = 1000
+            };
+
+            Bottle Malibu = new Bottle
+            {
+                Id = 8,
+                BottleName = "Malibu",
+                ImgPath = "/images/bottles/Malibu.png",
+                BottleSlotId = null,
+                MaxMl = 1000,
+                CurrentMl = 1000
+            };
+
+            Bottle RedWine = new Bottle
+            {
+                Id = 9,
+                BottleName = "RedWine",
+                ImgPath = "/images/bottles/RedWine.png",
+                BottleSlotId = null,
+                MaxMl = 1000,
+                CurrentMl = 1000
+            };
+
 
             // Drink seeding
             Drink VodkaBull = new Drink
@@ -191,6 +222,9 @@ namespace LeDrink.DAL.Data
             modelBuilder.Entity<Bottle>().HasData(Vodka);
             modelBuilder.Entity<Bottle>().HasData(Gin);
             modelBuilder.Entity<Bottle>().HasData(OrangeJuice);
+            modelBuilder.Entity<Bottle>().HasData(Bacardi);
+            modelBuilder.Entity<Bottle>().HasData(Malibu);
+            modelBuilder.Entity<Bottle>().HasData(RedWine);
 
             // Drinks
             modelBuilder.Entity<Drink>().HasData(VodkaBull);

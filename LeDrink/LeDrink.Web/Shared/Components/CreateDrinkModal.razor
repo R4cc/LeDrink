@@ -102,7 +102,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _bottles = await _uow.BottleRepo.GetBottles();
+        _bottles = (await _uow.BottleRepo.GetBottles());
+
         _drinkViewModel = _drink;
         _modalVisible = true;
     }
@@ -119,7 +120,7 @@
 
     private async Task SetSelectedBottle(int bottleId)
     {
-        _selectedBottle = await _uow.BottleRepo.GetBottle(bottleId);
+        _selectedBottle = _bottles.FirstOrDefault(b => b.Id == bottleId);
     }
 
     // End Methods
