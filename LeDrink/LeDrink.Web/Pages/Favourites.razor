@@ -1,7 +1,8 @@
 ﻿@page "/favourites"
-
+@using LeDrink.DAL.Interfaces
 @using LeDrink.DAL.Models
 @using Blazorise.Animate
+@inject IUnitOfWork _uow
 
 <head>
     <link rel="stylesheet" href="/css/caro.css">
@@ -48,8 +49,13 @@
     {
         if (firstRender)
         {
-            await SeedTestDrinks();
+            await LoadDrinks();
         }
+    }
+
+    private async Task LoadDrinks()
+    {
+        _favDrinks = (await _uow.DrinkRepo.GetDrinks()).Where(d => d.IsFavourite == true).ToList();
     }
 
     private async Task LastCard()
@@ -78,42 +84,4 @@
         _currentDrink = _favDrinks[_currentDrinkIndex];
     }
 
-    private async Task SeedTestDrinks()
-    {
-        _favDrinks = new();
-        for(int i = 0; i <= 5; i++)
-        {
-            var lst = new List<Mix>();
-            lst.Add(new Mix {
-                    Bottle = new Bottle
-                    {
-                        Id = 1,
-                        BottleName = "Coca Cola",
-                        BottleSlotId = 1,
-                    },
-                    Milliliters = 250,
-                });
-
-            lst.Add(new Mix {
-                    Bottle = new Bottle
-                    {
-                        Id = 1,
-                        BottleName = "Fanta",
-                        BottleSlotId = 2,
-                    },
-                    Milliliters = 250,
-                });
-
-            var drink = new Drink()
-                {
-                    Id = i,
-                    DrinkName = $"Spezi + {i}",
-                    ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
-                    Mixes = lst
-            };
-            _favDrinks.Add(drink);
-        }
-        _currentDrinkIndex = 0;
-        _currentDrink = _favDrinks[_currentDrinkIndex];
-    }
 }
