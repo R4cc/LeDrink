@@ -16,21 +16,25 @@
         <div class="col-8">
             @if(_currentDrink != null)
             {
-		        <RadzenCard  style="width: 100%;">
-                <h3 class="h5">@_currentDrink.DrinkName</h3>
-                <div class="d-flex flex-row">
-                    <RadzenImage Path="@_currentDrink.ImgPath" Class="rounded-circle float-left mr-3" Style="width: 150px; height: 150px;" />
-                    <div>
-                        <div class="row">
-                            <div>Composition</div>
-                            @foreach(var mix in _currentDrink.Mixes)
-                            {
-                                <b>@(mix.Bottle.BottleName + ": " + mix.Milliliters + "ml")</b>
-                            }
+                <RadzenCard class="center" Style="width: 100%; height: 100%">
+                    <div class="d-flex align-items-center">
+                        <div class="image"> <RadzenImage Path="@_currentDrink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
+                        <div class="ml-3 w-100">
+                            <h4 class="mb-0 mt-0">@_currentDrink.DrinkName (@_currentDrink.TotalMl)  </h4>
+                            <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                                @foreach(var mix in _currentDrink.Mixes)
+                                {
+                                    <div class="d-flex flex-column"> <span class="articles">@mix.Bottle.BottleName</span> <span class="number1">@mix.Milliliters</span> </div>
+                                }
+                            </div>
+                            <div class="button mt-2 d-flex flex-row align-items-center">
+                            <Button @onclick="(() => MakeDrink(_currentDrink))" Type="@AntDesign.ButtonType.Primary" Class="w-100">
+                                MAKE DRINK
+                            </Button>
+                             </div>
                         </div>
                     </div>
-                </div>
-            </RadzenCard>
+                </RadzenCard>
             }
         </div>
         <div class="col-2">
@@ -50,6 +54,7 @@
         if (firstRender)
         {
             await LoadDrinks();
+            await NextCard();
         }
     }
 
@@ -81,7 +86,19 @@
             return;
         }
         _currentDrinkIndex++;
+
+        // Load bottles for mix
+        foreach(var mix in _favDrinks[_currentDrinkIndex].Mixes)
+        {
+            mix.Bottle = await _uow.BottleRepo.GetBottle(mix.bottleId);
+        }
+
+
         _currentDrink = _favDrinks[_currentDrinkIndex];
     }
-
+        
+    private async Task MakeDrink(Drink drink)
+    {
+        await _uow.RaspiRepo.MakeDrink(drink);
+    }
 }

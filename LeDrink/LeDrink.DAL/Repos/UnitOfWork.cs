@@ -16,7 +16,7 @@ namespace LeDrink.DAL.Repos
             _db = db;
         }
 
-        public IDrinkRepo DrinkRepo => _drinkRepo ?? new DrinkRepo(_db);
+        public IDrinkRepo DrinkRepo => _drinkRepo ?? new DrinkRepo(_db/*, RaspiRepo*/);
         public IBottleRepo BottleRepo => _bottleRepo ?? new BottleRepo(_db);
         public IRaspiRepo RaspiRepo => _raspiRepo ?? new RaspiRepo();
         public IMixRepo MixRepo => _mixRepo ?? new MixRepo(_db);

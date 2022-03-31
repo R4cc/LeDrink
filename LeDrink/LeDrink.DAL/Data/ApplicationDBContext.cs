@@ -29,7 +29,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 2,
                 BottleName = "Fanta",
-                ImgPath = "/images/bottles/fanta.png",
+                ImgPath = "/images/bottles/Fanta.png",
                 BottleSlotId = 2,
                 MaxMl = 1500,
                 CurrentMl = 1500
@@ -39,7 +39,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 3,
                 BottleName = "RedBull",
-                ImgPath= "/images/bottles/redbull.png",
+                ImgPath = "/images/bottles/RedBull.png",
                 BottleSlotId = 3,
                 MaxMl = 250,
                 CurrentMl = 250
@@ -49,7 +49,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 4,
                 BottleName = "Vodka",
-                ImgPath = "/images/bottles/vodka_white.png",
+                ImgPath = "/images/bottles/Vodka_white.png",
                 BottleSlotId = 4,
                 MaxMl = 700,
                 CurrentMl = 700

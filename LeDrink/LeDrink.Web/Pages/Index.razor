@@ -72,7 +72,7 @@
                                 <Icon Type="edit" Theme="fill"/>
                             </Button>
                             <Button @onclick="(() => MakeDrink(drink))" Type="@AntDesign.ButtonType.Primary" Class="w-100">
-                                <Icon Type="cup" Theme="fill"/>
+                                MAKE DRINK
                             </Button>
                              </div>
                         </div>
@@ -160,7 +160,6 @@
     </div>
 
 
-
     <!-- DRINK MODAL LOGIC-->
     @if (_showCreateDrinkModal && _drinkInModal != null)
     {
@@ -171,16 +170,19 @@
         <LeDrink.Web.Shared.Components.EditDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitEditDrink"/>
     }
 
+
     <!-- BOTTLE MODAL LOGIC-->
     @if (_showBottleCrudModal && _bottleInCrudModal != null && !_bottleCrudModalIsEdit)
     {
         <LeDrink.Web.Shared.Components.BottleModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitCreateBottle" HeaderText="Create Bottle"/>
     }
     @if (_showBottleCrudModal && _bottleInCrudModal != null && _bottleCrudModalIsEdit)
-        {
-            <LeDrink.Web.Shared.Components.BottleModal _selectedBottle="_bottleInCrudModal" OnValidSubmit="ValidSubmitEditBottle" HeaderText="Edit DrinkBottle"/>
-        }
+    {
+        <LeDrink.Web.Shared.Components.BottleModal _selectedBottle="_bottleInCrudModal" OnValidSubmit="ValidSubmitEditBottle" HeaderText="Edit DrinkBottle"/>
+    }
 
+
+    <!-- Change bottle in Slot -->
     @if (_showChangeBottleModal && _selectedSlotId != null)
     {
         <LeDrink.Web.Shared.Components.ChangeBottleModal BottleSlotId="_selectedSlotId" _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
@@ -193,10 +195,6 @@
     // Global Site Data
     private List<Drink> _drinks = new();
     private List<Bottle> _allBottles = new();
-
-    /// <summary>
-    /// MODAL VALUES
-    /// </summary>
 
     // Drink Modals
     private Drink _drinkInModal { get; set; }
@@ -217,21 +215,35 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadDrinks();
-        await LoadBottles();
+        await LoadActiveBottles();
+        await LoadAllDrinks();
     }
 
-    private async Task LoadDrinks()
+    /// --------------------------------------------
+    /// INITIALIZING (Loading, Refreshing)
+    /// --------------------------------------------
+
+    private async Task LoadAllDrinks()
     {
         // load drinks from repo
         _drinks = await _uow.DrinkRepo.GetDrinks();
     }
 
-    private async Task LoadBottles()
+    private async Task LoadActiveBottles()
     {
         _allBottles = (await _uow.BottleRepo.GetBottles())
                                 .OrderBy(b => b.BottleSlotId).ToList();
     }
+
+    private async Task RefreshData()
+    {
+        await LoadActiveBottles();
+        await LoadAllDrinks();
+    }    
+
+    /// --------------------------------------------
+    /// CRUD ACTIONS (Create, Remove, Update, etc.)
+    /// --------------------------------------------
 
     private async Task ChangeBottleInSlot(Bottle bottle)
     {
@@ -254,6 +266,31 @@
         };
         _showCreateDrinkModal = true;
     }
+
+    private async Task ToggleFavDrink(Drink drink)
+    {
+        drink.IsFavourite = !drink.IsFavourite;
+
+        await RefreshData();
+    }
+
+
+    private async Task RemoveDrink(Drink drink)
+    {
+        await _uow.DrinkRepo.RemoveDrink(drink);
+        await _uow.SaveChanges();
+
+        await RefreshData();
+    }
+
+    private async Task MakeDrink(Drink drink)
+    {
+        await _uow.RaspiRepo.MakeDrink(drink);
+    }
+
+    /// --------------------------------------------
+    /// COMPONENT SUBMIT HANDLERS
+    /// --------------------------------------------
 
     private async Task ValidSubmitCreateDrink(Drink drink)
     {
@@ -357,50 +394,5 @@
     }
 
 
-    private async Task ToggleFavDrink(Drink drink)
-    {
-        drink.IsFavourite = !drink.IsFavourite;
 
-        await RefreshData();
-    }
-
-
-    private async Task RemoveDrink(Drink drink)
-    {
-        await _uow.DrinkRepo.RemoveDrink(drink);
-        await _uow.SaveChanges();
-
-        await RefreshData();
-    }
-
-    private async Task RefreshData()
-    {
-        await LoadBottles();
-        await LoadDrinks();
-    }    
-
-    private async Task MakeDrink(Drink drink)
-    {
-        foreach(var mix in drink.Mixes)
-        {
-            switch (mix.Bottle.BottleSlotId)
-            {
-                case 1:
-                    _uow.RaspiRepo.ControlSlot(Slot.Slot1, mix.Milliliters);
-                    break;
-                case 2:
-                    _uow.RaspiRepo.ControlSlot(Slot.Slot2, mix.Milliliters);
-                    break;
-                case 3:
-                    _uow.RaspiRepo.ControlSlot(Slot.Slot3, mix.Milliliters);
-                    break;
-                case 4:
-                    _uow.RaspiRepo.ControlSlot(Slot.Slot4, mix.Milliliters);
-                    break;
-                default:
-                    break;
-            }
-            
-        }
-    }
 }

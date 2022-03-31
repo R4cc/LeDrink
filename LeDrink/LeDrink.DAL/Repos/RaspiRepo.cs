@@ -47,5 +47,30 @@ namespace LeDrink.DAL.Repos
             Task.Delay(Convert.ToInt32(0.016 * 100 * 1000)).Wait();
             StopPin(40);
         }
+
+        public async Task MakeDrink(Drink drink)
+        {
+            foreach (var mix in drink.Mixes)
+            {
+                switch (mix.Bottle.BottleSlotId)
+                {
+                    case 1:
+                        ControlSlot(Slot.Slot1, mix.Milliliters);
+                        break;
+                    case 2:
+                        ControlSlot(Slot.Slot2, mix.Milliliters);
+                        break;
+                    case 3:
+                        ControlSlot(Slot.Slot3, mix.Milliliters);
+                        break;
+                    case 4:
+                        ControlSlot(Slot.Slot4, mix.Milliliters);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        }
     }
 }

@@ -8,9 +8,9 @@
        OkButtonProps="new AntDesign.ButtonProps(){ Disabled = !_modalOkButtonEnabled }"
        Style="top: 30px">
         <div class="container">
-            <RadzenSteps Change=RefreshModalButtons>
+            <RadzenSteps Change=RefreshModalButtons SelectedIndex="@_stepsSelectedIndex" >
             <Steps>
-            <RadzenStepsItem Text="Bottle Selection">            
+            <RadzenStepsItem Text="Bottle Selection" >            
                  <div class="row" >
                     <Title Type="3">All Bottles</Title>
                     @foreach (var bottle in _allBottles)
@@ -109,6 +109,7 @@
     private bool _bottleSelected = false;
 
     private bool _modalOkButtonEnabled = false;
+    private int _stepsSelectedIndex = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,9 +124,9 @@
     // Executes on Bottle click
     private async Task ChooseBottle(Bottle bottle)
     {
+        _stepsSelectedIndex++;
         _selectedBottle = bottle;
         _bottleSelected = true;
-
     }
 
     private async Task HandleOk(MouseEventArgs e)
