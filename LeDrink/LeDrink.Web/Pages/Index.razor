@@ -124,35 +124,34 @@
     <!-- Other Drinks -->
    <div class="row" >
             <Title Type="3">Other Drinks</Title>
+            <div class="card-container">
             @foreach (var drink in _drinks.Where(b => b.IsFavourite == false))
             {
-                <div class="col-sm" style="min-width: 440px; max-width: 440px; margin-bottom: 30px;">
-                    <RadzenCard class="center" Style="width: 100%; height: 100%">
-                    <div class="d-flex align-items-center">
-                        <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /> </div>
+                    <RadzenCard class="center" Style="width: 100%; margin: 2%">
+                    <div class="d-flex ">
+                        <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
-                            <Button Class="float-right" style="margin-right: -15px; margin-top: -25px" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Star" @onclick="(() => ToggleFavDrink(drink))"/>
-                            <h4 class="mb-0 mt-0">@drink.DrinkName (@drink.TotalMl) </h4>
-                            
-                            <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Fill.Star" @onclick="(() => ToggleFavDrink(drink))"/>
+                            <h4>@drink.DrinkName</h4>
+                            <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
                                 @foreach(var mix in drink.Mixes)
                                 {
-                                    <div class="d-flex flex-column"> <span class="articles">@mix.Bottle.BottleName</span> <span class="number1">@mix.Milliliters</span> </div>
+                                    <div class=""> 
+                                        <a>@mix.Bottle.BottleName</a>
+                                        <a class="number1" style="float: right;">@mix.Milliliters @(" ml")</a> 
+                                    </div>
                                 }
                             </div>
-                            <div class="button mt-2 d-flex flex-row align-items-center">
-                            <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary"  Class="w-100">
-                                <Icon Type="edit" Theme="fill"/>
-                            </Button>
-                            <Button @onclick="(() => ToggleFavDrink(drink))" Type="@AntDesign.ButtonType.Primary" Class="w-100 ml-2">
-                                <Icon Type="star" Theme="outline"/>
-                            </Button>
-                             </div>
+                                <div style="margin-top: 5%">
+                                <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100 ">
+                                    Edit ✎
+                                </Button>
+                                </div>
                         </div>
                     </div>
                 </RadzenCard>
-                    </div>
             }
+        </div>
     </div>
 
 

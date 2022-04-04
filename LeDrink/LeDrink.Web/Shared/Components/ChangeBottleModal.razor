@@ -5,37 +5,48 @@
         OnOk="@HandleOk"
        OnCancel="@HandleCancel"
        ConfirmLoading="@_confirmLoading"
-       OkButtonProps="new AntDesign.ButtonProps(){ Disabled = !_modalOkButtonEnabled }">
-        <div class="container">
-            <RadzenSteps Change=RefreshModalButtons SelectedIndex="@_stepsSelectedIndex" >
+       OkButtonProps="new AntDesign.ButtonProps(){ Disabled = !_modalOkButtonEnabled }"
+        Style="top: 3rem">
+        < class="container" style="height: 35rem; width: 95%;">
+            <RadzenSteps Change=RefreshModalButtons SelectedIndex="@_stepsSelectedIndex" ShowStepsButtons=false stlye="width: 50%" hidden="hidden">
             <Steps>
-            <RadzenStepsItem Text="Bottle Selection" >            
+            <RadzenStepsItem Text="Bottle Selection" >
+                 <div class="row">
+                    <Title Type="3">Select your new Bottle!</Title>
+                 </div>
+                 <div class="row">
+                    <Button @onclick="CreateBottle" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100">
+                        + Create new Bottle
+                    </Button>
+                </div>
                  <div class="row" >
-                    <Title Type="3">All Bottles</Title>
+                    <div class="info-div">
                     <div class="card-container">
-                    @foreach (var bottle in _allBottles)
-                    {
-                        @if(bottle.BottleSlotId is null)
+                        @foreach (var bottle in _allBottles)
                         {
-                            <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")" 
-                                style="width: 46%; margin: 2%; cursor: pointer;"
-                                @onclick="(()=>ChooseBottle(bottle))">
-                                <div class="container" style="text-align: center;">
-                                    <div class="row">
-                                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover;" />
-                                        <br/>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h4 >@bottle.BottleName</h4> 
+                            @if(bottle.BottleSlotId is null)
+                            {
+                                <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")" 
+                                    style="width: 46%; margin: 2%; cursor: pointer;"
+                                    @onclick="(()=>ChooseBottle(bottle))">
+                                    <div class="container" style="text-align: center;">
+                                        <div class="row">
+                                            <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover;" />
+                                            <br/>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h4 >@bottle.BottleName</h4> 
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </RadzenCard>
+                                </RadzenCard>
+                            }
                         }
-                    }
+                        </div>
                     </div>
                 </div>
+
             <br/>
             </RadzenStepsItem>
             <RadzenStepsItem Text="Size Configuration" Disabled="@(!_bottleSelected)">            
@@ -79,6 +90,16 @@
             </RadzenSteps>
     </div>
 </Modal>
+<style>
+.info-div {
+  position: absolute;
+  width: 90%;
+  z-index: 10;
+  max-height: 40%;
+  overflow-y: scroll;
+}
+</style>
+
 
 @code{
     [Parameter] public int BottleSlotId { get; set; }
@@ -165,5 +186,10 @@
         {
             _selectedBottle.CurrentMl = _selectedBottle.MaxMl;
         }
+    }
+
+    private async Task CreateBottle()
+    {
+        throw new Exception();
     }
 }
