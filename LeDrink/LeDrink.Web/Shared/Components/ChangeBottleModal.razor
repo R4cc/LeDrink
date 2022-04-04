@@ -5,45 +5,43 @@
         OnOk="@HandleOk"
        OnCancel="@HandleCancel"
        ConfirmLoading="@_confirmLoading"
-       OkButtonProps="new AntDesign.ButtonProps(){ Disabled = !_modalOkButtonEnabled }"
-       Style="top: 30px">
+       OkButtonProps="new AntDesign.ButtonProps(){ Disabled = !_modalOkButtonEnabled }">
         <div class="container">
             <RadzenSteps Change=RefreshModalButtons SelectedIndex="@_stepsSelectedIndex" >
             <Steps>
             <RadzenStepsItem Text="Bottle Selection" >            
                  <div class="row" >
                     <Title Type="3">All Bottles</Title>
+                    <div class="card-container">
                     @foreach (var bottle in _allBottles)
                     {
                         @if(bottle.BottleSlotId is null)
                         {
-                            <div class="col-sm" style="margin-bottom: 5%">
                             <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")" 
-                                style="width: 100%; height: 100%; cursor: pointer;" 
+                                style="width: 46%; margin: 2%; cursor: pointer;"
                                 @onclick="(()=>ChooseBottle(bottle))">
-
                                 <div class="container" style="text-align: center;">
-                                        <br/>
                                     <div class="row">
                                         <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover;" />
-                                    </div>
                                         <br/>
+                                    </div>
                                     <div class="row">
-                                            <h4>@bottle.BottleName</h4> 
+                                        <div class="col-12">
+                                            <h4 >@bottle.BottleName</h4> 
+                                        </div>
                                     </div>
                                 </div>
                             </RadzenCard>
-                        </div>  
                         }
                     }
+                    </div>
                 </div>
-            <br/>
             <br/>
             </RadzenStepsItem>
             <RadzenStepsItem Text="Size Configuration" Disabled="@(!_bottleSelected)">            
                 <div class="row">
                 <div class="col">
-                    <Title Level="4">Bottle capacity (ml)</Title>
+                    <Title Level="4">What is the bottles size(ml)?</Title>
                     <AutoComplete @bind-Value="@_bottleMaxCapacityMl" Options="@_templateBottleSize"  Placeholder="Enter Ml Amount"/>
                 </div>
             </div>
@@ -51,19 +49,10 @@
             <div class="row">
                 <div class="col">
                     <div>
-                        <Title Level="4">Current level</Title>
-                        <RadioGroup @bind-Value="@_bottleIsFull" >
-                            <Radio Value="true">Full bottle</Radio>
-                            <Radio Value="false">Partially Full Bottle</Radio>
-                        </RadioGroup>
-                    @if(!_bottleIsFull)
-                    {
-                        <br/>
-                        <p>Fill Level (@(_bottleCurrentMlAmount) %)</p>
+                        <Title Level="4">How full(%) is the bottle?</Title>
                         <div>
-                            <RadzenSlider @bind-Value=@_bottleCurrentMlAmount TValue="int" Min="1" Max="100" Disabled=_bottleIsFull Class="w-100"/>
+                            <RadzenSlider @bind-Value=@_bottleCurrentMlAmount TValue="int" Step="10" Min="1" Max="100" Class="w-100"/>
                         </div>
-                    }
                     </div>
                 </div>
             </div>
@@ -102,7 +91,6 @@
     bool _confirmLoading = false;
 
     // Modal options to set
-    private bool _bottleIsFull = true;
     private List<string> _templateBottleSize = new() {"250", "330", "500", "700", "750", "1000", "1500"};
     private string _bottleMaxCapacityMl;
     private int _bottleCurrentMlAmount = 50;
@@ -168,9 +156,10 @@
         _selectedBottle.BottleSlotId = BottleSlotId;
         _selectedBottle.MaxMl = Convert.ToInt32(_bottleMaxCapacityMl);
 
-        if (!_bottleIsFull)
+        // Set Current ML amounts (depending on % full slider)
+        if (_bottleCurrentMlAmount != 100)
         {
-            _selectedBottle.CurrentMl = (int)_bottleCurrentMlAmount;
+            _selectedBottle.CurrentMl = (_selectedBottle.CurrentMl * (_bottleCurrentMlAmount / 100));
         }
         else
         {

@@ -1,7 +1,12 @@
-﻿.ant-btn-primary { 
-    background-color: #7A28CB;
+﻿.ant-btn-primary {
+    background-color: #0275d8;
 }
 
-.ant-btn-primary:hover {
-    background-color: #0E1428;
+    .ant-btn-primary:hover {
+        background-color: #0275d8;
+    }
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
 }

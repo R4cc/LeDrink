@@ -5,38 +5,32 @@
 
 <PageTitle>Lé Drink</PageTitle>
 
-<div class="container-fluid" >
-    <div style="margin-right: 10%; margin-left: 10%;">
-
+<div class="container">
 
 <!-- BOTTLES -->
     <div class="row" >
         <Title Type="1">Current Bottles in Machine</Title>
+        <div class="card-container">
         @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
         {
-        <div class="col-sm" style="margin-bottom: 5%">
-            <RadzenCard  style="width: 100%; height: 100%; cursor: pointer;" class="@(bottle.Id == _chosenBottle.Id ? "text-white border-success" : "")" @onclick="@(() => ChangeBottleInSlot(bottle))">
+            <RadzenCard style="width: 46%; cursor: pointer; margin: 2%" class="@(bottle.Id == _chosenBottle.Id ? "text-white border-success" : "")" @onclick="@(() => ChangeBottleInSlot(bottle))">
                 <div class="container" style="text-align: center;">
                     <div class="row">
                         <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
                     </div>
                         <br/>
                     <div class="row" style="justify-content: center">
-                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover; height: 50%; width: 50%" />
+                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover; height: auto; width: 85 %" />
                     </div>
                         <br/>
                     <div class="row">
                         <h4>@bottle.BottleName</h4> 
-                    </div>
-                    <div class="row">
                         <Text>@($"{bottle.MaxMl} / {bottle.CurrentMl}ml ")</Text>
-                        <br/>
-                        <br/>
                     </div>
                 </div>
-            </RadzenCard>
-        </div>  
+            </RadzenCard> 
         }
+    </div>
     </div>
 
 
@@ -52,34 +46,34 @@
     <div class="row" >
             <!-- Favourite Drinks -->
             <Title Type="3">Favourite Drinks</Title>
-            @foreach (var drink in _drinks.Where(b => b.IsFavourite == true))
+            <div class="card-container">
+            @foreach (var drink in _drinks.Where(b => b.IsFavourite == true)) 
             {
-                <div class="col-sm" style="width: 100%; height: 100%;  margin-bottom: 30px;">
-                    <RadzenCard class="center" Style="width: 100%; height: 100%">
-                    <div class="d-flex align-items-center">
+                    <RadzenCard class="center" Style="width: 100%; margin: 2%">
+                    <div class="d-flex ">
                         <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
-                            <Button Class="float-right" style="margin-right: -15px; margin-top: -25px" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Fill.Star" @onclick="(() => ToggleFavDrink(drink))"/>
-                            <h4 class="mb-0 mt-0">@drink.DrinkName (@drink.TotalMl)  </h4>
-                            <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Fill.Star" @onclick="(() => ToggleFavDrink(drink))"/>
+                            <h4>@drink.DrinkName</h4>
+                            <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
                                 @foreach(var mix in drink.Mixes)
                                 {
-                                    <div class="d-flex flex-column"> <span class="articles">@mix.Bottle.BottleName</span> <span class="number1">@mix.Milliliters</span> </div>
+                                    <div class=""> 
+                                        <a>@mix.Bottle.BottleName</a>
+                                        <a class="number1" style="float: right;">@mix.Milliliters @(" ml")</a> 
+                                    </div>
                                 }
                             </div>
-                            <div class="button mt-2 d-flex flex-row align-items-center">
-                            <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Class="w-100">
-                                <Icon Type="edit" Theme="fill"/>
-                            </Button>
-                            <Button @onclick="(() => MakeDrink(drink))" Type="@AntDesign.ButtonType.Primary" Class="w-100">
-                                MAKE DRINK
-                            </Button>
-                             </div>
+                                <div style="margin-top: 5%">
+                                <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100 ">
+                                    Edit ✎
+                                </Button>
+                                </div>
                         </div>
                     </div>
                 </RadzenCard>
-                    </div>
             }
+            </div>
     </div>
     
     <style>
@@ -116,6 +110,8 @@
 .number3 {
     font-weight: 500
 }
+
+
     </style>
 
 
@@ -187,7 +183,6 @@
     {
         <LeDrink.Web.Shared.Components.ChangeBottleModal BottleSlotId="_selectedSlotId" _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
     }
-    </div>
 </div>
 
 
