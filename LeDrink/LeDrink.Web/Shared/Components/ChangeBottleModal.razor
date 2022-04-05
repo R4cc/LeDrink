@@ -1,20 +1,28 @@
 ﻿@using LeDrink.DAL.Models
 
+@{
+    RenderFragment footer = @<Template>
+    <Button OnClick="@DecreaseSelectedIndex" Type=@AntDesign.ButtonType.Link Disabled=@(_stepsSelectedIndex <= 0)>Previous</Button>
+    <Button OnClick="@IncreaseSelectedIndex" Type=@AntDesign.ButtonType.Primary Disabled=@(!_bottleSelected)>
+        @(_stepsSelectedIndex >= 2 ? "Confirm" : "Next")
+    </Button>
+</Template>;
+}
+
 <Modal Title="@("Change bottle corresponding to SLOT " + BottleSlotId)"
        Visible="@_visible"
         OnOk="@HandleOk"
        OnCancel="@HandleCancel"
        ConfirmLoading="@_confirmLoading"
-       OkButtonProps="new AntDesign.ButtonProps(){ Disabled = !_modalOkButtonEnabled }"
-        Style="top: 3rem">
-        < class="container" style="height: 35rem; width: 95%;">
-            <RadzenSteps Change=RefreshModalButtons SelectedIndex="@_stepsSelectedIndex" ShowStepsButtons=false stlye="width: 50%" hidden="hidden">
-            <Steps>
-            <RadzenStepsItem Text="Bottle Selection" >
-                 <div class="row">
-                    <Title Type="3">Select your new Bottle!</Title>
+        Style="top: 3rem"
+        Footer=@footer>
+        <div class="container" style="height: 35rem; width: 95%;">
+            @if(_stepsSelectedIndex == 0){
+                <Title Level="4">Bottle Selection</Title>
+                 <div class="row" style="margin-bottom: 1rem;">
+                    <h4>Select your new Bottle!</h4>
                  </div>
-                 <div class="row">
+                 <div class="row" style="margin-bottom: 1.5rem; ">
                     <Button @onclick="CreateBottle" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100">
                         + Create new Bottle
                     </Button>
@@ -46,59 +54,60 @@
                         </div>
                     </div>
                 </div>
-
             <br/>
-            </RadzenStepsItem>
-            <RadzenStepsItem Text="Size Configuration" Disabled="@(!_bottleSelected)">            
-                <div class="row">
-                <div class="col">
-                    <Title Level="4">What is the bottles size(ml)?</Title>
-                    <AutoComplete @bind-Value="@_bottleMaxCapacityMl" Options="@_templateBottleSize"  Placeholder="Enter Ml Amount"/>
-                </div>
-            </div>
-            <br />
+            }
+        @if (_stepsSelectedIndex == 1)
+        {
+            <Title Level="2">Size Configuration</Title>
             <div class="row">
                 <div class="col">
-                    <div>
-                        <Title Level="4">How full(%) is the bottle?</Title>
-                        <div>
-                            <RadzenSlider @bind-Value=@_bottleCurrentMlAmount TValue="int" Step="10" Min="1" Max="100" Class="w-100"/>
-                        </div>
-                    </div>
+                    <h4>What is the bottles size(ml)?</h4>
+                    <AutoComplete @bind-Value="@_bottleMaxCapacityMl" Options="@_templateBottleSize" Placeholder="Enter Ml Amount"/>
+                </div>
+            </div>
+            <br/>
+             
+            <div class="row">
+                <div>
+                    <h4>How full is the bottle? (%)</h4>
+                    <Slider TValue="double" Step=10 @bind-Value=@_bottleCurrentMlAmount Min=0 Max=100 DefaultValue="50" TooltipPlacement="@Placement.Top" TipFormatter="(d) => tipFormatter(d)" Disabled=@(_bottleMaxCapacityMl is null)/>
+                </div>
+            </div>
+            <br/>
+            <br/>   
+        }
+            @if(_stepsSelectedIndex == 2)
+            {
+                <div class="container" style="text-align: center;">
+                <h1>Confirmation</h1>
+                <br/>
+                <div class="row">
+                    <RadzenImage Path="@_selectedBottle.ImgPath" Style="max-height: 350px; width: auto; display: block; margin-left: auto; margin-right: auto;"/>
+                </div>
+                    <br/>
+                <div class="row">
+                    <h1>@_selectedBottle.BottleName</h1> 
+                </div>
+                <div class="row">
+                    <h2>@($"{_selectedBottle.MaxMl}" + "/" + $"{_selectedBottle.CurrentMl}" + "ml")</h2> 
                 </div>
             </div>
             <br/>
             <br/>
-            </RadzenStepsItem>
-            <RadzenStepsItem Text="Confirmation" Disabled="@(!_bottleSelected || _bottleMaxCapacityMl is null)" >
-                <div class="container" style="text-align: center;">
-                    <div class="row">
-                        <RadzenImage Path="@_selectedBottle.ImgPath" style="height: 50%;"/>
-                    </div>
-                        <br/>
-                    <div class="row">
-                        <h2>@_selectedBottle.BottleName</h2> 
-                    </div>
-                    <div class="row">
-                        <h4>@($"{_selectedBottle.MaxMl}" + "/" + $"{_selectedBottle.CurrentMl}" + "ml")</h4> 
-                    </div>
-                </div>
-            <br/>
-            <br/>
-            </RadzenStepsItem>
-            </Steps>
-            </RadzenSteps>
+            }
     </div>
 </Modal>
+
 <style>
 .info-div {
   position: absolute;
   width: 90%;
-  z-index: 10;
-  max-height: 40%;
+  z-index: 20;
+  max-height: 60%;
   overflow-y: scroll;
 }
 </style>
+
 
 
 @code{
@@ -113,12 +122,21 @@
 
     // Modal options to set
     private List<string> _templateBottleSize = new() {"250", "330", "500", "700", "750", "1000", "1500"};
-    private string _bottleMaxCapacityMl;
-    private int _bottleCurrentMlAmount = 50;
+    private string _bottleMaxCapacityMl = null;
+    private double _bottleCurrentMlAmount = 100d;
     private bool _bottleSelected = false;
 
-    private bool _modalOkButtonEnabled = false;
+    private bool PrevBtnDisabled = true;
+    private bool NextBtnIsConfirmBtn = false;
+
     private int _stepsSelectedIndex = 0;
+    
+    // % Slider
+    string tipFormatter(double currentEdgeValue)
+    {
+        return $"{currentEdgeValue}%";
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -133,12 +151,11 @@
     // Executes on Bottle click
     private async Task ChooseBottle(Bottle bottle)
     {
-        _stepsSelectedIndex++;
         _selectedBottle = bottle;
         _bottleSelected = true;
     }
 
-    private async Task HandleOk(MouseEventArgs e)
+    private async Task HandleOk()
     {
         await RefreshSelectedBottle();
 
@@ -149,6 +166,7 @@
         _visible = false;
         _confirmLoading = false;
         _bottleSelected = false;
+        _stepsSelectedIndex = 0;
     }
 
     private async Task HandleCancel(MouseEventArgs e)
@@ -159,17 +177,7 @@
         StateHasChanged();
         _selectedBottle = null;
         _bottleSelected = false;
-    }
-    private async Task RefreshModalButtons()
-    {
-        if(_bottleSelected && _bottleMaxCapacityMl is not null)
-        {        
-            _modalOkButtonEnabled = true;
-        }
-        else
-        {
-            _modalOkButtonEnabled = false;
-        }
+        _stepsSelectedIndex = 0;
     }
 
     private async Task RefreshSelectedBottle()
@@ -180,7 +188,7 @@
         // Set Current ML amounts (depending on % full slider)
         if (_bottleCurrentMlAmount != 100)
         {
-            _selectedBottle.CurrentMl = (_selectedBottle.CurrentMl * (_bottleCurrentMlAmount / 100));
+            _selectedBottle.CurrentMl = (_selectedBottle.CurrentMl * ((int)_bottleCurrentMlAmount / 100));
         }
         else
         {
@@ -191,5 +199,25 @@
     private async Task CreateBottle()
     {
         throw new Exception();
+    }
+
+    private async Task IncreaseSelectedIndex()
+    {
+        if(_stepsSelectedIndex == 2)
+        {
+            await HandleOk();
+            return;
+        }
+        _stepsSelectedIndex++;
+    }    
+
+    private async Task DecreaseSelectedIndex()
+    {
+        if(_stepsSelectedIndex == 0)
+        {
+            return;
+        }
+
+        _stepsSelectedIndex--;
     }
 }

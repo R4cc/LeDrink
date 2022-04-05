@@ -13,7 +13,7 @@
         <div class="card-container">
         @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
         {
-            <RadzenCard style="width: 46%; cursor: pointer; margin: 2%" class="@(bottle.Id == _chosenBottle.Id ? "text-white border-success" : "")" @onclick="@(() => ChangeBottleInSlot(bottle))">
+            <RadzenCard style="width: 46%; cursor: pointer; margin: 2%" @onclick="@(() => ChangeBottleInSlot(bottle))">
                 <div class="container" style="text-align: center;">
                     <div class="row">
                         <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
@@ -32,17 +32,15 @@
         }
     </div>
     </div>
-
+    <br/>
+    <br/>
 
 <!-- DRINKS -->
     <div class="row" >
-        <div class="col">
-            <Title Type="1">Drinks</Title>
-            <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" @onclick="CreateDrink"> Add new Drink</Button>
-            <hr/>
-        </div>
+        <Title Type="1">Drinks</Title>
+        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink"> Add new Drink</Button>
     </div>
-
+    <hr/>
     <div class="row" >
             <!-- Favourite Drinks -->
             <Title Type="3">Favourite Drinks</Title>
@@ -367,6 +365,7 @@
         // Update drink
         await _uow.BottleRepo.UpdateBottle(_chosenBottle);
         await _uow.BottleRepo.UpdateBottle(bottle);
+        await _uow.SaveChanges();
         _showChangeBottleModal = false;
         _chosenBottle = null;
         _selectedSlotId = 0;
