@@ -3,12 +3,13 @@
 @inject IUnitOfWork _uow
 
 
-<AntDesign.Modal Title="Edit your Drink"
+<Modal Title="Edit your Drink"
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
-       OnCancel="@CancelModalSubmit">
-       <EditForm Model="@_drinkViewModel"
-       >
+       OnCancel="@CancelModalSubmit"
+        Style="top: 3rem">
+        <div class="container" style="height: 35rem; width: 95%;">
+       <EditForm Model="@_drinkViewModel">
             <div class="row">
                     <div class="row">
                         <div >
@@ -52,7 +53,7 @@
                                         <h3 style="float: left">@mix.Bottle.BottleName</h3>
                                     }
                                     <Button style="float: right;" Type="@AntDesign.ButtonType.Primary" Danger  @onclick="(() => RemoveMix(mix.Id))">
-                                        <Icon Type="delete" Theme="filled"/>
+                                        <RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/>
                                     </Button>
                                     </div>
                                     <Select DataSource="@_bottles"
@@ -61,8 +62,8 @@
                                             Placeholder="Select a Bottle">
                                     </Select>
                                 </div>
+                                <br/>
                                 <div>
-
                                     <RadzenLabel Text="Amount(ml)" />
                                     <div style="width: 100%">
                                         <RadzenAutoComplete  Placeholder="Enter Ml Amount"/>
@@ -80,7 +81,8 @@
                     </div>
             </div>
         </EditForm>
-</AntDesign.Modal>
+        </div>
+</Modal>
 
 @code {
     [Parameter] public Drink _drink { get; set; } = new();

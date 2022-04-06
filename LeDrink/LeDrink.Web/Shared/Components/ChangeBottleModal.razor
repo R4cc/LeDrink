@@ -69,13 +69,14 @@
              
             <div class="row">
                 <div>
-                    <h4>How full is the bottle? (%)</h4>
-                    <Slider TValue="double" Step=10 @bind-Value=@_bottleCurrentMlAmount Min=0 Max=100 DefaultValue="50" TooltipPlacement="@Placement.Top" TipFormatter="(d) => tipFormatter(d)" Disabled=@(_bottleMaxCapacityMl is null)/>
+                    <h4>How full is the bottle? @(_bottleCurrentFillPercentage)%</h4>
+                    <Slider TValue="double" Step=10 @bind-Value=@_bottleCurrentFillPercentage Min=0 Max=100 Disabled=@(_bottleMaxCapacityMl is null)/>
                 </div>
             </div>
             <br/>
             <br/>   
         }
+            @* CONFIRMATION *@
             @if(_stepsSelectedIndex == 2)
             {
                 <div class="container" style="text-align: center;">
@@ -89,7 +90,7 @@
                     <h1>@_selectedBottle.BottleName</h1> 
                 </div>
                 <div class="row">
-                    <h2>@($"{_selectedBottle.MaxMl}" + "/" + $"{_selectedBottle.CurrentMl}" + "ml")</h2> 
+                    <h2>@($"{_selectedBottle.CurrentMl}" + "/" + $"{_selectedBottle.MaxMl}" + "ml")</h2> 
                 </div>
             </div>
             <br/>
@@ -123,19 +124,13 @@
     // Modal options to set
     private List<string> _templateBottleSize = new() {"250", "330", "500", "700", "750", "1000", "1500"};
     private string _bottleMaxCapacityMl = null;
-    private double _bottleCurrentMlAmount = 100d;
+    private double _bottleCurrentFillPercentage = 50d;
     private bool _bottleSelected = false;
 
     private bool PrevBtnDisabled = true;
     private bool NextBtnIsConfirmBtn = false;
 
     private int _stepsSelectedIndex = 0;
-    
-    // % Slider
-    string tipFormatter(double currentEdgeValue)
-    {
-        return $"{currentEdgeValue}%";
-    }
 
 
     protected override async Task OnInitializedAsync()
@@ -158,7 +153,7 @@
     private async Task HandleOk()
     {
         await RefreshSelectedBottle();
-
+        await UpdateBottleSlotId();
         await OnValidSubmit.InvokeAsync(_selectedBottle);
 
         _confirmLoading = true;
@@ -171,29 +166,39 @@
 
     private async Task HandleCancel(MouseEventArgs e)
     {
-        await OnValidSubmit.InvokeAsync(null);
         _visible = false;
         _confirmLoading = false;
         StateHasChanged();
         _selectedBottle = null;
         _bottleSelected = false;
         _stepsSelectedIndex = 0;
+        await OnValidSubmit.InvokeAsync(null);
     }
 
     private async Task RefreshSelectedBottle()
     {
-        _selectedBottle.BottleSlotId = BottleSlotId;
         _selectedBottle.MaxMl = Convert.ToInt32(_bottleMaxCapacityMl);
 
         // Set Current ML amounts (depending on % full slider)
-        if (_bottleCurrentMlAmount != 100)
+        if(_stepsSelectedIndex != 2)
         {
-            _selectedBottle.CurrentMl = (_selectedBottle.CurrentMl * ((int)_bottleCurrentMlAmount / 100));
+            // Step not needed on this modal page
+            return;
         }
-        else
+        if (_bottleCurrentFillPercentage != 100)
         {
-            _selectedBottle.CurrentMl = _selectedBottle.MaxMl;
+            // Calculates the CurrentMl with the percentage full
+            double CurrentMl = (_selectedBottle.MaxMl * (int)_bottleCurrentFillPercentage / 100);
+            _selectedBottle.CurrentMl = (int)CurrentMl;
+            return;
         }
+
+        _selectedBottle.CurrentMl = _selectedBottle.MaxMl;
+    }
+
+    private async Task UpdateBottleSlotId()
+    {
+        _selectedBottle.BottleSlotId = BottleSlotId;
     }
 
     private async Task CreateBottle()
@@ -209,6 +214,7 @@
             return;
         }
         _stepsSelectedIndex++;
+        await RefreshSelectedBottle();
     }    
 
     private async Task DecreaseSelectedIndex()
@@ -217,7 +223,7 @@
         {
             return;
         }
-
         _stepsSelectedIndex--;
+        await RefreshSelectedBottle();
     }
 }

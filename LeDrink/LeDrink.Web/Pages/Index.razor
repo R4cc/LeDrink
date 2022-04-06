@@ -9,6 +9,7 @@
 
 <!-- BOTTLES -->
     <div class="row" >
+         <RadzenImage Path="big_logo.svg"  Style="width:50%; margin-top: 0.5rem; margin-bottom: 1.5rem;" />
         <Title Type="1">Current Bottles in Machine</Title>
         <div class="card-container">
         @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
@@ -25,7 +26,7 @@
                         <br/>
                     <div class="row">
                         <h4>@bottle.BottleName</h4> 
-                        <Text>@($"{bottle.MaxMl} / {bottle.CurrentMl}ml ")</Text>
+                        <Text>@($"{bottle.CurrentMl} / {bottle.MaxMl}ml ")</Text>
                     </div>
                 </div>
             </RadzenCard> 
@@ -38,7 +39,7 @@
 <!-- DRINKS -->
     <div class="row" >
         <Title Type="1">Drinks</Title>
-        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink"> Add new Drink</Button>
+        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink">+ Create a new Drink</Button>
     </div>
     <hr/>
     <div class="row" >
@@ -49,9 +50,9 @@
             {
                     <RadzenCard class="center" Style="width: 100%; margin: 2%">
                     <div class="d-flex ">
-                        <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
+                        <div class="image"><RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
-                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Fill.Star" @onclick="(() => ToggleFavDrink(drink))"/>
+                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Danger Shape="@ButtonShape.Circle" @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite" Style="margin-top: 1px;"/></Button>
                             <h4>@drink.DrinkName</h4>
                             <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
                                 @foreach(var mix in drink.Mixes)
@@ -73,51 +74,10 @@
             }
             </div>
     </div>
-    
-    <style>
-
-
-.stats {
-    background: #f2f5f8 !important;
-    color: #000 !important
-}
-
-.articles {
-    font-size: 10px;
-    color: #a1aab9
-}
-
-.number1 {
-    font-weight: 500
-}
-
-.followers {
-    font-size: 10px;
-    color: #a1aab9
-}
-
-.number2 {
-    font-weight: 500
-}
-
-.rating {
-    font-size: 10px;
-    color: #a1aab9
-}
-
-.number3 {
-    font-weight: 500
-}
-
-
-    </style>
-
 
     <br/>
     <hr />
     <br/>
-
-
 
     <!-- Other Drinks -->
    <div class="row" >
@@ -129,7 +89,7 @@
                     <div class="d-flex ">
                         <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
-                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Fill.Star" @onclick="(() => ToggleFavDrink(drink))"/>
+                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Danger @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite_border" Style="margin-top: 1px;"/></Button>
                             <h4>@drink.DrinkName</h4>
                             <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
                                 @foreach(var mix in drink.Mixes)
@@ -182,6 +142,39 @@
     }
 </div>
 
+    <style>
+.stats {
+    background: #f2f5f8 !important;
+    color: #000 !important
+}
+
+.articles {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number1 {
+    font-weight: 500
+}
+
+.followers {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number2 {
+    font-weight: 500
+}
+
+.rating {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number3 {
+    font-weight: 500
+}
+    </style>
 
 @code{
     // Global Site Data
@@ -382,8 +375,10 @@
         _bottleInCrudModal = null;
 
         _showChangeBottleModal = false;
-        _chosenBottle = new();
+        _chosenBottle = null;
         _selectedSlotId = 0;
+
+        await RefreshData();
     }
 
 
