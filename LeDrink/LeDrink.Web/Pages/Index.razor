@@ -60,16 +60,14 @@
                                     <div class=""> 
                                         <a>@mix.Bottle.BottleName</a>
                                         <a class="number1" style="float: right;">@mix.Milliliters @(" ml")</a> 
-                                    </div>
+                             </div>
                                 }
                             </div>
                                 <div style="margin-top: 5%">
-                                <Button @onclick="(() => ShowRemoveDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Danger Shape="@AntDesign.ButtonShape.Round" Class="w-50 ">
-                                    Delete <RadzenIcon Icon="delete_forever" />
-                                </Button>
-                                <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-50 ">
-                                    Edit ✎
-                                </Button>
+                                    <Button @onclick="(() => ShowRemoveDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%;margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
+                                    <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: right; width: auto;" Shape="@AntDesign.ButtonShape.Round">
+                                        Edit ✎
+                                    </Button>
                                 </div>
                         </div>
                     </div>
