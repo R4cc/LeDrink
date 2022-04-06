@@ -64,7 +64,10 @@
                                 }
                             </div>
                                 <div style="margin-top: 5%">
-                                <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100 ">
+                                <Button @onclick="(() => ShowRemoveDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Danger Shape="@AntDesign.ButtonShape.Round" Class="w-50 ">
+                                    Delete <RadzenIcon Icon="delete_forever" />
+                                </Button>
+                                <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-50 ">
                                     Edit ✎
                                 </Button>
                                 </div>
@@ -134,6 +137,11 @@
         <LeDrink.Web.Shared.Components.BottleModal _selectedBottle="_bottleInCrudModal" OnValidSubmit="ValidSubmitEditBottle" HeaderText="Edit DrinkBottle"/>
     }
 
+    <!-- Delete Confirmation Modal-->
+    @if (_showDrinkDeleteConfirmationModal)
+    {
+        <LeDrink.Web.Shared.Components.DeleteConfirmationModal ConfirmationMessage=@_deleteConfirmationMessage ConfirmationTitle=@_deleteConfirmationHeader OnConfirmationChange=ValidSubmitDeleteConfirmation/>
+    }
 
     <!-- Change bottle in Slot -->
     @if (_showChangeBottleModal && _selectedSlotId != null)
@@ -185,6 +193,13 @@
     private Drink _drinkInModal { get; set; }
     private bool _showEditDrinkModal { get; set; }
     private bool _showCreateDrinkModal { get; set; }
+
+    // Deletion confirmation Modal
+    private bool _showDrinkDeleteConfirmationModal { get; set; } = false;
+    private string _deleteConfirmationHeader { get; set; }
+    private string _deleteConfirmationMessage { get; set; }
+    private Drink _drinkToDelete { get; set; }
+
 
     // Edit Bottle Modal
     // Create Bottle Modal
@@ -268,6 +283,14 @@
         await RefreshData();
     }
 
+    private async Task ShowRemoveDrinkConfirmation(Drink drink)
+    {
+        _drinkToDelete = drink;
+        _deleteConfirmationHeader = "Delete Confirmation";
+        _deleteConfirmationMessage = $"Are you sure you want to delete {_drinkToDelete.DrinkName}?";
+        _showDrinkDeleteConfirmationModal = true;
+    }
+
     private async Task MakeDrink(Drink drink)
     {
         await _uow.RaspiRepo.MakeDrink(drink);
@@ -345,6 +368,20 @@
         await RefreshData();
     }
 
+    private async Task ValidSubmitDeleteConfirmation(bool isConfirmed)
+    {
+        if (isConfirmed)
+        {
+            await RemoveDrink(_drinkToDelete);
+        }
+
+        // Reset to defaults
+        _showDrinkDeleteConfirmationModal = false;
+        _deleteConfirmationHeader = null;
+        _deleteConfirmationMessage = null;
+        _drinkToDelete = null;
+    }
+
     private async Task ValidSubmitSlotChange(Bottle bottle)
     {
         if(bottle is null)
@@ -380,7 +417,4 @@
 
         await RefreshData();
     }
-
-
-
 }
