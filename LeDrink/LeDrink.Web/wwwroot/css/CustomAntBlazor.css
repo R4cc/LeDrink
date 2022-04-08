@@ -2,11 +2,47 @@
     background-color: #0275d8;
 }
 
-    .ant-btn-primary:hover {
-        background-color: #0275d8;
-    }
+.ant-btn-primary:hover {
+    background-color: #0275d8;
+}
 
 .card-container {
     display: flex;
     flex-wrap: wrap;
+}
+
+.stats {
+    background: #f2f5f8 !important;
+    color: #000 !important
+}
+
+.articles {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number1 {
+    font-weight: 500
+}
+
+.followers {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number2 {
+    font-weight: 500
+}
+
+.rating {
+    font-size: 10px;
+    color: #a1aab9
+}
+
+.number3 {
+    font-weight: 500
+}
+
+.bottom-spacing{
+    margin-bottom: 1em;
 }

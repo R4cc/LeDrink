@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using LeDrink.DAL.Interfaces
 @using LeDrink.DAL.Models
+@using LeDrink.Web.Shared.Components
+
 @inject IUnitOfWork _uow
 
 <PageTitle>Lé Drink</PageTitle>
@@ -36,7 +38,7 @@
     <br/>
     <br/>
 
-<!-- DRINKS -->
+    <!-- DRINKS -->
     <div class="row" >
         <Title Type="1">Drinks</Title>
         <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink">+ Create a new Drink</Button>
@@ -57,14 +59,14 @@
                             <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
                                 @foreach(var mix in drink.Mixes)
                                 {
-                                    <div class=""> 
+                                    <div> 
                                         <a>@mix.Bottle.BottleName</a>
                                         <a class="number1" style="float: right;">@mix.Milliliters @(" ml")</a> 
-                             </div>
+                                    </div>
                                 }
                             </div>
                                 <div style="margin-top: 5%">
-                                    <Button @onclick="(() => ShowRemoveDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%;margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
+                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%;margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
                                     <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: right; width: auto;" Shape="@AntDesign.ButtonShape.Round">
                                         Edit ✎
                                     </Button>
@@ -84,27 +86,28 @@
    <div class="row" >
             <Title Type="3">Other Drinks</Title>
             <div class="card-container">
-            @foreach (var drink in _drinks.Where(b => b.IsFavourite == false))
+            @foreach (var drink in _drinks.Where(b => b.IsFavourite == true)) 
             {
                     <RadzenCard class="center" Style="width: 100%; margin: 2%">
                     <div class="d-flex ">
-                        <div class="image"> <RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
+                        <div class="image"><RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
-                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Circle" Danger @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite_border" Style="margin-top: 1px;"/></Button>
+                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Danger Shape="@ButtonShape.Circle" @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite_border" Style="margin-top: 1px;"/></Button>
                             <h4>@drink.DrinkName</h4>
                             <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
                                 @foreach(var mix in drink.Mixes)
                                 {
-                                    <div class=""> 
+                                    <div> 
                                         <a>@mix.Bottle.BottleName</a>
                                         <a class="number1" style="float: right;">@mix.Milliliters @(" ml")</a> 
                                     </div>
                                 }
                             </div>
                                 <div style="margin-top: 5%">
-                                <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100 ">
-                                    Edit ✎
-                                </Button>
+                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%;margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
+                                    <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: right; width: auto;" Shape="@AntDesign.ButtonShape.Round">
+                                        Edit ✎
+                                    </Button>
                                 </div>
                         </div>
                     </div>
@@ -113,74 +116,30 @@
         </div>
     </div>
 
+    <!-- Drink modals -->
+    @if (_showCreateDrinkModal && _drinkInModal is not null)
+    {
+        <CreateDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitCreateDrink"/>
+    }
+    @if (_showEditDrinkModal && _drinkInModal is not null)
+    {
+        <EditDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitEditDrink"/>
+    }
 
-    <!-- DRINK MODAL LOGIC-->
-    @if (_showCreateDrinkModal && _drinkInModal != null)
-    {
-        <LeDrink.Web.Shared.Components.CreateDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitCreateDrink"/>
-    }
-    @if (_showEditDrinkModal && _drinkInModal != null)
-    {
-        <LeDrink.Web.Shared.Components.EditDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitEditDrink"/>
-    }
-
-
-    <!-- BOTTLE MODAL LOGIC-->
-    @if (_showBottleCrudModal && _bottleInCrudModal != null && !_bottleCrudModalIsEdit)
-    {
-        <LeDrink.Web.Shared.Components.BottleModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitCreateBottle" HeaderText="Create Bottle"/>
-    }
-    @if (_showBottleCrudModal && _bottleInCrudModal != null && _bottleCrudModalIsEdit)
-    {
-        <LeDrink.Web.Shared.Components.BottleModal _selectedBottle="_bottleInCrudModal" OnValidSubmit="ValidSubmitEditBottle" HeaderText="Edit DrinkBottle"/>
-    }
 
     <!-- Delete Confirmation Modal-->
     @if (_showDrinkDeleteConfirmationModal)
     {
-        <LeDrink.Web.Shared.Components.DeleteConfirmationModal ConfirmationMessage=@_deleteConfirmationMessage ConfirmationTitle=@_deleteConfirmationHeader OnConfirmationChange=ValidSubmitDeleteConfirmation/>
+        <DeleteConfirmationModal ConfirmationMessage=_deleteConfirmationMessage ConfirmationTitle=_deleteConfirmationHeader OnConfirmationChange=ValidSubmitDeleteConfirmation/>
     }
 
-    <!-- Change bottle in Slot -->
-    @if (_showChangeBottleModal && _selectedSlotId != null)
+    <!-- Slot Bottle changer Modal -->
+    @if (_showChangeBottleModal)
     {
-        <LeDrink.Web.Shared.Components.ChangeBottleModal BottleSlotId="_selectedSlotId" _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
+        <ChangeBottleModal BottleSlotId=_selectedSlotId _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
     }
 </div>
 
-    <style>
-.stats {
-    background: #f2f5f8 !important;
-    color: #000 !important
-}
-
-.articles {
-    font-size: 10px;
-    color: #a1aab9
-}
-
-.number1 {
-    font-weight: 500
-}
-
-.followers {
-    font-size: 10px;
-    color: #a1aab9
-}
-
-.number2 {
-    font-weight: 500
-}
-
-.rating {
-    font-size: 10px;
-    color: #a1aab9
-}
-
-.number3 {
-    font-weight: 500
-}
-    </style>
 
 @code{
     // Global Site Data
@@ -197,13 +156,6 @@
     private string _deleteConfirmationHeader { get; set; }
     private string _deleteConfirmationMessage { get; set; }
     private Drink _drinkToDelete { get; set; }
-
-
-    // Edit Bottle Modal
-    // Create Bottle Modal
-    private bool _showBottleCrudModal { get; set; }
-    private Bottle _bottleInCrudModal { get; set; }
-    private bool _bottleCrudModalIsEdit { get; set; }
 
     // Change Slot Modal
     private bool _showChangeBottleModal { get; set; }
@@ -281,7 +233,7 @@
         await RefreshData();
     }
 
-    private async Task ShowRemoveDrinkConfirmation(Drink drink)
+    private async Task ShowDeleteDrinkConfirmation(Drink drink)
     {
         _drinkToDelete = drink;
         _deleteConfirmationHeader = "Delete Confirmation";
@@ -332,40 +284,6 @@
         await RefreshData();
     }
 
-    private async Task ValidSubmitCreateBottle(Bottle bottle)
-    {
-        if(bottle is null)
-        {
-            await CancelSubmit();
-            return;
-        }
-
-        // Create new Drink
-        await _uow.BottleRepo.AddBottle(bottle);
-        await _uow.SaveChanges();
-        _showBottleCrudModal = false;
-        _bottleInCrudModal = null;
-
-        await RefreshData();
-    }
-
-    private async Task ValidSubmitEditBottle(Bottle bottle)
-    {
-        if(bottle is null)
-        {
-            await CancelSubmit();
-            return;
-        }
-
-        // Update existing Drink
-        await _uow.BottleRepo.UpdateBottle(bottle);
-        await _uow.SaveChanges();
-        _showBottleCrudModal = false;
-        _bottleInCrudModal = null;
-
-        await RefreshData();
-    }
-
     private async Task ValidSubmitDeleteConfirmation(bool isConfirmed)
     {
         if (isConfirmed)
@@ -405,9 +323,6 @@
     {
         _showCreateDrinkModal = false;
         _drinkInModal = null;
-
-        _showBottleCrudModal = false;
-        _bottleInCrudModal = null;
 
         _showChangeBottleModal = false;
         _chosenBottle = null;
