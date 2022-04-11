@@ -4,19 +4,15 @@
 @using Blazorise.Animate
 @inject IUnitOfWork _uow
 
-<head>
-    <link rel="stylesheet" href="/css/caro.css">
-</head>
-
-<div class="container" stlye="text-align: center;">
-    <div class="row" style="height: 100%">
+<div class="container" stlye="text-align: center; height: 320px;">
+    <div class="row" >
         <div class="col-2">
             <button class="btn btn-primary"  @onclick="LastCard">Last</button>
         </div>
         <div class="col-8" style="height: 100%">
             @if(_currentDrink != null)
             {
-                <RadzenCard Style="width: 100%;">
+                <RadzenCard Style="width: 100%; height: 100%">
                     <div class="d-flex ">
                         <div class="image"><RadzenImage Path="@_currentDrink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
@@ -30,9 +26,9 @@
                                     </div>
                                 }
                             </div>
-                                <div style="margin-top: 5%">
-                                    <Button @onclick="(() => MakeDrink(_currentDrink))" Type="@AntDesign.ButtonType.Primary" Style="width: 100%" Shape="@AntDesign.ButtonShape.Round">MAKE DRINK</Button>
-                                </div>
+                            <div style="margin-top: 5%">
+                                <Button @onclick="(() => MakeDrink(_currentDrink))" Type="@AntDesign.ButtonType.Primary" Style="width: 100%" Shape="@AntDesign.ButtonShape.Round">MAKE DRINK</Button>
+                            </div>
                         </div>
                     </div>
                 </RadzenCard>

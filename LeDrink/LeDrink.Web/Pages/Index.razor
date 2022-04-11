@@ -66,7 +66,7 @@
                                 }
                             </div>
                                 <div style="margin-top: 5%">
-                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%;margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
+                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%; margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
                                     <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: right; width: auto;" Shape="@AntDesign.ButtonShape.Round">
                                         Edit ✎
                                     </Button>
@@ -86,7 +86,7 @@
    <div class="row" >
             <Title Type="3">Other Drinks</Title>
             <div class="card-container">
-            @foreach (var drink in _drinks.Where(b => b.IsFavourite == true)) 
+            @foreach (var drink in _drinks.Where(b => b.IsFavourite != true )) 
             {
                     <RadzenCard class="center" Style="width: 100%; margin: 2%">
                     <div class="d-flex ">
@@ -119,24 +119,24 @@
     <!-- Drink modals -->
     @if (_showCreateDrinkModal && _drinkInModal is not null)
     {
-        <CreateDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitCreateDrink"/>
+        <CreateDrinkModal _drink=@_drinkInModal OnValidSubmit="ValidSubmitCreateDrink"/>
     }
     @if (_showEditDrinkModal && _drinkInModal is not null)
     {
-        <EditDrinkModal _drink="_drinkInModal" OnValidSubmit="ValidSubmitEditDrink"/>
+        <EditDrinkModal _drink=@_drinkInModal OnValidSubmit="ValidSubmitEditDrink"/>
     }
 
 
     <!-- Delete Confirmation Modal-->
     @if (_showDrinkDeleteConfirmationModal)
     {
-        <DeleteConfirmationModal ConfirmationMessage=_deleteConfirmationMessage ConfirmationTitle=_deleteConfirmationHeader OnConfirmationChange=ValidSubmitDeleteConfirmation/>
+        <DeleteConfirmationModal ConfirmationMessage=@_deleteConfirmationMessage ConfirmationTitle=@_deleteConfirmationHeader OnConfirmationChange=ValidSubmitDeleteConfirmation/>
     }
 
     <!-- Slot Bottle changer Modal -->
     @if (_showChangeBottleModal)
     {
-        <ChangeBottleModal BottleSlotId=_selectedSlotId _allBottles=_allBottles _selectedBottle=_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
+        <ChangeBottleModal BottleSlotId=@_selectedSlotId _allBottles=@_allBottles _selectedBottle=@_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
     }
 </div>
 
