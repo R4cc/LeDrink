@@ -3,7 +3,9 @@
 @using LeDrink.DAL.Models
 @using LeDrink.Web.Shared.Components
 
+@inject IStringLocalizer<Index> Loc
 @inject IUnitOfWork _uow
+
 
 <PageTitle>Lé Drink</PageTitle>
 
@@ -12,7 +14,7 @@
 <!-- BOTTLES -->
     <div class="row" >
          <RadzenImage Path="big_logo.svg"  Style="width:50%; margin-top: 0.5rem; margin-bottom: 1.5rem;" />
-        <Title Type="1">Current Bottles in Machine</Title>
+        <Title Type="1">@Loc["CurrentBottles"]</Title>
         <div class="card-container">
         @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
         {
@@ -41,12 +43,12 @@
     <!-- DRINKS -->
     <div class="row" >
         <Title Type="1">Drinks</Title>
-        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink">+ Create a new Drink</Button>
+        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink">@Loc["CreateDrink"]</Button>
     </div>
     <hr/>
     <div class="row" >
             <!-- Favourite Drinks -->
-            <Title Type="3">Favourite Drinks</Title>
+            <Title Type="3">@Loc["FavouriteDrinks"]</Title>
             <div class="card-container">
             @foreach (var drink in _drinks.Where(b => b.IsFavourite == true)) 
             {
@@ -79,7 +81,7 @@
                                 </div>
                                 <div class="d-flex flex-column" style="width: 50%;">
                                     <Button @onclick="(() => MakeDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Shape="@AntDesign.ButtonShape.Round">
-                                        MAKE DRINK
+                                        @Loc["MakeDrink"]
                                     </Button>
                                 </div>
                         </div>
@@ -94,7 +96,7 @@
 
     <!-- Other Drinks -->
    <div class="row" >
-            <Title Type="3">Other Drinks</Title>
+            <Title Type="3">@Loc["OtherDrinks"]</Title>
             <div class="card-container">
             @foreach (var drink in _drinks.Where(b => b.IsFavourite != true )) 
             {
@@ -127,7 +129,7 @@
                                 </div>
                                 <div class="d-flex flex-column" style="width: 50%;">
                                     <Button @onclick="(() => MakeDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Shape="@AntDesign.ButtonShape.Round">
-                                        MAKE DRINK
+                                        @Loc["MakeDrink"]
                                     </Button>
                                 </div>
                         </div>

@@ -29,6 +29,8 @@ builder.Services
     .AddBootstrapProviders()
     .AddFontAwesomeIcons();
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,5 +49,11 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+app.UseRequestLocalization(new RequestLocalizationOptions()
+    .AddSupportedCultures(new[] { "de-AT", "en-US" })
+    .AddSupportedUICultures(new[] { "de-AT", "en-US" })
+    .SetDefaultCulture("en-US"));
+    //.SetDefaultCulture("de-AT"));
 
 app.Run();

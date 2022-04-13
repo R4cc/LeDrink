@@ -1,12 +1,14 @@
 ﻿@using LeDrink.DAL.Models
 @using AntDesign
 
+@inject IStringLocalizer<DeleteConfirmationModal> Loc
+
 @{
     RenderFragment footer = @<Template>
         <Button Type="@AntDesign.ButtonType.Primary"
-                @onclick="() => OnConfirmationChange.InvokeAsync(false)">Cancel</Button>
+                @onclick="() => OnConfirmationChange.InvokeAsync(false)">@Loc["Cancel"]</Button>
         <Button Type="@AntDesign.ButtonType.Primary" Danger
-                @onclick="() => OnConfirmationChange.InvokeAsync(true)">Delete</Button>
+                @onclick="() => OnConfirmationChange.InvokeAsync(true)">@Loc["Delete"]</Button>
 </Template>;
 }
 

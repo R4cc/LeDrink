@@ -3,7 +3,10 @@
 @inject IUnitOfWork _uow
 
 
-<Modal Title="Edit your Drink"
+@inject IStringLocalizer<CreateDrinkModal> Loc
+
+
+<Modal Title="@Loc["EditDrink"]"
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
        OnCancel="@CancelModalSubmit"
@@ -15,15 +18,15 @@
                     <div class="row">
                         <div >
                             <Title Level="4">Name</Title>
-                            <Input Placeholder="Enter a name..." style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
+                            <Input Placeholder="@Loc["EnterName"]" style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
                             <br />
                         </div>
                     </div>
                     <div class="row">
                         <div >
                             <br />
-                            <Title Level="4">Image Path</Title>
-                            <Input Placeholder="Enter an Image URL..." style="width: 100%;" @bind-Value="@_drinkViewModel.ImgPath"  />
+                            <Title Level="4">@Loc["ImagePath"]</Title>
+                            <Input Placeholder="@Loc["EnterURL"]" style="width: 100%;" @bind-Value="@_drinkViewModel.ImgPath"  />
                             <br />
                         </div>
                     </div>
@@ -31,17 +34,17 @@
                     <div class="row">
                         <div>
                             <br />
-                            <Title Level="2" >Drink Ingredients</Title>
+                            <Title Level="2" >@Loc["ConfigIngredients"]</Title>
                         </div>
                         <div class="container">
 
                         <!-- Mix settings -->
                         <AntDesign.Button  @onclick="AddMixToDrink" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round">
-                            <span class="oi oi-plus"></span> Add Ingredient
+                            <span class="oi oi-plus"></span> @Loc["AddIngredient"]
                         </AntDesign.Button>
                         @if(_drinkViewModel.TotalMl > 500)
                         {
-                            <Alert Message="Mix amount is over 450ml!"  Type="@AlertType.Error" />
+                            <Alert Message="@Loc["MixAmount"]"  Type="@AlertType.Error" />
                         }
 
                         <div class="row" >
@@ -57,12 +60,12 @@
                                         <Select DataSource="@_bottles"
                                                 @bind-Value="@mix.Bottle"
                                                 LabelName="@nameof(_selectedBottle.BottleName)"
-                                                Placeholder="Select a Bottle">
+                                                Placeholder="@Loc["SelectBottle"]">
                                         </Select>
                                     </div>
                                     <br/>
                                     <div>
-                                        <RadzenLabel Text="Amount(ml)" />
+                                        <RadzenLabel Text="@Loc["Amount"]" />
                                         <div style="width: 100%">
                                             <RadzenAutoComplete  Placeholder="Enter Ml Amount" Style="width: 80%"/>
                                             <Button @onclick="(() => RemoveMix(mix.Id))" Type="@AntDesign.ButtonType.Primary" Ghost Danger><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
