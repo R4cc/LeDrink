@@ -23,7 +23,7 @@
                     </div>
                         <br/>
                     <div class="row" style="justify-content: center">
-                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover; height: auto; width: 85 %" />
+                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover; height: auto; width: 85%" />
                     </div>
                         <br/>
                     <div class="row">
@@ -51,12 +51,12 @@
             @foreach (var drink in _drinks.Where(b => b.IsFavourite == true)) 
             {
                     <RadzenCard class="center" Style="width: 100%; margin: 2%">
-                    <div class="d-flex ">
+                    <div class="d-flex flex-row">
                         <div class="image"><RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
-                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Danger Shape="@ButtonShape.Circle" @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite" Style="margin-top: 1px;"/></Button>
-                            <h4>@drink.DrinkName</h4>
-                            <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
+                            <Button style="position:absolute; top:0; right:0; margin-right: 3%; margin-top: 3%" Type="@AntDesign.ButtonType.Primary" Danger Shape="@ButtonShape.Circle" @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite" Style="margin-top: 1px;"/></Button>
+                            <h2 style="font-weight: bold;">@drink.DrinkName</h2>
+                            <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats">
                                 @foreach(var mix in drink.Mixes)
                                 {
                                     <div> 
@@ -65,14 +65,24 @@
                                     </div>
                                 }
                             </div>
-                                <div style="margin-top: 5%">
-                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%; margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
-                                    <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: right; width: auto;" Shape="@AntDesign.ButtonShape.Round">
-                                        Edit ✎
+                        </div>
+                        </div>
+                        <hr/>
+                        <div class="d-flex flex-row" style="width: 100%; ">
+                                <div class="d-flex flex-column" style="width: 25%">
+                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
+                                </div>
+                                <div class="d-flex flex-column left-right-margin" style="width: 25%">
+                                    <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Shape="@AntDesign.ButtonShape.Round">
+                                        <span class="oi oi-pencil"></span> 
+                                    </Button>
+                                </div>
+                                <div class="d-flex flex-column" style="width: 50%;">
+                                    <Button @onclick="(() => MakeDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Shape="@AntDesign.ButtonShape.Round">
+                                        MAKE DRINK
                                     </Button>
                                 </div>
                         </div>
-                    </div>
                 </RadzenCard>
             }
             </div>
@@ -89,12 +99,12 @@
             @foreach (var drink in _drinks.Where(b => b.IsFavourite != true )) 
             {
                     <RadzenCard class="center" Style="width: 100%; margin: 2%">
-                    <div class="d-flex ">
+                    <div class="d-flex flex-row">
                         <div class="image"><RadzenImage Path="@drink.ImgPath" Class="rounded-circle" Style="width:150px; height: 150px; object-fit:cover;" /></div>
                         <div class="ml-3 w-100">
-                            <Button style="position:absolute; top:0; right:0; margin-right: 2%; margin-top: 2%" Type="@AntDesign.ButtonType.Primary" Danger Shape="@ButtonShape.Circle" @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite_border" Style="margin-top: 1px;"/></Button>
-                            <h4>@drink.DrinkName</h4>
-                            <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats" >
+                            <Button style="position:absolute; top:0; right:0; margin-right: 3%; margin-top: 3%" Type="@AntDesign.ButtonType.Primary" Danger Shape="@ButtonShape.Circle" @onclick="(() => ToggleFavDrink(drink))"><RadzenIcon Icon="favorite_border" Style="margin-top: 1px;"/></Button>
+                            <h2 style="font-weight: bold;">@drink.DrinkName</h2>
+                            <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats">
                                 @foreach(var mix in drink.Mixes)
                                 {
                                     <div> 
@@ -103,14 +113,24 @@
                                     </div>
                                 }
                             </div>
-                                <div style="margin-top: 5%">
-                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: left; width: 40%;margin-right: 2%" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
-                                    <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="float: right; width: auto;" Shape="@AntDesign.ButtonShape.Round">
-                                        Edit ✎
+                        </div>
+                        </div>
+                        <hr/>
+                        <div class="d-flex flex-row" style="width: 100%; ">
+                                <div class="d-flex flex-column" style="width: 25%">
+                                    <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
+                                </div>
+                                <div class="d-flex flex-column left-right-margin" style="width: 25%">
+                                    <Button @onclick="(() => EditDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Shape="@AntDesign.ButtonShape.Round">
+                                        <span class="oi oi-pencil"></span> 
+                                    </Button>
+                                </div>
+                                <div class="d-flex flex-column" style="width: 50%;">
+                                    <Button @onclick="(() => MakeDrink(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Shape="@AntDesign.ButtonShape.Round">
+                                        MAKE DRINK
                                     </Button>
                                 </div>
                         </div>
-                    </div>
                 </RadzenCard>
             }
         </div>

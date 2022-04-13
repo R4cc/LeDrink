@@ -19,7 +19,13 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/575c31ecc35a636b6f962cb71d53992552941a18982aae1c8e6c16305cc3761b/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LeDrink.DAL/Repos/RaspiRepo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LeDrink.DAL/Repos/DrinkRepo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LeDrink.DAL/Repos/UnitOfWork.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LeDrink.DAL/Interfaces/IUnitOfWork.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LeDrink.Web/Pages/Index.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LeDrink.Web/Shared/Components/EditDrinkModal.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LeDrink.DAL/Repos/MixRepo.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -29,19 +35,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.sourceCode",
-    "vue.rearranger.settings.migration": "true"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
   <component name="RunManager" selected=".NET Launch Settings Profile.LeDrink.Web">
     <configuration name="LeDrink.DAL: FolderProfile" type="DotNetMsBuildPublish" factoryName="Publish to IIS">
       <riderPublish publish_profile="FolderProfile.pubxml" pubxml_path="$PROJECT_DIR$/LeDrink.DAL/Properties/PublishProfiles/FolderProfile.pubxml" uuid_high="5266904684451742605" uuid_low="-4760801441047915752" />
@@ -83,8 +83,8 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue=".NET Launch Settings Profile.LeDrink.Web" />
       <item itemvalue=".NET Launch Settings Profile.LeDrink.Web: IIS Express" />
+      <item itemvalue=".NET Launch Settings Profile.LeDrink.Web" />
       <item itemvalue="Publish to IIS.LeDrink.DAL: FolderProfile" />
       <item itemvalue="Publish to IIS.LeDrink.Web: FolderProfile" />
     </list>
@@ -101,6 +101,9 @@
       <workItem from="1648717847254" duration="205000" />
       <workItem from="1648733823611" duration="253000" />
       <workItem from="1649082455035" duration="330000" />
+      <workItem from="1649683200943" duration="1835000" />
+      <workItem from="1649751658948" duration="95000" />
+      <workItem from="1649751903158" duration="1973000" />
     </task>
     <servers />
   </component>

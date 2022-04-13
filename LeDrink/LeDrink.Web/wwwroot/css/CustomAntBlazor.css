@@ -46,3 +46,8 @@
 .bottom-spacing{
     margin-bottom: 1em;
 }
+
+.left-right-margin{
+    margin-left: 2%;
+    margin-right: 2%;
+}

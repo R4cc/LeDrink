@@ -39,14 +39,17 @@ namespace LeDrink.DAL.Repos
             _context.Remove(mix);
         }
 
-        public async Task UpdateMix(Mix mix)
+        public Task UpdateMix(Mix mix)
         {
             _context.Update(mix);
+            return Task.CompletedTask;
         }
 
         public async Task<List<Mix>> GetMixesFromDrinkId(int drinkId)
         {
-            return _context.Mixes.Include(m => m.Bottle).Where(m => m.drinkId == drinkId).ToList();
+            return _context.Mixes.Include(m => m.Bottle)
+                .Where(m => m.drinkId == drinkId)
+                .ToList();
         }
     }
 }

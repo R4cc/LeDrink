@@ -22,7 +22,7 @@ namespace LeDrink.DAL.Repos
             await _context.AddAsync(drink);
         }
 
-        public async Task<Drink> GetDrink(int drinkId)
+        public async Task<Drink?> GetDrink(int drinkId)
         {
             return await _context.Drinks.FirstOrDefaultAsync(drink => drink.Id == drinkId);
         }
@@ -32,14 +32,16 @@ namespace LeDrink.DAL.Repos
             return await _context.Drinks.Include(d => d.Mixes).ToListAsync();
         }
 
-        public async Task RemoveDrink(Drink drink)
+        public Task RemoveDrink(Drink drink)
         {
             _context.Remove(drink);
+            return Task.CompletedTask;
         }
 
-        public async Task UpdateDrink(Drink drink)
+        public Task UpdateDrink(Drink drink)
         {
             _context.Update(drink);
+            return Task.CompletedTask;
         }
 
         

@@ -48,7 +48,7 @@ namespace LeDrink.DAL.Repos
             StopPin(40);
         }
 
-        public async Task MakeDrink(Drink drink)
+        public Task MakeDrink(Drink drink)
         {
             foreach (var mix in drink.Mixes)
             {
@@ -66,11 +66,11 @@ namespace LeDrink.DAL.Repos
                     case 4:
                         ControlSlot(Slot.Slot4, mix.Milliliters);
                         break;
-                    default:
-                        break;
                 }
 
             }
+
+            return Task.CompletedTask;
         }
     }
 }
