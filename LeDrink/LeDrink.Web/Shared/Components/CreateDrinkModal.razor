@@ -2,8 +2,10 @@
 @using LeDrink.DAL.Models
 @inject IUnitOfWork _uow
 
+@inject IStringLocalizer<CreateDrinkModal> Loc
 
-<AntDesign.Modal Title="Create a new Drink"
+
+<AntDesign.Modal Title="@Loc["CreateDrink"]"
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
        OnCancel="@CancelModalSubmit"
@@ -13,15 +15,15 @@
                     <div class="row">
                         <div >
                             <Title Level="4">Name</Title>
-                            <Input Placeholder="Enter a name..." style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
+                            <Input Placeholder="@Loc["EnterName"]" style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
                             <Rate Count=1 @bind-Value="_rating"/>
                             <br />
                         </div>
                     </div>
                     <div class="row">
                         <div >
-                            <Title Level="4">Image Path</Title>
-                            <Input Placeholder="Enter an Image URL..." style="width: 100%;" @bind-Value="@_drinkViewModel.ImgPath"  />
+                            <Title Level="4">@Loc["ImagePath"]</Title>
+                            <Input Placeholder="@Loc["EnterURL"]" style="width: 100%;" @bind-Value="@_drinkViewModel.ImgPath"  />
                             <br />
                         </div>
                     </div>
@@ -30,13 +32,13 @@
                         <div>
                             <br />
                             <Title Level="2" >Drink Mixer</Title>
-                            <span>Configure your Ingredients</span>
+                            <span>@Loc["ConfigIngredients"]</span>
                             <hr/>
                         </div>
                         <div class="container">
                         @if(_drinkViewModel.TotalMl > 500)
                         {
-                            <Alert Message="Mix amount is over 450ml!"  Type="@AlertType.Error" />
+                            <Alert Message="@Loc["MixAmount"]"  Type="@AlertType.Error" />
                         }
                         <!-- Mix settings -->
                         @foreach(var mix in _drinkViewModel.Mixes)
@@ -46,7 +48,7 @@
                                     <div>
                                     @if(mix.Bottle is null)
                                     {
-                                        <h3 style="float: left">Add Ingredient</h3>
+                                        <h3 style="float: left">@Loc["AddIngredient"]</h3>
                                     }
                                     else
                                     {
@@ -59,11 +61,11 @@
                                     <Select DataSource="@_bottles"
                                             @bind-Value="@mix.Bottle"
                                             LabelName="@nameof(_selectedBottle.BottleName)"
-                                            Placeholder="Select a Bottle">
+                                            Placeholder="@Loc["SelectBottle"]">
                                     </Select>
                                 </div>
                                 <div>
-                                    <RadzenLabel Text="Amount(ml)" />
+                                    <RadzenLabel Text="@Loc["Amount"]" />
                                     <div style="width: 100%">
                                         <AntDesign.InputNumber style="width: 100%" @bind-Value="mix.Milliliters" Min="1" Max="450" DefaultValue="100"/>
                                     </div>
@@ -74,7 +76,7 @@
                             </div>
                         }
                         <AntDesign.Button  @onclick="AddMixToDrink" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round">
-                            <Icon Type="plus" Theme="filled"/> Add Ingredient
+                            <Icon Type="plus" Theme="filled"/> @Loc["AddIngredient"]
                         </AntDesign.Button>
                     </div>
                     </div>

@@ -1,120 +1,123 @@
 ﻿@using LeDrink.DAL.Models
 
+@inject IStringLocalizer<ChangeBottleModal> Loc
+
 @{
     RenderFragment footer = @<Template>
-    <Button OnClick="@DecreaseSelectedIndex" Type=@AntDesign.ButtonType.Link Disabled=@(_stepsSelectedIndex <= 0)>Previous</Button>
-    <Button OnClick="@IncreaseSelectedIndex" Type=@AntDesign.ButtonType.Primary Disabled=@(!_bottleSelected)>
-        @(_stepsSelectedIndex >= 2 ? "Confirm" : "Next")
-    </Button>
-</Template>;
+        <Button OnClick="@DecreaseSelectedIndex" Type=@AntDesign.ButtonType.Link Disabled=@(_stepsSelectedIndex <= 0)>@Loc["Previous"]</Button>
+        <Button OnClick="@IncreaseSelectedIndex" Type=@AntDesign.ButtonType.Primary Disabled=@(!_bottleSelected)>
+            @(_stepsSelectedIndex >= 2 ? Loc["Confirm"] : Loc["Next"])
+        </Button>
+    </Template>;
 }
 
-<Modal Title="@("Change bottle corresponding to SLOT " + BottleSlotId)"
+<Modal Title="@(Loc["ChangeBottleSlot"] + " " + BottleSlotId)"
        Visible="@_visible"
-        OnOk="@HandleOk"
+       OnOk="@HandleOk"
        OnCancel="@HandleCancel"
        ConfirmLoading="@_confirmLoading"
-        Style="top: 3rem"
-        Footer=@footer
-        Class="fade">
-        <div class="container" style="height: 35rem; width: 95%;">
-            @if(_stepsSelectedIndex == 0){
-                <Title Level="4">Bottle Selection</Title>
-                 <div class="row" style="margin-bottom: 1rem;">
-                    <h4>Select your new Bottle!</h4>
-                 </div>
-                 <div class="row" style="margin-bottom: 1.5rem; ">
-                    <Button @onclick="CreateBottle" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100">
-                        + Create new Bottle
-                    </Button>
-                </div>
-                 <div class="row" >
-                    <div class="info-div">
+       Style="top: 3rem"
+       Footer=@footer
+       Class="fade">
+    <div class="container" style="height: 35rem; width: 95%;">
+        @if (_stepsSelectedIndex == 0)
+        {
+            <Title Level="4">@Loc["Selection"]</Title>
+            <div class="row" style="margin-bottom: 1rem;">
+                <h4>@Loc["SelectBottle"]</h4>
+            </div>
+            <div class="row" style="margin-bottom: 1.5rem; ">
+                <Button @onclick="CreateBottle" Type="@AntDesign.ButtonType.Primary" Shape="@AntDesign.ButtonShape.Round" Class="w-100">
+                    @Loc["CreateBottle"]
+                </Button>
+            </div>
+            <div class="row">
+                <div class="info-div">
                     <div class="card-container">
                         @foreach (var bottle in _allBottles)
                         {
-                            @if(bottle.BottleSlotId is null)
+                            @if (bottle.BottleSlotId is null)
                             {
-                                <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")" 
-                                    style="width: 46%; margin: 2%; cursor: pointer;"
-                                    @onclick="(()=>ChooseBottle(bottle))">
+                                <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")"
+                                style="width: 46%; margin: 2%; cursor: pointer;"
+                                @onclick="(()=>ChooseBottle(bottle))">
                                     <div class="container" style="text-align: center;">
                                         <div class="row">
                                             <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover;" />
-                                            <br/>
+                                            <br />
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
-                                                <h4 >@bottle.BottleName</h4> 
+                                                <h4>@bottle.BottleName</h4>
                                             </div>
                                         </div>
                                     </div>
                                 </RadzenCard>
                             }
                         }
-                        </div>
                     </div>
                 </div>
-            <br/>
-            }
+            </div>
+            <br />
+        }
         @if (_stepsSelectedIndex == 1)
         {
-            <Title Level="2">Size Configuration</Title>
+            <Title Level="2">@Loc["SizeConfig"]</Title>
             <div class="row">
                 <div class="col">
-                    <h4>What is the bottles size(ml)?</h4>
-                    <AutoComplete @bind-Value="@_bottleMaxCapacityMl" Options="@_templateBottleSize" Placeholder="Enter Ml Amount"/>
+                    <h4>@Loc["BottleSize"]</h4>
+                    <AutoComplete @bind-Value="@_bottleMaxCapacityMl" Options="@_templateBottleSize" Placeholder="@Loc["EnterML"]" />
                 </div>
             </div>
-            <br/>
-             
+            <br />
+
             <div class="row">
                 <div>
-                    <h4>How full is the bottle? @(_bottleCurrentFillPercentage)%</h4>
-                    <Slider TValue="double" Step=10 @bind-Value=@_bottleCurrentFillPercentage Min=0 Max=100 Disabled=@(_bottleMaxCapacityMl is null)/>
+                    <h4>@Loc["BottleFullness"] @(_bottleCurrentFillPercentage)%</h4>
+                    <Slider TValue="double" Step=10 @bind-Value=@_bottleCurrentFillPercentage Min=0 Max=100 Disabled=@(_bottleMaxCapacityMl is null) />
                 </div>
             </div>
-            <br/>
-            <br/>   
+            <br />
+            <br />
         }
-            @* CONFIRMATION *@
-            @if(_stepsSelectedIndex == 2)
-            {
-                <div class="container" style="text-align: center;">
-                <h1>Confirmation</h1>
-                <br/>
+        @* CONFIRMATION *@
+        @if (_stepsSelectedIndex == 2)
+        {
+            <div class="container" style="text-align: center;">
+                <h1>@Loc["Confirmation"]</h1>
+                <br />
                 <div class="row">
-                    <RadzenImage Path="@_selectedBottle.ImgPath" Style="max-height: 350px; width: auto; display: block; margin-left: auto; margin-right: auto;"/>
+                    <RadzenImage Path="@_selectedBottle.ImgPath" Style="max-height: 350px; width: auto; display: block; margin-left: auto; margin-right: auto;" />
                 </div>
-                    <br/>
+                <br />
                 <div class="row">
-                    <h1>@_selectedBottle.BottleName</h1> 
+                    <h1>@_selectedBottle.BottleName</h1>
                 </div>
                 <div class="row">
-                    <h2>@($"{_selectedBottle.CurrentMl}" + "/" + $"{_selectedBottle.MaxMl}" + "ml")</h2> 
+                    <h2>@($"{_selectedBottle.CurrentMl}" + "/" + $"{_selectedBottle.MaxMl}" + "ml")</h2>
                 </div>
             </div>
-            <br/>
-            <br/>
-            }
+            <br />
+            <br />
+        }
     </div>
 </Modal>
 
 <style>
 
     .info-div {
-  position: absolute;
-  width: 90%;
-  z-index: 20;
-  max-height: 60%;
-  overflow-y: scroll;
-}
+        position: absolute;
+        width: 90%;
+        z-index: 20;
+        max-height: 60%;
+        overflow-y: scroll;
+    }
 
 </style>
 
 
 
-@code{
+@code {
     [Parameter] public int BottleSlotId { get; set; }
     [Parameter] public Bottle _selectedBottle { get; set; }
     [Parameter] public List<Bottle> _allBottles { get; set; }
@@ -125,7 +128,7 @@
     bool _confirmLoading = false;
 
     // Modal options to set
-    private List<string> _templateBottleSize = new() {"250", "330", "500", "700", "750", "1000", "1500"};
+    private List<string> _templateBottleSize = new() { "250", "330", "500", "700", "750", "1000", "1500" };
     private string _bottleMaxCapacityMl = null;
     private double _bottleCurrentFillPercentage = 50d;
     private bool _bottleSelected = false;
@@ -183,7 +186,7 @@
         _selectedBottle.MaxMl = Convert.ToInt32(_bottleMaxCapacityMl);
 
         // Set Current ML amounts (depending on % full slider)
-        if(_stepsSelectedIndex != 2)
+        if (_stepsSelectedIndex != 2)
         {
             // Step not needed on this modal page
             return;
@@ -211,18 +214,18 @@
 
     private async Task IncreaseSelectedIndex()
     {
-        if(_stepsSelectedIndex == 2)
+        if (_stepsSelectedIndex == 2)
         {
             await HandleOk();
             return;
         }
         _stepsSelectedIndex++;
         await RefreshSelectedBottle();
-    }    
+    }
 
     private async Task DecreaseSelectedIndex()
     {
-        if(_stepsSelectedIndex == 0)
+        if (_stepsSelectedIndex == 0)
         {
             return;
         }
