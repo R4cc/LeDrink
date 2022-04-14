@@ -120,7 +120,7 @@ namespace LeDrink.DAL.Data
                 Id = 2,
                 DrinkName = "Spezi",
                 IsFavourite = true,
-                ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg"
+                ImgPath = "/images/drinks/template-cup-test.png"
             };
 
             Drink FantaBull = new Drink
@@ -128,15 +128,15 @@ namespace LeDrink.DAL.Data
                 Id = 3,
                 DrinkName = "Fantabull",
                 IsFavourite = false,
-                ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615"
+                ImgPath = "/images/drinks/template-cup-test.png"
             };
 
             Drink VodkaCoke = new Drink
             {
                 Id = 4,
                 DrinkName = "VodkaCoke",
-                IsFavourite = true,
-                ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg"
+                IsFavourite = false,
+                ImgPath = "/images/drinks/template-cup-test.png"
             };
 
             // Seed Mixes
@@ -158,7 +158,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 2,
                 bottleId = CocaCola.Id,
-                Milliliters = 250,
+                Milliliters = 200,
                 drinkId = 1
             });
 
@@ -167,7 +167,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 3,
                 bottleId = Fanta.Id,
-                Milliliters = 250,
+                Milliliters = 225,
                 drinkId = 2
             });
 
@@ -175,7 +175,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 4,
                 bottleId = CocaCola.Id,
-                Milliliters = 250,
+                Milliliters = 225,
                 drinkId = 2
             });
 
@@ -184,7 +184,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 5,
                 bottleId = Fanta.Id,
-                Milliliters = 300,
+                Milliliters = 250,
                 drinkId = 3
             });
 
@@ -201,7 +201,7 @@ namespace LeDrink.DAL.Data
             {
                 Id = 7,
                 bottleId = Vodka.Id,
-                Milliliters = 250,
+                Milliliters = 200,
                 drinkId = 4
             });
 

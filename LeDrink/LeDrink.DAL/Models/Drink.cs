@@ -10,9 +10,9 @@ namespace LeDrink.DAL.Models
         [Required, MinLength(2), MaxLength(100)]
         public string DrinkName { get; set; }
         public string? ImgPath { get; set; }
-        public ICollection<Mix> Mixes { get; set; }
-        public int TotalMl { get { 
-                int totalMl = 0;
+        public IList<Mix> Mixes { get; set; }
+        public int? TotalMl { get { 
+                int? totalMl = 0;
                 foreach(var mix in Mixes)
                 {
                     totalMl += mix.Milliliters;

@@ -14,7 +14,8 @@ builder.Services.AddAntDesign();
 
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<Radzen.DialogService>();
+builder.Services.AddScoped<Radzen.DialogService>();
+builder.Services.AddScoped<Radzen.NotificationService>();
 
 builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(options =>
 {

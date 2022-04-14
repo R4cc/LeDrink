@@ -139,11 +139,11 @@
     <!-- Drink modals -->
     @if (_showCreateDrinkModal && _drinkInModal is not null)
     {
-        <CreateDrinkModal _drink=@_drinkInModal OnValidSubmit="ValidSubmitCreateDrink"/>
+        <EditDrinkModal ModalTitle="Create a Drink" _drink=@_drinkInModal OnValidSubmit="ValidSubmitCreateDrink"/>
     }
     @if (_showEditDrinkModal && _drinkInModal is not null)
     {
-        <EditDrinkModal _drink=@_drinkInModal OnValidSubmit="ValidSubmitEditDrink"/>
+        <EditDrinkModal ModalTitle="Edit your Drink" _drink=@_drinkInModal OnValidSubmit="ValidSubmitEditDrink"/>
     }
 
 

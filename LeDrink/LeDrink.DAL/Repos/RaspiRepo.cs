@@ -55,16 +55,16 @@ namespace LeDrink.DAL.Repos
                 switch (mix.Bottle.BottleSlotId)
                 {
                     case 1:
-                        ControlSlot(Slot.Slot1, mix.Milliliters);
+                        ControlSlot(Slot.Slot1, (int)mix.Milliliters);
                         break;
                     case 2:
-                        ControlSlot(Slot.Slot2, mix.Milliliters);
+                        ControlSlot(Slot.Slot2, (int)mix.Milliliters);
                         break;
                     case 3:
-                        ControlSlot(Slot.Slot3, mix.Milliliters);
+                        ControlSlot(Slot.Slot3, (int)mix.Milliliters);
                         break;
                     case 4:
-                        ControlSlot(Slot.Slot4, mix.Milliliters);
+                        ControlSlot(Slot.Slot4, (int)mix.Milliliters);
                         break;
                 }
 

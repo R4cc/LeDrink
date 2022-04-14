@@ -1,82 +1,83 @@
 ﻿@using LeDrink.DAL.Interfaces
 @using LeDrink.DAL.Models
+@using System.Security.Policy
 @inject IUnitOfWork _uow
+@inject Radzen.NotificationService NotificationService
 
-
-<Modal Title="Edit your Drink"
+<Modal Title="@ModalTitle"
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
        OnCancel="@CancelModalSubmit"
-        Style="top: 3rem"
-        Class="fade">
-        <div class="container" style="height: 35rem; width: 95%;">
+        Style="top: 1rem"
+        Class="fade"> 
+        <div class="container" style="height: 38rem; width: 95%;">
        <EditForm Model="@_drinkViewModel">
             <div class="row">
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 1em;">
                         <div >
-                            <Title Level="4">Name</Title>
+                            <h3 class="fw-bold">Name</h3>
                             <Input Placeholder="Enter a name..." style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
-                            <br />
                         </div>
                     </div>
-                    <div class="row">
-                        <div >
-                            <br />
-                            <Title Level="4">Image Path</Title>
-                            <Input Placeholder="Enter an Image URL..." style="width: 100%;" @bind-Value="@_drinkViewModel.ImgPath"  />
-                            <br />
-                        </div>
+                    <div class="row" style="margin-bottom: 10.5em;">
+                            <h3 class="fw-bold">Image Picker</h3>
+                            <div class="info-div" style="max-height: 19%; margin-top: 1.95em;">
+                                    <div class="d-flex flex-wrap" style="width: 100%">
+                                        @foreach(var img in strFiles)
+                                        {
+                                            <div class="d-flex flex-column">
+                                                <img src="@img" style="height: 70px; width: auto; margin: 1%" @onclick=@(() => SetSelectedImage(@img)) class="@(_selectedImg == img ? "rcorners2" : "")"/>
+                                            </div>
+                                        }
+                                    </div>
+                            </div>
+                        <br />
                     </div>
-                    <br/>
-                    <div class="row">
-                        <div>
-                            <br />
-                            <Title Level="2" >Drink Ingredients</Title>
-                        </div>
-                        <div class="container">
+                    <div class="row" style="width: 100%">
+                        <div class="container" style="width: 100%">
+                       <div style="margin-bottom: 5px">
+                            <h3  class="fw-bold" style="margin-bottom: -2px">Drink Ingredients</h3> 
+                            <span style="@(_drinkViewModel.TotalMl >= 450 ? "color: red;" : "")">@(_drinkViewModel.TotalMl)</span> 
+                            <span>/ 450ml</span>
+                       </div>
 
                         <!-- Mix settings -->
-                        <AntDesign.Button  @onclick="AddMixToDrink" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round">
+                        <AntDesign.Button  @onclick="AddMixToDrink" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round" Disabled="@(_drinkViewModel.Mixes.Count >= 4)">
                             <span class="oi oi-plus"></span> Add Ingredient
                         </AntDesign.Button>
-                        @if(_drinkViewModel.TotalMl > 500)
-                        {
-                            <Alert Message="Mix amount is over 450ml!"  Type="@AlertType.Error" />
-                        }
 
-                        <div class="row" >
-                        <div class="info-div">
-                        <div class="card-container">
+                        <div class="row" style="margin-top: 5%">
+                        <div class="info-div" style="margin-left: 2%;">
+                        <div class="card-container" style="width: 99%">
                             @foreach(var mix in _drinkViewModel.Mixes)
                             {
                                 <div class="row">
-                                    <div>
-                                        <div>
-
-                                        </div>
+                                    <div style="margin-bottom: 2%; width: 100%;">
+                                        <RadzenLabel Text="Bottle" />
                                         <Select DataSource="@_bottles"
+                                                LabelName="@nameof(Bottle.BottleName)"
+                                                DefaultValue="@mix.Bottle"
                                                 @bind-Value="@mix.Bottle"
-                                                LabelName="@nameof(_selectedBottle.BottleName)"
-                                                Placeholder="Select a Bottle">
+                                                Placeholder="Select a Bottle..."
+                                                Style="width: 100%">
                                         </Select>
                                     </div>
-                                    <br/>
                                     <div>
                                         <RadzenLabel Text="Amount(ml)" />
                                         <div style="width: 100%">
-                                            <RadzenAutoComplete  Placeholder="Enter Ml Amount" Style="width: 80%"/>
-                                            <Button @onclick="(() => RemoveMix(mix.Id))" Type="@AntDesign.ButtonType.Primary" Ghost Danger><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
+                                            <Input Type="number" @bind-Value="@mix.Milliliters" Placeholder="Enter Ml Amount" Style="width: 80%" OnBlur=ValidateMlConditions />
+                                            <Button @onclick="(() => RemoveMix(mix.Id))" Type="@AntDesign.ButtonType.Primary" Style="width: 18%;" Ghost Danger><span class="oi oi-x"></span></Button>
                                         </div>
-                                        <br />
+                                        <hr/>
                                     </div>
-                                    <br />
                                 </div>
                             }
                             </div>
                         </div>
+
                     </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </EditForm>
         </div>
@@ -89,18 +90,21 @@
   position: absolute;
   width: 85%;
   z-index: 20;
-  max-height: 30%;
+  max-height: 35%;
   overflow-y: scroll;
+}
+
+    .rcorners2 {
+  border-radius: 10px;
+  border: 2px solid #73AD21;
 }
 
 </style>
 
 @code {
     [Parameter] public Drink _drink { get; set; } = new();
+    [Parameter] public string ModalTitle { get; set; }
     [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
-
-    // alert
-    private bool _alert = false;
 
     // Modal Params
     private bool _modalVisible;
@@ -109,21 +113,60 @@
     private List<Bottle> _bottles { get; set; }
     private Bottle _selectedBottle { get; set; }
 
+    /// <summary>
+    /// Image picker for drink
+    /// </summary>
+    private List<string> strFiles = new();
+    private string _selectedImg;
 
     protected override async Task OnInitializedAsync()
     {
-        _bottles = await _uow.BottleRepo.GetBottles();
         _drinkViewModel = _drink;
+
+        if(_drink.ImgPath is not null)
+        {
+            _selectedImg = _drink.ImgPath;
+        }
+
         _modalVisible = true;
+        await LoadImagesFromWWWRoot();
+        await LoadBottlesToSelectFrom();
+    }
+
+    private async Task LoadBottlesToSelectFrom()
+    {
+        _bottles = await _uow.BottleRepo.GetBottles();
+    }
+
+    private async Task LoadImagesFromWWWRoot()
+    {
+        //First get the directory on which your all your images reside
+        string strDirectory = "wwwroot/images/drinks";
+
+        //Get all files on the directory and store it on string array
+        strFiles = Directory.GetFiles(strDirectory).ToList();
+
+        strFiles = strFiles.Select(f => { f = f.Replace("wwwroot", "").Replace("\\", "/"); return f; }).ToList();
+
+        //Put initial image on top
+        strFiles.Remove(_selectedImg);
+        strFiles.Insert(0, _selectedImg);
+    }
+
+    private async Task SetSelectedImage(string imagePath)
+    {
+        _selectedImg = imagePath;
     }
 
     private async Task AddMixToDrink()
     {
-        _drinkViewModel.Mixes.Add(new Mix
+        await LoadBottlesToSelectFrom();
+
+        _drinkViewModel.Mixes.Insert(0, new Mix
             {
                 drinkId = _drinkViewModel.Id,
-                Milliliters = 0,
-                bottleId = 1
+                Milliliters = null,
+                bottleId = null
         });
     }
 
@@ -132,11 +175,15 @@
         _selectedBottle = await _uow.BottleRepo.GetBottle(bottleId);
     }
 
-    // End Methods
+    // Validation, Cancelation Methods
     private async Task OkSubmit()
     {
-        _modalVisible = false;
-        await OnValidSubmit.InvokeAsync(_drinkViewModel);
+        if(await ValidateMlConditions())
+        {
+            // inputs are all valid
+            _modalVisible = false;
+            await OnValidSubmit.InvokeAsync(_drinkViewModel);
+        }
     }
 
     private async Task CancelModalSubmit()
@@ -148,6 +195,49 @@
     private async Task RemoveMix(int mixId)
     {
         _drinkViewModel.Mixes.Remove(await _uow.MixRepo.GetMix(mixId));
+    }
+
+    /// <summary>
+    /// Validate if the drink that is being edited is valid
+    /// </summary>
+    /// <returns>If Drink values are valid</returns>
+    private async Task<bool> ValidateMlConditions()
+    {
+        if(_drinkViewModel.TotalMl > 450)
+        {
+            ShowError("Error: Total drink volume is greater than 450ml!");
+            return false;
+        }
+
+        if (_drinkViewModel.Mixes.Any(m => m.Milliliters <= 0))
+        {
+            ShowError("Error: Drink volume can't be 0!");
+            return false;
+        }
+
+        if(String.IsNullOrEmpty(_drinkViewModel.DrinkName))
+        {
+            ShowError("Error: Drink Name can't be empty!");
+            return false;
+        }
+
+        if(_drinkViewModel.Mixes.GroupBy(x => x).Any(x => x.Skip(1).Any()))
+        {
+            ShowError("Error: Drink can't have duplicate bottles!");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void ShowError(string Message)
+    {
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = Message, Duration = 4000 });
+    }
+
+    private double GetPercentageOf(int num1, int num2)
+    {
+        return (double)((_drinkViewModel.TotalMl / 450) * 100);
     }
 }
 

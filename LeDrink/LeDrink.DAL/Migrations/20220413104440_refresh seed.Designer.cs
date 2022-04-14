@@ -3,6 +3,7 @@ using System;
 using LeDrink.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220413104440_refresh seed")]
+    partial class refreshseed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -180,10 +182,10 @@ namespace LeDrink.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Milliliters")
+                    b.Property<int>("Milliliters")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("bottleId")
+                    b.Property<int>("bottleId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("drinkId")
@@ -201,7 +203,7 @@ namespace LeDrink.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            Milliliters = 200,
+                            Milliliters = 250,
                             bottleId = 4,
                             drinkId = 4
                         },
@@ -222,28 +224,28 @@ namespace LeDrink.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            Milliliters = 200,
+                            Milliliters = 250,
                             bottleId = 1,
                             drinkId = 1
                         },
                         new
                         {
                             Id = 3,
-                            Milliliters = 225,
+                            Milliliters = 250,
                             bottleId = 2,
                             drinkId = 2
                         },
                         new
                         {
                             Id = 4,
-                            Milliliters = 225,
+                            Milliliters = 250,
                             bottleId = 1,
                             drinkId = 2
                         },
                         new
                         {
                             Id = 5,
-                            Milliliters = 250,
+                            Milliliters = 300,
                             bottleId = 2,
                             drinkId = 3
                         },
@@ -260,7 +262,9 @@ namespace LeDrink.DAL.Migrations
                 {
                     b.HasOne("LeDrink.DAL.Models.Bottle", "Bottle")
                         .WithMany()
-                        .HasForeignKey("bottleId");
+                        .HasForeignKey("bottleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("LeDrink.DAL.Models.Drink", "Drink")
                         .WithMany("Mixes")
