@@ -18,7 +18,7 @@ namespace LeDrink.DAL.Models
                     totalMl += mix.Milliliters;
                 }
                 return totalMl;
-            } } 
-        public bool? IsFavourite { get; set; }
+            } }
+        public bool IsFavourite { get; set; } = false;
     }
 }

@@ -126,26 +126,26 @@
   <data name="ConfigIngredients" xml:space="preserve">
     <value>Wähle deine Zutaten</value>
   </data>
-  <data name="CreateDrink" xml:space="preserve">
-    <value>Neuen Drink erstellen</value>
-  </data>
   <data name="DrinkIngredients" xml:space="preserve">
     <value>Drink Zutaten</value>
   </data>
-  <data name="EditDrink" xml:space="preserve">
-    <value>Bearbeite deinen Drink</value>
+  <data name="DrinkNameEmptyError" xml:space="preserve">
+    <value>Error: Getränkename darf nicht leer sein!</value>
+  </data>
+  <data name="DrinkVolume0Error" xml:space="preserve">
+    <value>Error: Das Gesamtvolumen darf nicht 0 sein!</value>
+  </data>
+  <data name="DuplicateBottlesError" xml:space="preserve">
+    <value>Error: Das Getränk darf keine doppelten Flaschen haben!</value>
   </data>
   <data name="EnterName" xml:space="preserve">
     <value>Gib einen Namen ein...</value>
   </data>
-  <data name="EnterURL" xml:space="preserve">
-    <value>Gib eine Bild URL ein...</value>
+  <data name="IconPicker" xml:space="preserve">
+    <value>Suche ein Symbol aus</value>
   </data>
-  <data name="ImagePath" xml:space="preserve">
-    <value>Bild URL</value>
-  </data>
-  <data name="MixAmount" xml:space="preserve">
-    <value>Mix größe is über 450ml!</value>
+  <data name="OverMaxError" xml:space="preserve">
+    <value>Error: Das Gesamtvolumen des Getränks beträgt mehr als 450 ml!</value>
   </data>
   <data name="SelectBottle" xml:space="preserve">
     <value>Wähle eine Flasche aus</value>

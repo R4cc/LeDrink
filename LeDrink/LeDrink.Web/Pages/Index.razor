@@ -5,6 +5,8 @@
 
 @inject IStringLocalizer<Index> Loc
 @inject IUnitOfWork _uow
+@inject Radzen.NotificationService NotificationService
+
 
 
 <PageTitle>Lé Drink</PageTitle>
@@ -43,7 +45,7 @@
     <!-- DRINKS -->
     <div class="row" >
         <Title Type="1">Drinks</Title>
-        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink">@Loc["CreateDrink"]</Button>
+        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="CreateDrink"><span class="oi oi-plus"/> @Loc["CreateDrink"]</Button>
     </div>
     <hr/>
     <div class="row" >
@@ -61,16 +63,16 @@
                             <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats">
                                 @foreach(var mix in drink.Mixes)
                                 {
-                                    <div> 
+                                    <div class="@(mix.Bottle.BottleSlotId == null ? "rcornersRed" : "")"> 
                                         <a>@mix.Bottle.BottleName</a>
-                                        <a class="number1" style="float: right;">@mix.Milliliters @(" ml")</a> 
+                                        <a class="number1 @(mix.Milliliters > mix.Bottle.CurrentMl ? "redFont" : "")" style="float: right;">@mix.Milliliters @(" ml")</a> 
                                     </div>
                                 }
                             </div>
                         </div>
                         </div>
                         <hr/>
-                        <div class="d-flex flex-row" style="width: 100%; ">
+                        <div class="d-flex flex-row" style="width: 100%;">
                                 <div class="d-flex flex-column" style="width: 25%">
                                     <Button @onclick="(() => ShowDeleteDrinkConfirmation(drink))" Type="@AntDesign.ButtonType.Primary" Style="" Ghost Danger Shape="@AntDesign.ButtonShape.Round"><RadzenIcon Icon="delete_forever" Style="margin-top: 1px;"/></Button>
                                 </div>
@@ -109,7 +111,7 @@
                             <div class="p-2 mt-2 bg-primary justify-content-between rounded text-white stats">
                                 @foreach(var mix in drink.Mixes)
                                 {
-                                    <div> 
+                                    <div class=""> 
                                         <a>@mix.Bottle.BottleName</a>
                                         <a class="number1" style="float: right;">@mix.Milliliters @(" ml")</a> 
                                     </div>
@@ -141,11 +143,11 @@
     <!-- Drink modals -->
     @if (_showCreateDrinkModal && _drinkInModal is not null)
     {
-        <EditDrinkModal ModalTitle="Create a Drink" _drink=@_drinkInModal OnValidSubmit="ValidSubmitCreateDrink"/>
+        <DrinkModal ModalTitle="@Loc["CreateDrinkTitle"]" _drink=@_drinkInModal OnValidSubmit="ValidSubmitCreateDrink"/>
     }
     @if (_showEditDrinkModal && _drinkInModal is not null)
     {
-        <EditDrinkModal ModalTitle="Edit your Drink" _drink=@_drinkInModal OnValidSubmit="ValidSubmitEditDrink"/>
+        <DrinkModal ModalTitle="@Loc["EditDrinkTitle"]" _drink=@_drinkInModal OnValidSubmit="ValidSubmitEditDrink"/>
     }
 
 
@@ -265,6 +267,19 @@
 
     private async Task MakeDrink(Drink drink)
     {
+        // Validation and error reporting to user
+        if(drink.Mixes.Any(m => m.Bottle.BottleSlotId is null))
+        {
+            ShowError(Loc["BottleNotInMachineError"]);
+            return;
+        }
+
+        if(drink.Mixes.Any(m => m.Milliliters > m.Bottle.CurrentMl))
+        {
+            ShowError(Loc["BottleNotEnoughMlError"]);
+            return;
+        }
+
         await _uow.RaspiRepo.MakeDrink(drink);
     }
 
@@ -351,5 +366,10 @@
         _selectedSlotId = 0;
 
         await RefreshData();
+    }
+
+    private void ShowError(string Message)
+    {
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = Message, Duration = 4000 });
     }
 }

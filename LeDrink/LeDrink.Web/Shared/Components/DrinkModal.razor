@@ -3,8 +3,8 @@
 @using System.Security.Policy
 @inject IUnitOfWork _uow
 @inject Radzen.NotificationService NotificationService
+@inject IStringLocalizer<DrinkModal> Loc
 
-@inject IStringLocalizer<CreateDrinkModal> Loc
 <Modal Title="@ModalTitle"
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
@@ -17,17 +17,22 @@
                     <div class="row" style="margin-bottom: 1em;">
                         <div >
                             <h3 class="fw-bold">Name</h3>
-                            <Input Placeholder="Enter a name..." style="width: 100%;" @bind-Value="@_drinkViewModel.DrinkName"  />
+                            <div style="position: relative;">
+                                <Input Placeholder="@Loc["EnterName"]" style="width: 90%; " @bind-Value="@_drinkViewModel.DrinkName" Class="vertical-center"/>
+                                <Button Type="@AntDesign.ButtonType.Primary" Style=" margin-left: 2%;" Danger Shape="@ButtonShape.Circle" @onclick="(() => _drinkViewModel.IsFavourite = !_drinkViewModel.IsFavourite)" Class="vertical-center">
+                                    <RadzenIcon Icon="@(_drinkViewModel.IsFavourite ? "favorite" : "favorite_outline")"/>
+                                </Button>
+                            </div>
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: 10.5em;">
-                            <h3 class="fw-bold">Image Picker</h3>
+                            <h3 class="fw-bold">@Loc["IconPicker"]</h3>
                             <div class="info-div" style="max-height: 19%; margin-top: 1.95em;">
                                     <div class="d-flex flex-wrap" style="width: 100%">
                                         @foreach(var img in strFiles)
                                         {
                                             <div class="d-flex flex-column">
-                                                <img src="@img" style="height: 70px; width: auto; margin: 1%" @onclick=@(() => SetSelectedImage(@img)) class="@(_selectedImg == img ? "rcorners2" : "")"/>
+                                                <img src="@img" style="height: 6.5em; width: auto; margin: 1%" @onclick=@(() => SetSelectedImage(@img)) class="@(_selectedImg == img && img is not null ? "rcornersGreen" : "")"/>
                                             </div>
                                         }
                                     </div>
@@ -37,14 +42,14 @@
                     <div class="row" style="width: 100%">
                         <div class="container" style="width: 100%">
                        <div style="margin-bottom: 5px">
-                            <h3  class="fw-bold" style="margin-bottom: -2px">Drink Ingredients</h3> 
+                            <h3  class="fw-bold" style="margin-bottom: -2px">@Loc["DrinkIngredients"]</h3> 
                             <span style="@(_drinkViewModel.TotalMl >= 450 ? "color: red;" : "")">@(_drinkViewModel.TotalMl)</span> 
                             <span>/ 450ml</span>
                        </div>
 
                         <!-- Mix settings -->
                         <AntDesign.Button  @onclick="AddMixToDrink" Type="@AntDesign.ButtonType.Primary" Shape="@ButtonShape.Round" Disabled="@(_drinkViewModel.Mixes.Count >= 4)">
-                            <span class="oi oi-plus"></span> Add Ingredient
+                            <span class="oi oi-plus"></span> @Loc["AddIngredient"]
                         </AntDesign.Button>
 
                         <div class="row" style="margin-top: 5%">
@@ -75,7 +80,6 @@
                             }
                             </div>
                         </div>
-
                     </div>
                     </div>
                 </div>
@@ -95,17 +99,20 @@
   overflow-y: scroll;
 }
 
-    .rcorners2 {
-  border-radius: 10px;
-  border: 2px solid #73AD21;
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 </style>
 
 @code {
-    [Parameter] public Drink _drink { get; set; } = new();
-    [Parameter] public string ModalTitle { get; set; }
-    [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
+        [Parameter] public Drink _drink { get; set; } = new();
+        [Parameter] public string ModalTitle { get; set; }
+        [Parameter] public EventCallback<Drink> OnValidSubmit { get; set; }
 
     // Modal Params
     private bool _modalVisible;
@@ -157,6 +164,7 @@
     private async Task SetSelectedImage(string imagePath)
     {
         _selectedImg = imagePath;
+        _drinkViewModel.ImgPath = imagePath;
     }
 
     private async Task AddMixToDrink()
@@ -206,25 +214,25 @@
     {
         if(_drinkViewModel.TotalMl > 450)
         {
-            ShowError("Error: Total drink volume is greater than 450ml!");
+            ShowError(Loc["OverMaxError"]);
             return false;
         }
 
         if (_drinkViewModel.Mixes.Any(m => m.Milliliters <= 0))
         {
-            ShowError("Error: Drink volume can't be 0!");
+            ShowError(Loc["DrinkVolume0Error"]);
             return false;
         }
 
         if(String.IsNullOrEmpty(_drinkViewModel.DrinkName))
         {
-            ShowError("Error: Drink Name can't be empty!");
+            ShowError(Loc["DrinkNameEmptyError"]);
             return false;
         }
 
-        if(_drinkViewModel.Mixes.GroupBy(x => x).Any(x => x.Skip(1).Any()))
+        if((_drinkViewModel.Mixes.Select(m => m.Bottle).Count() != (_drinkViewModel.Mixes.Select(m => m.Bottle).Distinct().Count())))
         {
-            ShowError("Error: Drink can't have duplicate bottles!");
+            ShowError(Loc["DuplicateBottlesError"]);
             return false;
         }
 

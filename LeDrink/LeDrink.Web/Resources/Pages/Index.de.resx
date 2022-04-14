@@ -117,14 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BottleNotEnoughMlError" xml:space="preserve">
+    <value>Error: Eine oder Mehrere Flaschen haben einen zu niedrigen Füllstand um diesen Drink zu machen!</value>
+  </data>
+  <data name="BottleNotInMachineError" xml:space="preserve">
+    <value>Error: Eine oder mehrere Flaschen sind nicht in der Maschine um diesen Drink zu machen!</value>
+  </data>
   <data name="CreateDrink" xml:space="preserve">
-    <value>+ Neuen Drink erstellen</value>
+    <value>Neuen Drink erstellen</value>
+  </data>
+  <data name="CreateDrinkTitle" xml:space="preserve">
+    <value>Neuen Drink erstellen</value>
   </data>
   <data name="CurrentBottles" xml:space="preserve">
     <value>Flaschen in der Maschine</value>
   </data>
+  <data name="EditDrinkTitle" xml:space="preserve">
+    <value>Drink Bearbeiten</value>
+  </data>
   <data name="FavouriteDrinks" xml:space="preserve">
-    <value>Favorisierte Drinks</value>
+    <value>Favouriten</value>
   </data>
   <data name="MakeDrink" xml:space="preserve">
     <value>DRINK ERSTELLEN</value>
