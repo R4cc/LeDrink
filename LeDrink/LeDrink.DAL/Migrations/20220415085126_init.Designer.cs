@@ -11,13 +11,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220316195417_add totalml to drink")]
-    partial class addtotalmltodrink
+    [Migration("20220415085126_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
 
             modelBuilder.Entity("LeDrink.DAL.Models.Bottle", b =>
                 {
@@ -52,7 +52,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "Coca Cola",
                             BottleSlotId = 1,
                             CurrentMl = 1500,
-                            ImgPath = "/images/bottles/cocacola-1500ml.jpg",
+                            ImgPath = "/images/bottles/CocaCola.png",
                             MaxMl = 1500
                         },
                         new
@@ -61,7 +61,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "Fanta",
                             BottleSlotId = 2,
                             CurrentMl = 1500,
-                            ImgPath = "/images/bottles/fanta-1500ml.jpg",
+                            ImgPath = "/images/bottles/Fanta.png",
                             MaxMl = 1500
                         },
                         new
@@ -70,7 +70,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "RedBull",
                             BottleSlotId = 3,
                             CurrentMl = 250,
-                            ImgPath = "/images/bottles/redbull-250ml.jpg",
+                            ImgPath = "/images/bottles/RedBull.png",
                             MaxMl = 250
                         },
                         new
@@ -79,7 +79,7 @@ namespace LeDrink.DAL.Migrations
                             BottleName = "Vodka",
                             BottleSlotId = 4,
                             CurrentMl = 700,
-                            ImgPath = "/images/bottles/vodka-700ml.jpg",
+                            ImgPath = "/images/bottles/Vodka_white.png",
                             MaxMl = 700
                         },
                         new
@@ -87,7 +87,7 @@ namespace LeDrink.DAL.Migrations
                             Id = 5,
                             BottleName = "Gin",
                             CurrentMl = 700,
-                            ImgPath = "/images/bottles/gin-700ml.jpg",
+                            ImgPath = "/images/bottles/Gin.png",
                             MaxMl = 700
                         },
                         new
@@ -95,7 +95,31 @@ namespace LeDrink.DAL.Migrations
                             Id = 6,
                             BottleName = "Orange Juice",
                             CurrentMl = 1000,
-                            ImgPath = "/images/bottles/orangejuice-1000ml.jpg",
+                            ImgPath = "/images/bottles/OrangeJuice.png",
+                            MaxMl = 1000
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BottleName = "Bacardi",
+                            CurrentMl = 1000,
+                            ImgPath = "/images/bottles/Bacardi.png",
+                            MaxMl = 1000
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BottleName = "Malibu",
+                            CurrentMl = 1000,
+                            ImgPath = "/images/bottles/Malibu.png",
+                            MaxMl = 1000
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BottleName = "RedWine",
+                            CurrentMl = 1000,
+                            ImgPath = "/images/bottles/RedWine.png",
                             MaxMl = 1000
                         });
                 });
@@ -114,10 +138,7 @@ namespace LeDrink.DAL.Migrations
                     b.Property<string>("ImgPath")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool?>("IsFavourite")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("Price")
+                    b.Property<bool>("IsFavourite")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -130,32 +151,28 @@ namespace LeDrink.DAL.Migrations
                             Id = 1,
                             DrinkName = "VodkaBull",
                             ImgPath = "/images/drinks/template-cup-test.png",
-                            IsFavourite = true,
-                            Price = 20
+                            IsFavourite = true
                         },
                         new
                         {
                             Id = 3,
                             DrinkName = "Fantabull",
-                            ImgPath = "https://media.istockphoto.com/photos/fanta-red-bull-and-coca-cola-cans-picture-id458092615",
-                            IsFavourite = false,
-                            Price = 15
+                            ImgPath = "/images/drinks/template-cup-test.png",
+                            IsFavourite = false
                         },
                         new
                         {
                             Id = 4,
                             DrinkName = "VodkaCoke",
-                            ImgPath = "https://www.acouplecooks.com/wp-content/uploads/2020/12/Vodka-and-Coke-001.jpg",
-                            IsFavourite = true,
-                            Price = 35
+                            ImgPath = "/images/drinks/template-cup-test.png",
+                            IsFavourite = false
                         },
                         new
                         {
                             Id = 2,
                             DrinkName = "Spezi",
-                            ImgPath = "https://www.spezi.com/wp-content/uploads/thumbnail-logo-spezi-original.jpg",
-                            IsFavourite = true,
-                            Price = 10
+                            ImgPath = "/images/drinks/template-cup-test.png",
+                            IsFavourite = true
                         });
                 });
 
@@ -165,10 +182,10 @@ namespace LeDrink.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Milliliters")
+                    b.Property<int?>("Milliliters")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("bottleId")
+                    b.Property<int?>("bottleId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("drinkId")
@@ -186,7 +203,7 @@ namespace LeDrink.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            Milliliters = 250,
+                            Milliliters = 200,
                             bottleId = 4,
                             drinkId = 4
                         },
@@ -207,28 +224,28 @@ namespace LeDrink.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            Milliliters = 250,
+                            Milliliters = 200,
                             bottleId = 1,
                             drinkId = 1
                         },
                         new
                         {
                             Id = 3,
-                            Milliliters = 250,
+                            Milliliters = 225,
                             bottleId = 2,
                             drinkId = 2
                         },
                         new
                         {
                             Id = 4,
-                            Milliliters = 250,
+                            Milliliters = 225,
                             bottleId = 1,
                             drinkId = 2
                         },
                         new
                         {
                             Id = 5,
-                            Milliliters = 300,
+                            Milliliters = 250,
                             bottleId = 2,
                             drinkId = 3
                         },
@@ -245,9 +262,7 @@ namespace LeDrink.DAL.Migrations
                 {
                     b.HasOne("LeDrink.DAL.Models.Bottle", "Bottle")
                         .WithMany()
-                        .HasForeignKey("bottleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("bottleId");
 
                     b.HasOne("LeDrink.DAL.Models.Drink", "Drink")
                         .WithMany("Mixes")

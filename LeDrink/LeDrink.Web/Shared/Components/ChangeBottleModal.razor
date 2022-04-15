@@ -1,5 +1,4 @@
-﻿@using LeDrink.DAL.Models
-
+﻿@inject IUnitOfWork _uow
 @inject IStringLocalizer<ChangeBottleModal> Loc
 
 @{
@@ -103,6 +102,16 @@
     </div>
 </Modal>
 
+<!-- Bottle modals -->
+@if (_showCreateBottleModal && _bottleInModal is not null)
+{
+    <BottleModal ModalTitle="Create Bottle" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitCreateBottle/>
+}
+@if (_showEditBottleModal && _bottleInModal is not null)
+{
+    <BottleModal ModalTitle="Edit Bottle" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitEditBottle/>
+}
+
 <style>
 
     .info-div {
@@ -137,6 +146,11 @@
     private bool NextBtnIsConfirmBtn = false;
 
     private int _stepsSelectedIndex = 0;
+
+    // Bottle (Edit, Create) Modals
+    private Bottle _bottleInModal { get; set; }
+    private bool _showEditBottleModal { get; set; }
+    private bool _showCreateBottleModal { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -207,11 +221,6 @@
         _selectedBottle.BottleSlotId = BottleSlotId;
     }
 
-    private async Task CreateBottle()
-    {
-        throw new Exception();
-    }
-
     private async Task IncreaseSelectedIndex()
     {
         if (_stepsSelectedIndex == 2)
@@ -231,5 +240,64 @@
         }
         _stepsSelectedIndex--;
         await RefreshSelectedBottle();
+    }
+
+    // Edit, Create bottle modal controlls
+    private async Task EditBottle(Bottle bottle)
+    {
+        _bottleInModal = bottle;
+        _showEditBottleModal = true;
+    }
+
+    private async Task CreateBottle()
+    {
+        _bottleInModal = new();
+        _showCreateBottleModal = true;
+    }
+
+    private async Task ValidSubmitCreateBottle(Bottle bottle)
+    {
+        if(bottle is null)
+        {
+            await CancelSubmit();
+            return;
+        }
+
+        // Create new bottle
+        await _uow.BottleRepo.AddBottle(bottle);
+        await _uow.SaveChanges();
+        _showCreateBottleModal = false;
+        _bottleInModal = null;
+
+        await RefreshData();
+    }
+
+    private async Task ValidSubmitEditBottle(Bottle bottle)
+    {
+        if(bottle is null)
+        {
+            await CancelSubmit();
+            return;
+        }
+
+        // Update existing Drink
+        await _uow.BottleRepo.UpdateBottle(bottle);
+        await _uow.SaveChanges();
+        _showEditBottleModal = false;
+        _bottleInModal = null;
+
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        _allBottles = (await _uow.BottleRepo.GetBottles()).Where( b => b.BottleSlotId is null).ToList();
+    }
+
+    private async Task CancelSubmit()
+    {
+        _showCreateBottleModal = false;
+        _showEditBottleModal = false;
+        _bottleInModal = null;
     }
 }

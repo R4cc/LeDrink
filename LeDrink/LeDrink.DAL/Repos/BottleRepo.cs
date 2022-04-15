@@ -2,6 +2,7 @@
 using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace LeDrink.DAL.Repos
 {

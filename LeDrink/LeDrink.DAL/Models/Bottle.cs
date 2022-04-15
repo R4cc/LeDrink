@@ -1,4 +1,6 @@
-﻿namespace LeDrink.DAL.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace LeDrink.DAL.Models
 {
     public  class Bottle
     {

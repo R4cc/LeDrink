@@ -1,6 +1,5 @@
 ﻿using LeDrink.DAL.Models;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.WebRequestMethods;
 
 namespace LeDrink.DAL.Data
 {

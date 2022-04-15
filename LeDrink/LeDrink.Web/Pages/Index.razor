@@ -151,6 +151,8 @@
     }
 
 
+
+
     <!-- Delete Confirmation Modal-->
     @if (_showDrinkDeleteConfirmationModal)
     {
@@ -185,7 +187,6 @@
     private bool _showChangeBottleModal { get; set; }
     private int _selectedSlotId { get; set; }
     private Bottle _chosenBottle = new();
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -343,7 +344,7 @@
             return;
         }
 
-        _chosenBottle.BottleSlotId = null;
+        _chosenBottle = null;
 
         // Update drink
         await _uow.BottleRepo.UpdateBottle(_chosenBottle);
