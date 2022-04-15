@@ -12,10 +12,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
 
-
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<Radzen.DialogService>();
 builder.Services.AddScoped<Radzen.NotificationService>();
+builder.Services.AddScoped<IFileUpload, FileUpload>();
 
 builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(options =>
 {
