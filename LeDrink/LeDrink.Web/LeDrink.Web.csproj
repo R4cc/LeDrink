@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.10.4" />
+    <PackageReference Include="Blazor.ContextMenu" Version="1.13.0" />
     <PackageReference Include="BlazorInputFile" Version="0.2.0" />
     <PackageReference Include="Blazorise.Animate" Version="1.0.1" />
     <PackageReference Include="Blazorise.AntDesign" Version="1.0.1" />

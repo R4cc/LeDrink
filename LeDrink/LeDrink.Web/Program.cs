@@ -14,8 +14,10 @@ builder.Services.AddAntDesign();
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<Radzen.DialogService>();
+builder.Services.AddTransient<Radzen.ContextMenuService>();
 builder.Services.AddScoped<Radzen.NotificationService>();
 builder.Services.AddScoped<IFileUpload, FileUpload>();
+builder.Services.AddBlazorContextMenu();
 
 builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(options =>
 {

@@ -13,7 +13,6 @@
         Style="top: 1rem"
         Class="fade"> 
         <div class="container" style="height: 38rem; width: 95%;">
-       <EditForm Model="@_bottleViewModel">
             <div class="row">
                     <div class="row" style="margin-bottom: 1em;">
                         <div style="margin-bottom: 3%">
@@ -30,17 +29,20 @@
                                     <div class="d-flex flex-wrap" style="width: 100%">
                                         @foreach(var img in strFiles)
                                         {
-                                            <div class="d-flex flex-column" style="margin: 0.5em">
-                                                <img src="@img" style="height: 7.75em; width: auto; margin: 1%" @onclick=@(() => SetSelectedImage(@img)) class="@(_selectedImg == img && img is not null ? "rcornersGreen" : "")"/>
+                                            <div class="d-flex flex-column" style="margin: 0.5em" >
+                                                <ContextMenuTrigger MenuId="@img">
+                                                    <img src="@img" style="height: 7.75em; width: auto; margin: 1%" @onclick=@(() => SetSelectedImage(@img)) class="@(_selectedImg == img && img is not null ? "rcornersGreen" : "")" />
+                                                </ContextMenuTrigger>
                                             </div>
+                                            <BlazorContextMenu.ContextMenu Id="@img" >
+                                                <Item OnClick="@(() => RemoveImage(img))" >Delete Image</Item>
+                                            </BlazorContextMenu.ContextMenu>
                                         }
                                     </div>
                             </div>
                         <br />
-
                     </div>
             </div>
-        </EditForm>
         </div>
 </Modal>
 
@@ -109,6 +111,8 @@
         //Put initial image on top
         strFiles.Remove(_selectedImg);
         strFiles.Insert(0, _selectedImg);
+
+        strFiles.RemoveAll(item => item == null);
     }
 
     private async Task SetSelectedImage(string imagePath)
@@ -177,6 +181,16 @@
         }
 
         await LoadImagesFromWWWRoot();
+    }
+
+    private async Task RemoveImage(string img)
+    {
+        var imgPath = @"wwwroot" + img;
+
+        if (File.Exists(imgPath))
+        {
+            File.Delete(imgPath);
+        }
     }
 }
 
