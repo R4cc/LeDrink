@@ -34,9 +34,9 @@
                                                     <img src="@img" style="height: 7.75em; width: auto; margin: 1%" @onclick=@(() => SetSelectedImage(@img)) class="@(_selectedImg == img && img is not null ? "rcornersGreen" : "")" />
                                                 </ContextMenuTrigger>
                                             </div>
-                                            <BlazorContextMenu.ContextMenu Id="@img" >
-                                                <Item OnClick="@(() => RemoveImage(img))" >Delete Image</Item>
-                                            </BlazorContextMenu.ContextMenu>
+                                                <BlazorContextMenu.ContextMenu Id="@img">
+                                                    <Item OnClick="@(() => RemoveImage(img))">Delete Image</Item>
+                                                </BlazorContextMenu.ContextMenu>
                                         }
                                     </div>
                             </div>
@@ -48,7 +48,6 @@
 
 
 <style>
-
     .info-div {
   position: absolute;
   width: 85%;

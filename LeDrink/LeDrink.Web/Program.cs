@@ -3,6 +3,8 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Repos;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +35,7 @@ builder.Services
     .AddFontAwesomeIcons();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 
 var app = builder.Build();
 

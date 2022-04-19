@@ -63,8 +63,10 @@
 }
 
 .rcornersGreen {
-    border-radius: 10px;
-    border: 2px solid #73AD21;
+    background-color: #f5f5f5;
+    border: 3px solid #3C896D;
+    border-radius: 8px;
+    padding: 2px;
 }
 
 .redFont {

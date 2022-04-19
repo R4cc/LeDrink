@@ -6,7 +6,7 @@
 @inject IStringLocalizer<Index> Loc
 @inject IUnitOfWork _uow
 @inject Radzen.NotificationService NotificationService
-
+@inject NavigationManager Nav
 
 
 <PageTitle>Lé Drink</PageTitle>
@@ -138,6 +138,11 @@
                 </RadzenCard>
             }
         </div>
+    </div>
+    <div class="row">
+        <Button @onclick="RedirectToAdminSettings" Type="@AntDesign.ButtonType.Primary" Style="" Shape="@AntDesign.ButtonShape.Round">
+            @Loc["AdminSettings"]
+        </Button>
     </div>
 
     <!-- Drink modals -->
@@ -344,7 +349,7 @@
             return;
         }
 
-        _chosenBottle = null;
+        _chosenBottle.BottleSlotId = null;
 
         // Update drink
         await _uow.BottleRepo.UpdateBottle(_chosenBottle);
@@ -372,5 +377,10 @@
     private void ShowError(string Message)
     {
         NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = Message, Duration = 4000 });
+    }
+
+    private void RedirectToAdminSettings()
+    {
+        Nav.NavigateTo("/admin");
     }
 }

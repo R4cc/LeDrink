@@ -40,6 +40,7 @@
                                 <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")"
                                 style="width: 46%; margin: 2%; cursor: pointer;"
                                 @onclick="(()=>ChooseBottle(bottle))">
+                                <ContextMenuTrigger MenuId="@(bottle.Id.ToString())">
                                     <div class="container" style="text-align: center;">
                                         <div class="row">
                                             <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover;" />
@@ -51,7 +52,13 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <BlazorContextMenu.ContextMenu Id="@(bottle.Id.ToString())" >
+                                        <Item OnClick="@(() => EditBottle(bottle))" >Edit Bottle</Item>
+                                        <Item OnClick="@(() => RemoveBottle(bottle))" >Delete Bottle</Item>
+                                    </BlazorContextMenu.ContextMenu>
+                                </ContextMenuTrigger>
                                 </RadzenCard>
+
                             }
                         }
                     </div>
@@ -172,16 +179,18 @@
 
     private async Task HandleOk()
     {
-        await RefreshSelectedBottle();
-        await UpdateBottleSlotId();
-        await OnValidSubmit.InvokeAsync(_selectedBottle);
-
         _confirmLoading = true;
         StateHasChanged();
         _visible = false;
         _confirmLoading = false;
         _bottleSelected = false;
         _stepsSelectedIndex = 0;
+
+
+        await RefreshSelectedBottle();
+        await UpdateBottleSlotId();
+        await OnValidSubmit.InvokeAsync(_selectedBottle);
+
     }
 
     private async Task HandleCancel(MouseEventArgs e)
@@ -253,6 +262,12 @@
     {
         _bottleInModal = new();
         _showCreateBottleModal = true;
+    }
+
+    private async Task RemoveBottle(Bottle bottle)
+    {
+        await _uow.BottleRepo.RemoveBottle(bottle);
+        await _uow.SaveChanges();
     }
 
     private async Task ValidSubmitCreateBottle(Bottle bottle)

@@ -1,0 +1,26 @@
+﻿@page "/admin"
+
+<PageTitle>Lé Drink - Admin</PageTitle>
+
+<div class="container">
+
+    <div class="row" >
+        <Title Type="1">Admin Settings</Title>
+    </div>
+    <Button OnClick="ResetDb">Reset DB to defaults</Button>
+</div>
+
+
+@code {
+    private async Task ResetDb()
+    {
+        string originalFile = "Drinks.db";
+        string fileToReplace = "Drinks-Defaults.db";
+
+        if (File.Exists("Drinks.db") && (File.Exists("Drinks-Defaults.db")))  
+        {  
+            System.IO.FileInfo fInfo = new(originalFile);
+            fInfo.Replace(originalFile, fileToReplace);
+        }  
+    }
+}
