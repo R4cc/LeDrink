@@ -144,4 +144,7 @@
   <data name="OtherDrinks" xml:space="preserve">
     <value>Andere Drinks</value>
   </data>
+  <data name="ToLittleTimeBetweenDrinkDispenses" xml:space="preserve">
+    <value>Error: Drinks werden zu schnell gemacht! Warte mindestens 7 Sekunden</value>
+  </data>
 </root>

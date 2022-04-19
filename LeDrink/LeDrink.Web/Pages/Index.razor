@@ -177,6 +177,9 @@
     private List<Drink> _drinks = new();
     private List<Bottle> _allBottles = new();
 
+    // Make drink timeout
+    private static DateTime LastDrink = DateTime.Now.AddSeconds(-100);
+
     // Drink Modals
     private Drink _drinkInModal { get; set; }
     private bool _showEditDrinkModal { get; set; }
@@ -285,8 +288,15 @@
             ShowError(Loc["BottleNotEnoughMlError"]);
             return;
         }
+        var x = DateTime.Now;
+        if(LastDrink.AddSeconds(7) > DateTime.Now)
+        {
+            ShowError(Loc["ToLittleTimeBetweenDrinkDispenses"]);
+            return;
+        }
 
-        await _uow.RaspiRepo.MakeDrink(drink);
+        LastDrink = DateTime.Now;
+        //await _uow.RaspiRepo.MakeDrink(drink);
     }
 
     /// --------------------------------------------
