@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220419075420_init")]
+    [Migration("20220419124153_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

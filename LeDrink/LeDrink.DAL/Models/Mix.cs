@@ -11,6 +11,5 @@ namespace LeDrink.DAL.Models
         public Drink Drink { get; set; }
         public int drinkId { get; set; }
         public int? Milliliters { get; set; }
-
     }
 }

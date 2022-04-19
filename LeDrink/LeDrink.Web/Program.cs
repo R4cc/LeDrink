@@ -3,9 +3,8 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Repos;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,10 +20,9 @@ builder.Services.AddScoped<Radzen.NotificationService>();
 builder.Services.AddScoped<IFileUpload, FileUpload>();
 builder.Services.AddBlazorContextMenu();
 
-builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(options =>
-{
-    options.UseSqlite("Data Source = Drinks.db");
-});
+builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(opt =>
+    opt.UseSqlite("Data Source = Drinks.db"), ServiceLifetime.Singleton);
+
 
 builder.Services
     .AddBlazorise(options =>
@@ -35,7 +33,6 @@ builder.Services
     .AddFontAwesomeIcons();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
 
 var app = builder.Build();
 
@@ -60,6 +57,6 @@ app.UseRequestLocalization(new RequestLocalizationOptions()
     .AddSupportedCultures(new[] { "de-AT", "en-US" })
     .AddSupportedUICultures(new[] { "de-AT", "en-US" })
     .SetDefaultCulture("en-US"));
-    //.SetDefaultCulture("de-AT"));
+//.SetDefaultCulture("de-AT"));
 
 app.Run();

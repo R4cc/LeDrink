@@ -24,7 +24,7 @@
                     </div>
                     <div class="row" style="margin-bottom: 10.5em;">
                             <h3 class="fw-bold">@Loc["IconPicker"]</h3>
-                            <BlazorInputFile.InputFile OnChange="HandleFileUpload">Upload a new File</BlazorInputFile.InputFile>
+                            <BlazorInputFile.InputFile MaxMessageSize="250" OnChange="HandleFileUpload" >Upload a new File</BlazorInputFile.InputFile>
                             <div class="info-div" style="margin-top: 5em;">
                                     <div class="d-flex flex-wrap" style="width: 100%">
                                         @foreach(var img in strFiles)
@@ -114,6 +114,7 @@
         strFiles.RemoveAll(item => item == null);
     }
 
+    // set green broder to indicate selected image
     private async Task SetSelectedImage(string imagePath)
     {
         if(_selectedImg == imagePath)
@@ -174,6 +175,22 @@
     private async Task HandleFileUpload(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
+        
+        // Check if file
+        List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG", ".SVG" };
+        if(!ImageExtensions.Contains(Path.GetExtension(file.Name).ToUpperInvariant()))
+        {
+            ShowError("File is of invalid Type. Must be .jpg, .jpe, .bmp, .gif, .png or .svg!");
+            return;
+        }
+
+        // limit max uplaod size to 10mb
+        if(file.Size > 10 * 1024 * 1024)
+        {
+            ShowError("Filesize is too big! Max size is 10MB");
+            return;
+        }
+
         if(file is not null)
         {
             await fileUpload.Upload(file);

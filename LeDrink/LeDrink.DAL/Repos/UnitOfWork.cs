@@ -22,26 +22,10 @@ namespace LeDrink.DAL.Repos
         public IRaspiRepo RaspiRepo => _raspiRepo ?? new RaspiRepo();
         public IMixRepo MixRepo => _mixRepo ?? new MixRepo(_db);
 
+
         public async Task SaveChanges()
         {
-            bool saveFailed;
-            do
-            {
-                saveFailed = false;
-
-                try
-                {
-                    await _db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    saveFailed = true;
-
-                    // Update the values of the entity that failed to save from the store
-                    ex.Entries.Single().Reload();
-                }
-
-            } while (saveFailed);
+            await _db.SaveChangesAsync();
         }
     }
 }

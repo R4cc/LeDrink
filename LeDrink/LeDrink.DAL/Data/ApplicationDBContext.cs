@@ -13,6 +13,16 @@ namespace LeDrink.DAL.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            modelBuilder.Entity<Drink>()
+                .HasMany(drink => drink.Mixes)
+                .WithOne(drink => drink.Drink)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Mix>()
+            .HasOne(bottle=> bottle.Bottle)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Cascade);
+
             // Bottle Seeding
             Bottle CocaCola = new Bottle
             {
