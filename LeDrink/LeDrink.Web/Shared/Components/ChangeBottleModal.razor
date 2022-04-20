@@ -19,7 +19,7 @@
        OnOk="@HandleOk"
        OnCancel="@HandleCancel"
        ConfirmLoading="@_confirmLoading"
-       Style="top: 3rem"
+       Style="top: 0rem"
        Footer=@footer
        Class="fade">
     <div class="container" style="height: 35rem; width: 95%;">
@@ -159,7 +159,7 @@
     // Modal options to set
     private List<string> _templateBottleSize = new() { "250", "330", "500", "700", "750", "1000", "1500" };
     private string _bottleMaxCapacityMl = null;
-    private double _bottleCurrentFillPercentage = 50d;
+    private double _bottleCurrentFillPercentage = 100d;
     private bool _bottleSelected = false;
     private int _stepsSelectedIndex = 0;
 
@@ -198,8 +198,9 @@
 
     private async Task RefreshSelectedBottle()
     {
+
         // Invalid bottle fill level inputs (under 10ml)
-        if(_bottle.MaxMl <=10 || (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100) <= 10)
+        if(Convert.ToInt32(_bottleMaxCapacityMl) < 10)
         {
             ShowError(Loc["InvalidBottleMlInputs"]);
             return;
@@ -214,6 +215,8 @@
             return;
         }
 
+        await ValidateMlParams();
+
         if (_bottleCurrentFillPercentage != 100)
         {
             // Calculates the CurrentMl with the percentage full
@@ -224,6 +227,17 @@
 
         _bottle.CurrentMl = _bottle.MaxMl;
     }
+
+    private async Task ValidateMlParams()
+    {
+        // Invalid bottle fill level inputs (under 10ml)
+        if(_bottle.MaxMl < 10 || (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100) < 10)
+        {
+            ShowError(Loc["InvalidBottleMlInputs"]);
+            return;
+        }
+    }
+
 
     private async Task UpdateBottleSlotId()
     {
