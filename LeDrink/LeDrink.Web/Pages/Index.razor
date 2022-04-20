@@ -50,7 +50,7 @@
     <hr/>
     <div class="row" >
             <!-- Favourite Drinks -->
-            <Title Type="3">@Loc["FavouriteDrinks"]</Title>
+            <h1>@Loc["FavouriteDrinks"]</h1>
             <div class="card-container">
             @foreach (var drink in _drinks.Where(b => b.IsFavourite == true)) 
             {
@@ -98,7 +98,7 @@
 
     <!-- Other Drinks -->
    <div class="row" >
-            <Title Type="3">@Loc["OtherDrinks"]</Title>
+            <h1>@Loc["OtherDrinks"]</h1>
             <div class="card-container">
             @foreach (var drink in _drinks.Where(b => b.IsFavourite != true )) 
             {

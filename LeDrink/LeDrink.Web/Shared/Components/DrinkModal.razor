@@ -9,7 +9,7 @@
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
        OnCancel="@CancelModalSubmit"
-        Style="top: 1rem"
+        Style="top: 0rem"
         Class="fade"> 
         <div class="container" style="height: 38rem; width: 95%;">
        <EditForm Model="@_drinkViewModel">
@@ -39,6 +39,7 @@
                             </div>
                         <br />
                     </div>
+                    <hr/>
                     <div class="row" style="width: 100%">
                         <div class="container" style="width: 100%">
                        <div style="margin-bottom: 5px">
@@ -94,7 +95,7 @@
   position: absolute;
   width: 85%;
   z-index: 20;
-  max-height: 35%;
+  max-height: 32%;
   overflow-y: scroll;
 }
 
@@ -143,6 +144,14 @@
     private async Task LoadBottlesToSelectFrom()
     {
         _bottles = await _uow.BottleRepo.GetBottles();
+
+        foreach(var bottle in _bottles)
+        {
+            if(bottle.BottleSlotId is not null)
+            {
+                bottle.BottleName += " (SLOT " + bottle.BottleSlotId + ")";
+            }
+        }
     }
 
     private async Task LoadImagesFromWWWRoot()
