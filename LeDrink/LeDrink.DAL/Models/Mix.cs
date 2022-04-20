@@ -2,6 +2,7 @@
 
 namespace LeDrink.DAL.Models
 {
+    [Serializable]
     public class Mix
     {
         [Key]

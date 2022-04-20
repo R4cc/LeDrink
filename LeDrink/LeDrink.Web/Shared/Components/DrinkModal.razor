@@ -129,7 +129,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _drinkViewModel = _drink;
+        _drinkViewModel = (Drink)_drink.Clone();
 
         if(_drink.ImgPath is not null)
         {

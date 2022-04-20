@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace LeDrink.DAL.Models
+﻿namespace LeDrink.DAL.Models
 {
-    public  class Bottle
+    [Serializable]
+    public class Bottle
     {
         public int Id { get; set; }
         public int? BottleSlotId { get; set; }
