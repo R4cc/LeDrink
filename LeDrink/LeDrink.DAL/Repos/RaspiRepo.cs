@@ -67,10 +67,17 @@ namespace LeDrink.DAL.Repos
                         ControlSlot(Slot.Slot4, (int)mix.Milliliters);
                         break;
                 }
-
             }
 
             return Task.CompletedTask;
+        }
+
+        public async Task Flush()
+        {
+            ControlSlot(Slot.Slot1, 1000);
+            ControlSlot(Slot.Slot2, 1000);
+            ControlSlot(Slot.Slot3, 1000);
+            ControlSlot(Slot.Slot4, 1000);
         }
     }
 }

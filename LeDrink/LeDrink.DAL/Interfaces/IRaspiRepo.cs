@@ -6,5 +6,6 @@ namespace LeDrink.DAL.Interfaces
     {
         void ControlSlot(Slot slot, int milliliter);
         Task MakeDrink(Drink drink);
+        Task Flush();
     }
 }

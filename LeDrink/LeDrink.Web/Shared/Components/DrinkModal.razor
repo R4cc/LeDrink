@@ -71,7 +71,7 @@
                                     </div>
                                     <div>
                                         <RadzenLabel Text="@Loc["Amount"]" />
-                                        <div style="width: 100%">
+                                        <div style="max-width: 100%">
                                             <Input Type="number" @bind-Value="@mix.Milliliters" Placeholder="Enter Ml Amount" Style="width: 80%" OnBlur=ValidateMlConditions />
                                             <Button @onclick="(() => RemoveMix(mix.Id))" Type="@AntDesign.ButtonType.Primary" Style="width: 18%;" Ghost Danger><span class="oi oi-x"></span></Button>
                                         </div>
@@ -144,14 +144,6 @@
     private async Task LoadBottlesToSelectFrom()
     {
         _bottles = await _uow.BottleRepo.GetBottles();
-
-        foreach(var bottle in _bottles)
-        {
-            if(bottle.BottleSlotId is not null && !bottle.BottleName.Contains("(SLOT " + bottle.BottleSlotId + ")"))
-            {
-                bottle.BottleName += " (SLOT " + bottle.BottleSlotId + ")";
-            }
-        }
     }
 
     private async Task LoadImagesFromWWWRoot()
@@ -220,12 +212,11 @@
     /// <returns>If Drink values are valid</returns>
     private async Task<bool> ValidateMlConditions()
     {
-        // ACTIVATE THIS FOR PROD ENV
-        //if(_drinkViewModel.TotalMl > 450)
-        //{
-        //    ShowError(Loc["OverMaxError"]);
-        //    return false;
-        //}
+        if(_drinkViewModel.TotalMl > 450)
+        {
+            ShowError(Loc["OverMaxError"]);
+            return false;
+        }
 
         if (_drinkViewModel.Mixes.Any(m => m.Milliliters <= 0))
         {
