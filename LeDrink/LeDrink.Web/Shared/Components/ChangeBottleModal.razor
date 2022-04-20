@@ -1,6 +1,9 @@
 ﻿@inject IUnitOfWork _uow
 @inject IStringLocalizer<ChangeBottleModal> Loc
+@inject Radzen.NotificationService NotificationService
 
+    
+@* ----- CUSTOM FOOTER FOR MODAL BUTTONS ----- *@
 @{
     RenderFragment footer = @<Template>
         <Button OnClick="@DecreaseSelectedIndex" Type=@AntDesign.ButtonType.Link Disabled=@(_stepsSelectedIndex <= 0)>@Loc["Previous"]</Button>
@@ -10,6 +13,7 @@
     </Template>;
 }
 
+@* ----- MODAL FOR CHANGING A BOTTLE IN A SPECIFIED SLOT(1-4) ----- *@
 <Modal Title="@(Loc["ChangeBottleSlot"] + " " + BottleSlotId)"
        Visible="@_visible"
        OnOk="@HandleOk"
@@ -19,6 +23,9 @@
        Footer=@footer
        Class="fade">
     <div class="container" style="height: 35rem; width: 95%;">
+
+        
+        @* ----- 1. CONFIGURATION STEP: BOTTLE SELECT ----- *@
         @if (_stepsSelectedIndex == 0)
         {
             <Title Level="4">@Loc["Selection"]</Title>
@@ -35,9 +42,10 @@
                     <div class="card-container">
                         @foreach (var bottle in _allBottles)
                         {
+                            @* Make sure bottle is not in machine right now (do not display) *@
                             @if (bottle.BottleSlotId is null)
                             {
-                                <RadzenCard class="@(bottle.Id == _selectedBottle.Id ? "text-white border-success" : "")"
+                                <RadzenCard class="@(bottle.Id == _bottle.Id ? "text-white border-success" : "")"
                                 style="width: 46%; margin: 2%; cursor: pointer;"
                                 @onclick="(()=>ChooseBottle(bottle))">
                                 <ContextMenuTrigger MenuId="@(bottle.Id.ToString())">
@@ -52,6 +60,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    @* Right-click menu for card *@
                                     <BlazorContextMenu.ContextMenu Id="@(bottle.Id.ToString())" >
                                         <Item OnClick="@(() => EditBottle(bottle))" >Edit Bottle</Item>
                                         <Item OnClick="@(() => RemoveBottle(bottle))" >Delete Bottle</Item>
@@ -66,6 +76,9 @@
             </div>
             <br />
         }
+
+
+        @* ----- 2. CONFIGURATION STEP: SIZE CONFIGURATION (MAX AND CURRENT FILL LVL)----- *@
         @if (_stepsSelectedIndex == 1)
         {
             <Title Level="2">@Loc["SizeConfig"]</Title>
@@ -86,21 +99,23 @@
             <br />
             <br />
         }
-        @* CONFIRMATION *@
+                
+        
+        @* ----- 3. CONFIGURATION STEP: CONFIRMATION ----- *@
         @if (_stepsSelectedIndex == 2)
         {
             <div class="container" style="text-align: center;">
                 <h1>@Loc["Confirmation"]</h1>
                 <br />
                 <div class="row">
-                    <RadzenImage Path="@_selectedBottle.ImgPath" Style="max-height: 350px; width: auto; display: block; margin-left: auto; margin-right: auto;" />
+                    <RadzenImage Path="@_bottle.ImgPath" Style="max-height: 350px; width: auto; display: block; margin-left: auto; margin-right: auto;" />
                 </div>
                 <br />
                 <div class="row">
-                    <h1>@_selectedBottle.BottleName</h1>
+                    <h1>@_bottle.BottleName</h1>
                 </div>
                 <div class="row">
-                    <h2>@($"{_selectedBottle.CurrentMl}" + "/" + $"{_selectedBottle.MaxMl}" + "ml")</h2>
+                    <h2>@($"{_bottle.CurrentMl}" + "/" + $"{_bottle.MaxMl}" + "ml")</h2>
                 </div>
             </div>
             <br />
@@ -112,33 +127,31 @@
 <!-- Bottle modals -->
 @if (_showCreateBottleModal && _bottleInModal is not null)
 {
-    <BottleModal ModalTitle="Create Bottle" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitCreateBottle/>
+    <CreateEditBottleModal ModalTitle="@Loc["CreateBottle"]" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitCreateBottle/>
 }
 @if (_showEditBottleModal && _bottleInModal is not null)
 {
-    <BottleModal ModalTitle="Edit Bottle" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitEditBottle/>
+    <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitEditBottle/>
 }
 
 <style>
 
     .info-div {
-        position: absolute;
-        width: 90%;
-        z-index: 20;
-        max-height: 60%;
-        overflow-y: scroll;
-    }
+    position: absolute;
+    width: 90%;
+    z-index: 20;
+    max-height: 60%;
+    overflow-y: scroll;
+}
 
 </style>
 
-
-
 @code {
     [Parameter] public int BottleSlotId { get; set; }
-    [Parameter] public Bottle _selectedBottle { get; set; }
+    [Parameter] public Bottle _bottle { get; set; }
     [Parameter] public List<Bottle> _allBottles { get; set; }
     [Parameter] public EventCallback<Bottle> OnValidSubmit { get; set; }
-    //[Parameter] public EventCallback CancelSubmit { get; set; }
+
 
     bool _visible = false;
     bool _confirmLoading = false;
@@ -148,11 +161,12 @@
     private string _bottleMaxCapacityMl = null;
     private double _bottleCurrentFillPercentage = 50d;
     private bool _bottleSelected = false;
+    private int _stepsSelectedIndex = 0;
 
+    // Footer button options
     private bool PrevBtnDisabled = true;
     private bool NextBtnIsConfirmBtn = false;
 
-    private int _stepsSelectedIndex = 0;
 
     // Bottle (Edit, Create) Modals
     private Bottle _bottleInModal { get; set; }
@@ -170,43 +184,28 @@
         _visible = true;
     }
 
-    // Executes on Bottle click
+    private async Task RefreshData()
+    {
+        _allBottles = (await _uow.BottleRepo.GetBottles()).Where( b => b.BottleSlotId is null).ToList();
+    }
+
+    // Sets active bottle 
     private async Task ChooseBottle(Bottle bottle)
     {
-        _selectedBottle = bottle;
+        _bottle = bottle;
         _bottleSelected = true;
-    }
-
-    private async Task HandleOk()
-    {
-        _confirmLoading = true;
-        StateHasChanged();
-        _visible = false;
-        _confirmLoading = false;
-        _bottleSelected = false;
-        _stepsSelectedIndex = 0;
-
-
-        await RefreshSelectedBottle();
-        await UpdateBottleSlotId();
-        await OnValidSubmit.InvokeAsync(_selectedBottle);
-
-    }
-
-    private async Task HandleCancel(MouseEventArgs e)
-    {
-        _visible = false;
-        _confirmLoading = false;
-        StateHasChanged();
-        _selectedBottle = null;
-        _bottleSelected = false;
-        _stepsSelectedIndex = 0;
-        await OnValidSubmit.InvokeAsync(null);
     }
 
     private async Task RefreshSelectedBottle()
     {
-        _selectedBottle.MaxMl = Convert.ToInt32(_bottleMaxCapacityMl);
+        // Invalid bottle fill level inputs (under 10ml)
+        if(_bottle.MaxMl <=10 || (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100) <= 10)
+        {
+            ShowError(Loc["InvalidBottleMlInputs"]);
+            return;
+        }
+
+        _bottle.MaxMl = Convert.ToInt32(_bottleMaxCapacityMl);
 
         // Set Current ML amounts (depending on % full slider)
         if (_stepsSelectedIndex != 2)
@@ -214,21 +213,27 @@
             // Step not needed on this modal page
             return;
         }
+
         if (_bottleCurrentFillPercentage != 100)
         {
             // Calculates the CurrentMl with the percentage full
-            double CurrentMl = (_selectedBottle.MaxMl * (int)_bottleCurrentFillPercentage / 100);
-            _selectedBottle.CurrentMl = (int)CurrentMl;
+            double CurrentMl = (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100);
+            _bottle.CurrentMl = (int)CurrentMl;
             return;
         }
 
-        _selectedBottle.CurrentMl = _selectedBottle.MaxMl;
+        _bottle.CurrentMl = _bottle.MaxMl;
     }
 
     private async Task UpdateBottleSlotId()
     {
-        _selectedBottle.BottleSlotId = BottleSlotId;
+        _bottle.BottleSlotId = BottleSlotId;
     }
+
+
+    /// -----------------------
+    /// MODAL CURRENT ACTIVE STEP 
+    /// -----------------------
 
     private async Task IncreaseSelectedIndex()
     {
@@ -251,17 +256,25 @@
         await RefreshSelectedBottle();
     }
 
-    // Edit, Create bottle modal controlls
+
+    /// -----------------------
+    /// BOTTLE CRUD ACTIONS
+    /// -----------------------
+    
     private async Task EditBottle(Bottle bottle)
     {
         _bottleInModal = bottle;
         _showEditBottleModal = true;
+        
+        await RefreshData();
     }
 
     private async Task CreateBottle()
     {
         _bottleInModal = new();
         _showCreateBottleModal = true;
+        
+        await RefreshData();
     }
 
     private async Task RemoveBottle(Bottle bottle)
@@ -270,6 +283,37 @@
         await _uow.SaveChanges();
 
         await RefreshData();
+    }
+
+
+    /// -----------------------
+    /// VALIDATION AND CANCELATION HANDLERS
+    /// -----------------------
+
+    private async Task HandleOk()
+    {
+        _confirmLoading = true;
+        StateHasChanged();
+        _visible = false;
+        _bottleSelected = false;
+        _stepsSelectedIndex = 0;
+
+        await RefreshSelectedBottle();
+        await UpdateBottleSlotId();
+        await OnValidSubmit.InvokeAsync(_bottle);
+        _confirmLoading = false;
+    }
+
+    private async Task HandleCancel(MouseEventArgs e)
+    {
+        _confirmLoading = true;
+        _visible = false;
+        StateHasChanged();
+        _bottle = null;
+        _bottleSelected = false;
+        _stepsSelectedIndex = 0;
+        await OnValidSubmit.InvokeAsync(null);
+        _confirmLoading = false;
     }
 
     private async Task ValidSubmitCreateBottle(Bottle bottle)
@@ -289,6 +333,7 @@
         await RefreshData();
     }
 
+    // Callbacks from create new / edit bottle modal
     private async Task ValidSubmitEditBottle(Bottle bottle)
     {
         if(bottle is null)
@@ -306,15 +351,15 @@
         await RefreshData();
     }
 
-    private async Task RefreshData()
-    {
-        _allBottles = (await _uow.BottleRepo.GetBottles()).Where( b => b.BottleSlotId is null).ToList();
-    }
-
     private async Task CancelSubmit()
     {
         _showCreateBottleModal = false;
         _showEditBottleModal = false;
         _bottleInModal = null;
+    }
+
+    private void ShowError(string Message)
+    {
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = Message, Duration = 4000 });
     }
 }

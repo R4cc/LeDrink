@@ -133,10 +133,19 @@
     <value>Confirmation</value>
   </data>
   <data name="CreateBottle" xml:space="preserve">
+    <value>Create a Bottle</value>
+  </data>
+  <data name="CreateBottleButton" xml:space="preserve">
     <value>+ Create new Bottle</value>
+  </data>
+  <data name="EditBottle" xml:space="preserve">
+    <value>Edit Bottle</value>
   </data>
   <data name="EnterML" xml:space="preserve">
     <value>Enter Ml Amount</value>
+  </data>
+  <data name="InvalidBottleMlInputs" xml:space="preserve">
+    <value>ERROR: Bottle Ml inputs are too small (min 10ml)</value>
   </data>
   <data name="Next" xml:space="preserve">
     <value>Next</value>
