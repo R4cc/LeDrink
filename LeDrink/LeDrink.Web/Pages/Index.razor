@@ -139,9 +139,6 @@
             }
         </div>
     </div>
-    <div class="row" >
-        <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-50" Style="margin-left: 1rem;" @onclick="Flush"><span class="oi oi-plus"/>Flush</Button>
-    </div>
 
     <!-- Drink modals -->
     @if (_showCreateDrinkModal && _drinkInModal is not null)
@@ -284,11 +281,6 @@
         _deleteConfirmationHeader = "Delete Confirmation";
         _deleteConfirmationMessage = $"Are you sure you want to delete {_drinkToDelete.DrinkName}?";
         _showDrinkDeleteConfirmationModal = true;
-    }
-
-    private async Task Flush()
-    {
-        await _uow.RaspiRepo.Flush();
     }
 
     private async Task MakeDrink(Drink drink)
@@ -437,10 +429,5 @@
     private void ShowInfo(string Message)
     {
         NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = Message, Duration = 4000 });
-    }
-
-    private void RedirectToAdminSettings()
-    {
-        Nav.NavigateTo("/admin");
     }
 }

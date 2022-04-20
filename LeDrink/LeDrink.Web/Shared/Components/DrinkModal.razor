@@ -44,7 +44,7 @@
                         <div class="container" style="width: 100%">
                        <div style="margin-bottom: 5px">
                             <h3  class="fw-bold" style="margin-bottom: -2px">@Loc["DrinkIngredients"]</h3> 
-                            <span style="@(_drinkViewModel.TotalMl >= 450 ? "color: red;" : "")">@(_drinkViewModel.TotalMl)</span> 
+                            <span style="@(_drinkViewModel.TotalMl > 450 ? "color: red;" : "")">@(_drinkViewModel.TotalMl)</span> 
                             <span>/ 450ml</span>
                        </div>
 
