@@ -63,8 +63,8 @@
 
                                     @* Right-click menu for card *@
                                     <BlazorContextMenu.ContextMenu Id="@(bottle.Id.ToString())" >
-                                        <Item OnClick="@(() => EditBottle(bottle))" >Edit Bottle</Item>
-                                        <Item OnClick="@(() => RemoveBottle(bottle))" >Delete Bottle</Item>
+                                        <Item OnClick="@(() => EditBottle(bottle))" style="color: black !important;">Edit Bottle</Item>
+                                        <Item OnClick="@(() => RemoveBottle(bottle))" style="color: black !important;">Delete Bottle</Item>
                                     </BlazorContextMenu.ContextMenu>
                                 </ContextMenuTrigger>
                                 </RadzenCard>

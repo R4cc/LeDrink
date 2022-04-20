@@ -21,6 +21,7 @@
         @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
         {
             <RadzenCard style="width: 46%; cursor: pointer; margin: 2%" @onclick="@(() => ChangeBottleInSlot(bottle))">
+            <ContextMenuTrigger MenuId="@(bottle.Id.ToString())">
                 <div class="container" style="text-align: center;">
                     <div class="row">
                         <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
@@ -35,6 +36,12 @@
                         <Text>@($"{bottle.CurrentMl} / {bottle.MaxMl}ml ")</Text>
                     </div>
                 </div>
+            <BlazorContextMenu.ContextMenu Id="@(bottle.Id.ToString())" >
+                    <Item OnClick="@(() => RefillBottle(bottle))" style="color: black !important;">Refill Bottle</Item>
+                    <Item OnClick="@(() => EditBottle(bottle))" style="color: black !important;">Edit Bottle</Item>
+                    <Item OnClick="@(() => RemoveBottleFromSlot(bottle))" style="color: black !important;">Remove from Slot</Item>
+                </BlazorContextMenu.ContextMenu>
+            </ContextMenuTrigger>
             </RadzenCard> 
         }
     </div>
@@ -161,6 +168,12 @@
     {
         <ChangeBottleModal BottleSlotId=@_selectedSlotId _allBottles=@_allBottles _oldBottle=@_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
     }
+
+    <!-- Bottle modals -->
+    @if (_showEditBottleModal && _bottleInModal is not null)
+    {
+        <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitEditBottle/>
+    }
 </div>
 
 
@@ -187,6 +200,10 @@
     private bool _showChangeBottleModal { get; set; }
     private int _selectedSlotId { get; set; }
     private Bottle _chosenBottle = new();
+
+    // Bottle (Edit, Create) Modals
+    private Bottle _bottleInModal { get; set; }
+    private bool _showEditBottleModal { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -337,6 +354,33 @@
         await _uow.SaveChanges();
     }
 
+    // FOR BOTTLE EDIT MODAL
+    private async Task EditBottle(Bottle bottle)
+    {
+        _bottleInModal = bottle;
+        _showEditBottleModal = true;
+
+        await RefreshData();
+    }
+
+    private async Task RemoveBottleFromSlot(Bottle bottle)
+    {
+        bottle.BottleSlotId = null;
+        await _uow.BottleRepo.UpdateBottle(bottle);
+        await _uow.SaveChanges();
+
+        await RefreshData();
+    }    
+
+    private async Task RefillBottle(Bottle bottle)
+    {
+        bottle.CurrentMl = bottle.MaxMl;
+        await _uow.BottleRepo.UpdateBottle(bottle);
+        await _uow.SaveChanges();
+
+        await RefreshData();
+    }
+
     /// --------------------------------------------
     /// COMPONENT SUBMIT HANDLERS
     /// --------------------------------------------
@@ -387,6 +431,24 @@
         _deleteConfirmationHeader = null;
         _deleteConfirmationMessage = null;
         _drinkToDelete = null;
+    }
+
+    // Callbacks from create new / edit bottle modal
+    private async Task ValidSubmitEditBottle(Bottle bottle)
+    {
+        if(bottle is null)
+        {
+            await CancelSubmit();
+            return;
+        }
+
+        // Update existing Drink
+        await _uow.BottleRepo.UpdateBottle(bottle);
+        await _uow.SaveChanges();
+        _showEditBottleModal = false;
+        _bottleInModal = null;
+
+        await RefreshData();
     }
 
     private async Task ValidSubmitSlotChange(Bottle bottle)
