@@ -36,7 +36,7 @@ namespace LeDrink.DAL.Repos
         {
             StartPin(pin);
 
-            Task.Delay((milliliter / (2000 / 60)) * 1000).Wait();
+            Task.Delay((milliliter / (1700 / 60)) * 1000).Wait();
 
             StopPin(pin);
         }

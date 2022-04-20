@@ -147,7 +147,7 @@
 
         foreach(var bottle in _bottles)
         {
-            if(bottle.BottleSlotId is not null)
+            if(bottle.BottleSlotId is not null && !bottle.BottleName.Contains("(SLOT " + bottle.BottleSlotId + ")"))
             {
                 bottle.BottleName += " (SLOT " + bottle.BottleSlotId + ")";
             }
@@ -220,11 +220,12 @@
     /// <returns>If Drink values are valid</returns>
     private async Task<bool> ValidateMlConditions()
     {
-        if(_drinkViewModel.TotalMl > 450)
-        {
-            ShowError(Loc["OverMaxError"]);
-            return false;
-        }
+        // ACTIVATE THIS FOR PROD ENV
+        //if(_drinkViewModel.TotalMl > 450)
+        //{
+        //    ShowError(Loc["OverMaxError"]);
+        //    return false;
+        //}
 
         if (_drinkViewModel.Mixes.Any(m => m.Milliliters <= 0))
         {
