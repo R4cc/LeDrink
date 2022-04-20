@@ -236,6 +236,15 @@
 
     private async Task UpdateBottleSlotId()
     {
+        Bottle dbCurrentBottleInSlot = (await _uow.BottleRepo.GetBottles()).Where(b => b.BottleSlotId == BottleSlotId).FirstOrDefault(); 
+
+        if(dbCurrentBottleInSlot != _oldBottle)
+        {
+            ShowError("ERROR: State of slot has changed since last retrival. Refreshing site.");
+            this.StateHasChanged();
+            return;
+        }
+
         _bottle.BottleSlotId = BottleSlotId;
     }
 

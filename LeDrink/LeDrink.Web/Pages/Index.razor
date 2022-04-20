@@ -405,9 +405,6 @@
             return;
         }
 
-        List<Bottle> _bottleChangedSinceLastRequest = (await _uow.BottleRepo.GetBottles()).Where(b => b.BottleSlotId == bottle.BottleSlotId).ToList();
-        _bottleChangedSinceLastRequest.Remove(_chosenBottle);
-
         _chosenBottle.BottleSlotId = null;
 
         // Update drink
@@ -423,14 +420,13 @@
 
     private async Task CancelSubmit()
     {
+        _showEditDrinkModal = false;
         _showCreateDrinkModal = false;
         _drinkInModal = null;
 
         _showChangeBottleModal = false;
         _chosenBottle = null;
         _selectedSlotId = 0;
-
-        await RefreshData();
     }
 
     private void ShowError(string Message)
