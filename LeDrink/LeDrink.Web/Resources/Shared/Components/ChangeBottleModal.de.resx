@@ -144,7 +144,10 @@
   <data name="EnterML" xml:space="preserve">
     <value>Größe in ml angeben</value>
   </data>
-  <data name="InvalidBottleMlInputs" xml:space="preserve">
+  <data name="InvalidBottleMlInputsTooBig" xml:space="preserve">
+    <value>ERROR: Die eingegebenen Flaschen Ml Werte sind zu groß (max 5000ml)</value>
+  </data>
+  <data name="InvalidBottleMlInputsTooSmall" xml:space="preserve">
     <value>ERROR: Die eingegebenen Flaschen Ml Werte sind zu klein (min 10ml)</value>
   </data>
   <data name="Next" xml:space="preserve">

@@ -140,7 +140,7 @@
     /// -----------------------
     /// VALIDATION AND CANCELATION HANDLERS
     /// -----------------------
-    
+
     private async Task OkSubmit()
     {
         if(await ValidateBottleValues())
@@ -188,7 +188,7 @@
     private async Task HandleFileUpload(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
-        
+
         // Check if file is specified filetype
         List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG", ".SVG" };
         if(!ImageExtensions.Contains(Path.GetExtension(file.Name).ToUpperInvariant()))
@@ -214,11 +214,18 @@
 
     private async Task RemoveImage(string img)
     {
+        if(img == "/images/bottles/default.png")
+        {
+            ShowError(Loc["CantDeleteDefaultImg"]);
+            return;
+        }
+
         var imgPath = @"wwwroot" + img;
 
         if (File.Exists(imgPath))
         {
             File.Delete(imgPath);
+            await LoadImagesFromWWWRoot();
         }
     }
 }

@@ -93,7 +93,7 @@
             <div class="row">
                 <div>
                     <h4>@Loc["BottleFullness"] @(_bottleCurrentFillPercentage)%</h4>
-                    <Slider TValue="double" Step=10 @bind-Value=@_bottleCurrentFillPercentage Min=0 Max=100 Disabled=@(_bottleMaxCapacityMl is null) />
+                     <RadzenSlider TValue="double" Step=10 @bind-Value=@_bottleCurrentFillPercentage Min=0 Max=100 Disabled=@(_bottleMaxCapacityMl is null) class="w-100"/>
                 </div>
             </div>
             <br />
@@ -108,7 +108,7 @@
                 <h1>@Loc["Confirmation"]</h1>
                 <br />
                 <div class="row">
-                    <RadzenImage Path="@_bottle.ImgPath" Style="max-height: 350px; width: auto; display: block; margin-left: auto; margin-right: auto;" />
+                    <RadzenImage Path="@_bottle.ImgPath" Style="max-height: 250px; width: auto; display: block; margin-left: auto; margin-right: auto;" />
                 </div>
                 <br />
                 <div class="row">
@@ -148,10 +148,11 @@
 
 @code {
     [Parameter] public int BottleSlotId { get; set; }
-    [Parameter] public Bottle _bottle { get; set; }
+    [Parameter] public Bottle _oldBottle { get; set; }
     [Parameter] public List<Bottle> _allBottles { get; set; }
     [Parameter] public EventCallback<Bottle> OnValidSubmit { get; set; }
 
+    public Bottle _bottle { get; set; } = new();
 
     bool _visible = false;
     bool _confirmLoading = false;
@@ -196,48 +197,42 @@
         _bottleSelected = true;
     }
 
-    private async Task RefreshSelectedBottle()
+    private async Task<bool> RefreshAndValidateBottle()
     {
-
-        // Invalid bottle fill level inputs (under 10ml)
-        if(Convert.ToInt32(_bottleMaxCapacityMl) < 10)
-        {
-            ShowError(Loc["InvalidBottleMlInputs"]);
-            return;
-        }
-
+        // Set Current ML amounts (depending on % full slider)
         _bottle.MaxMl = Convert.ToInt32(_bottleMaxCapacityMl);
 
-        // Set Current ML amounts (depending on % full slider)
-        if (_stepsSelectedIndex != 2)
+        if (_stepsSelectedIndex == 2 || _stepsSelectedIndex == 0)
         {
             // Step not needed on this modal page
-            return;
+            return true;
         }
 
-        await ValidateMlParams();
+        // Invalid bottle fill level inputs (under 10ml)
+        if(_bottle.MaxMl < 10 || (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100) < 10)
+        {
+            ShowError(Loc["InvalidBottleMlInputsTooSmall"]);
+            return false;
+        }
+
+        // Invalid bottle fill level inputs (over 5000ml)
+        if(_bottle.MaxMl > 5000 || (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100) > 5000)
+        {
+            ShowError(Loc["InvalidBottleMlInputsTooBig"]);
+            return false;
+        }
 
         if (_bottleCurrentFillPercentage != 100)
         {
             // Calculates the CurrentMl with the percentage full
             double CurrentMl = (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100);
             _bottle.CurrentMl = (int)CurrentMl;
-            return;
+            return true;
         }
 
         _bottle.CurrentMl = _bottle.MaxMl;
+        return true;
     }
-
-    private async Task ValidateMlParams()
-    {
-        // Invalid bottle fill level inputs (under 10ml)
-        if(_bottle.MaxMl < 10 || (_bottle.MaxMl * (int)_bottleCurrentFillPercentage / 100) < 10)
-        {
-            ShowError(Loc["InvalidBottleMlInputs"]);
-            return;
-        }
-    }
-
 
     private async Task UpdateBottleSlotId()
     {
@@ -256,8 +251,11 @@
             await HandleOk();
             return;
         }
-        _stepsSelectedIndex++;
-        await RefreshSelectedBottle();
+
+        if(await RefreshAndValidateBottle())
+        {
+            _stepsSelectedIndex++;
+        }
     }
 
     private async Task DecreaseSelectedIndex()
@@ -267,7 +265,7 @@
             return;
         }
         _stepsSelectedIndex--;
-        await RefreshSelectedBottle();
+        await RefreshAndValidateBottle();
     }
 
 
@@ -311,11 +309,11 @@
         _visible = false;
         _bottleSelected = false;
         _stepsSelectedIndex = 0;
+        _confirmLoading = false;
 
-        await RefreshSelectedBottle();
+        await RefreshAndValidateBottle();
         await UpdateBottleSlotId();
         await OnValidSubmit.InvokeAsync(_bottle);
-        _confirmLoading = false;
     }
 
     private async Task HandleCancel(MouseEventArgs e)

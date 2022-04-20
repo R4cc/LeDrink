@@ -159,7 +159,7 @@
     <!-- Slot Bottle changer Modal -->
     @if (_showChangeBottleModal)
     {
-        <ChangeBottleModal BottleSlotId=@_selectedSlotId _allBottles=@_allBottles _bottle=@_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
+        <ChangeBottleModal BottleSlotId=@_selectedSlotId _allBottles=@_allBottles _oldBottle=@_chosenBottle OnValidSubmit=ValidSubmitSlotChange/>
     }
 </div>
 
@@ -209,6 +209,15 @@
     {
         _allBottles = (await _uow.BottleRepo.GetBottles())
                                 .OrderBy(b => b.BottleSlotId).ToList();
+
+        // sets default image if no image is selected
+        foreach(var bottle in _allBottles)
+        {
+            if (String.IsNullOrEmpty(bottle.ImgPath))
+            {
+                bottle.ImgPath = "/images/bottles/default.png";
+            }
+        }
     }
 
     private async Task RefreshData()
