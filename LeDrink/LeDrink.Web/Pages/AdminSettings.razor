@@ -1,5 +1,7 @@
-﻿@using LeDrink.DAL.Data
+﻿@page "/admin"
+@using LeDrink.DAL.Data
 @using LeDrink.DAL.Interfaces
+@using System.Diagnostics
 @inject Radzen.NotificationService NotificationService
 @inject IUnitOfWork _uow
 
@@ -15,6 +17,9 @@
         </div>
         <div class="row" >
                 <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-100" @onclick="Flush">Flush</Button>
+        </div>        
+        <div class="row" >
+                <Button Shape="@ButtonShape.Round" Type="@AntDesign.ButtonType.Primary" Class="w-100" @onclick="RebootPi">Reboot Raspberrypi</Button>
         </div>
         
     </div>
@@ -109,5 +114,10 @@ else
     private async Task Flush()
     {
         await _uow.RaspiRepo.Flush();
+    }
+
+    private async Task RebootPi()
+    {
+        System.Diagnostics.Process.Start(new ProcessStartInfo() {FileName = "sudo", Arguments = "reboot"});
     }
 }
