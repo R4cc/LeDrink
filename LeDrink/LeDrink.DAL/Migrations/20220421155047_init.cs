@@ -46,7 +46,7 @@ namespace LeDrink.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    bottleId = table.Column<int>(type: "INTEGER", nullable: true),
+                    bottleId = table.Column<int>(type: "INTEGER", nullable: false),
                     drinkId = table.Column<int>(type: "INTEGER", nullable: false),
                     Milliliters = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -57,7 +57,8 @@ namespace LeDrink.DAL.Migrations
                         name: "FK_Mixes_Bottles_bottleId",
                         column: x => x.bottleId,
                         principalTable: "Bottles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Mixes_Drinks_drinkId",
                         column: x => x.drinkId,

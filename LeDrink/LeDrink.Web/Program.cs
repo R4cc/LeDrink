@@ -21,7 +21,7 @@ builder.Services.AddScoped<IFileUpload, FileUpload>();
 builder.Services.AddBlazorContextMenu();
 
 builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(opt =>
-    opt.UseSqlite("Data Source = Drinks.db"), ServiceLifetime.Singleton);
+    opt.UseSqlite("Data Source = Drinks.db"), ServiceLifetime.Scoped);
 
 
 builder.Services
@@ -55,8 +55,8 @@ app.MapFallbackToPage("/_Host");
 
 app.UseRequestLocalization(new RequestLocalizationOptions()
     .AddSupportedCultures(new[] { "de-AT", "en-US" })
-    .AddSupportedUICultures(new[] { "de-AT", "en-US" })
-    .SetDefaultCulture("en-US"));
+    .AddSupportedUICultures(new[] { "de-AT", "en-US" }));
+    //.SetDefaultCulture("en-US")); ;
 //.SetDefaultCulture("de-AT"));
 
 app.Run();

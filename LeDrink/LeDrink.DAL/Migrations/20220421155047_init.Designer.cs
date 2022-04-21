@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeDrink.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220419124153_init")]
+    [Migration("20220421155047_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,6 +186,7 @@ namespace LeDrink.DAL.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("bottleId")
+                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("drinkId")
@@ -262,7 +263,9 @@ namespace LeDrink.DAL.Migrations
                 {
                     b.HasOne("LeDrink.DAL.Models.Bottle", "Bottle")
                         .WithMany()
-                        .HasForeignKey("bottleId");
+                        .HasForeignKey("bottleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("LeDrink.DAL.Models.Drink", "Drink")
                         .WithMany("Mixes")

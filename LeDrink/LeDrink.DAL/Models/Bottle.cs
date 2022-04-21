@@ -1,6 +1,7 @@
-﻿namespace LeDrink.DAL.Models
+﻿using System.Runtime.Serialization.Formatters.Binary;
+
+namespace LeDrink.DAL.Models
 {
-    [Serializable]
     public class Bottle
     {
         public int Id { get; set; }

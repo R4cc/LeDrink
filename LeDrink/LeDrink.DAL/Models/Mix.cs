@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace LeDrink.DAL.Models
 {
-    [Serializable]
     public class Mix
     {
+
         [Key]
         public int Id { get; set; }
         public Bottle Bottle { get; set; }

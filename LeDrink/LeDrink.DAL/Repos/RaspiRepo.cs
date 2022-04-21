@@ -1,6 +1,7 @@
 ﻿using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Models;
 using System.Device.Gpio;
+using System.Net.NetworkInformation;
 
 namespace LeDrink.DAL.Repos
 {
@@ -29,75 +30,68 @@ namespace LeDrink.DAL.Repos
 
         public void ControlSlot(Slot slot, int milliliter)
         {
-            FillSlot((int)slot, milliliter);
+            PWMSlot((int)slot, milliliter);
         }
 
-        private void FillSlot(int pin, int milliliter)
+        public void FlushSlot(int slot)
         {
-            var runTime = (milliliter / (1700 / 60));
+            StartPin(slot);
+            Task.Delay(10000).Wait();
+            StopPin(slot);
+        }
 
-            for (int i = 0; i <= (runTime * 2); i++)
+        private void PWMSlot(int pin, int milliliter)
+        {
+            var runTime = (milliliter / (1750 / 60)) * 1000;
+
+            Console.WriteLine("Run for {0} ms", runTime);
+
+            // (runTime / 2)
+
+            for (int i = 0; i <= (runTime / 4); i++)
             {
                 StartPin(pin);
                 Task.Delay(1).Wait();
                 StopPin(pin);
                 Task.Delay(1).Wait();
+                Console.WriteLine(i);
             }
-        }
 
-        private void PumpTime()
-        {
-            StartPin(40);
-            Task.Delay(Convert.ToInt32(0.016 * 100 * 1000)).Wait();
-            StopPin(40);
+            Console.WriteLine("DONE");
+
         }
 
         public Task MakeDrink(Drink drink)
         {
-            List<Task> tasks = new List<Task>();
 
             foreach (var mix in drink.Mixes)
             {
                 switch (mix.Bottle.BottleSlotId)
                 {
                     case 1:
-                        tasks.Add(new(() =>
-                        {
                             ControlSlot(Slot.Slot1, (int)mix.Milliliters);
-                        }));
                         break;
                     case 2:
-                        tasks.Add(new(() =>
-                        {
                             ControlSlot(Slot.Slot2, (int)mix.Milliliters);
-                        }));
                         break;
                     case 3:
-                        tasks.Add(new(() =>
-                        {
                             ControlSlot(Slot.Slot3, (int)mix.Milliliters);
-                        }));
                         break;
                     case 4:
-                        tasks.Add(new(() =>
-                        {
                             ControlSlot(Slot.Slot4, (int)mix.Milliliters);
-                        }));
                         break;
                 }
             }
-
-            Task.WaitAll(tasks.ToArray());
 
             return Task.CompletedTask;
         }
 
         public async Task Flush()
         {
-            ControlSlot(Slot.Slot1, 1000);
-            ControlSlot(Slot.Slot2, 1000);
-            ControlSlot(Slot.Slot3, 1000);
-            ControlSlot(Slot.Slot4, 1000);
+            FlushSlot((int)Slot.Slot1);
+            FlushSlot((int)Slot.Slot2);
+            FlushSlot((int)Slot.Slot3);
+            FlushSlot((int)Slot.Slot4);
         }
     }
 }

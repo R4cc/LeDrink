@@ -1,4 +1,5 @@
-﻿@inject IUnitOfWork _uow
+﻿@using LeDrink.DAL.Repos
+@inject IUnitOfWork _uow
 @inject IStringLocalizer<ChangeBottleModal> Loc
 @inject Radzen.NotificationService NotificationService
 
@@ -127,11 +128,11 @@
 <!-- Bottle modals -->
 @if (_showCreateBottleModal && _bottleInModal is not null)
 {
-    <CreateEditBottleModal ModalTitle="@Loc["CreateBottle"]" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitCreateBottle/>
+    <CreateEditBottleModal ModalTitle="@Loc["CreateBottle"]" _bottle=@ObjectExtensions.Copy(_bottleInModal) OnValidSubmit=@ValidSubmitCreateBottle/>
 }
 @if (_showEditBottleModal && _bottleInModal is not null)
 {
-    <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitEditBottle/>
+    <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@ObjectExtensions.Copy(_bottleInModal) OnValidSubmit=@ValidSubmitEditBottle/>
 }
 
 <style>
@@ -284,7 +285,7 @@
     
     private async Task EditBottle(Bottle bottle)
     {
-        _bottleInModal = bottle;
+        _bottleInModal = ObjectExtensions.Copy(bottle);
         _showEditBottleModal = true;
         
         await RefreshData();

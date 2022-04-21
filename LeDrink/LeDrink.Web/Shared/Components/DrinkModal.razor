@@ -4,6 +4,7 @@
 @inject IUnitOfWork _uow
 @inject Radzen.NotificationService NotificationService
 @inject IStringLocalizer<DrinkModal> Loc
+@using DAL.Repos
 
 <Modal Title="@ModalTitle"
        Visible="@_modalVisible"
@@ -56,18 +57,18 @@
                         <div class="row" style="margin-top: 5%">
                         <div class="info-div" style="margin-left: 2%; ">
                         <div class="card-container" style="width: 99%; ">
+
                             @foreach(var mix in _drinkViewModel.Mixes)
                             {
                                 <div class="row" style="max-width: 110%">
                                     <div style="margin-bottom: 2%; width: 100%;">
                                         <RadzenLabel Text="Bottle" />
-                                        <Select DataSource="@_bottles"
-                                                LabelName="@nameof(Bottle.BottleName)"
-                                                DefaultValue="@mix.Bottle"
-                                                @bind-Value="@mix.Bottle"
-                                                Placeholder="Select a Bottle..."
-                                                Style="width: 100%">
-                                        </Select>
+                                    <select class="form-select" aria-label="Default select example" @bind="@mix.Bottle.Id">
+                                        @foreach(var bottle in _bottles)
+                                        {
+                                            <option value="@bottle.Id">@bottle.BottleName</option>
+                                        }
+                                    </select>
                                     </div>
                                     <div>
                                         <RadzenLabel Text="@Loc["Amount"]" />
@@ -79,6 +80,7 @@
                                     </div>
                                 </div>
                             }
+
                             </div>
                         </div>
                     </div>
@@ -129,7 +131,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _drinkViewModel = (Drink)_drink.Clone();
+        _drinkViewModel = ObjectExtensions.Copy(_drink);
 
         if(_drink.ImgPath is not null)
         {

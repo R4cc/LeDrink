@@ -4,7 +4,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace LeDrink.DAL.Models
 {
-    [Serializable]
     public class Drink
     {
         [Key]
@@ -22,19 +21,6 @@ namespace LeDrink.DAL.Models
                 return totalMl;
             } }
         public bool IsFavourite { get; set; } = false;
-        public object Clone()
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                if (this.GetType().IsSerializable)
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(stream, this);
-                    stream.Position = 0;
-                    return formatter.Deserialize(stream);
-                }
-                return null;
-            }
-        }
+        
     }
 }

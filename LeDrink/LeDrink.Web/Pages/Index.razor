@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using LeDrink.DAL.Interfaces
 @using LeDrink.DAL.Models
+@using LeDrink.DAL.Repos
 @using LeDrink.Web.Shared.Components
 
 @inject IStringLocalizer<Index> Loc
@@ -150,11 +151,11 @@
     <!-- Drink modals -->
     @if (_showCreateDrinkModal && _drinkInModal is not null)
     {
-        <DrinkModal ModalTitle="@Loc["CreateDrinkTitle"]" _drink=@_drinkInModal OnValidSubmit="ValidSubmitCreateDrink"/>
+        <DrinkModal ModalTitle="@Loc["CreateDrinkTitle"]" _drink=@ObjectExtensions.Copy(_drinkInModal) OnValidSubmit="ValidSubmitCreateDrink"/>
     }
     @if (_showEditDrinkModal && _drinkInModal is not null)
     {
-        <DrinkModal ModalTitle="@Loc["EditDrinkTitle"]" _drink=@_drinkInModal OnValidSubmit="ValidSubmitEditDrink"/>
+        <DrinkModal ModalTitle="@Loc["EditDrinkTitle"]" _drink=@ObjectExtensions.Copy(_drinkInModal) OnValidSubmit="ValidSubmitEditDrink"/>
     }
 
     <!-- Delete Confirmation Modal-->
@@ -172,7 +173,7 @@
     <!-- Bottle modals -->
     @if (_showEditBottleModal && _bottleInModal is not null)
     {
-        <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitEditBottle/>
+        <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@ObjectExtensions.Copy(_bottleInModal) OnValidSubmit=@ValidSubmitEditBottle/>
     }
 </div>
 
@@ -263,7 +264,7 @@
 
     private void EditDrink(Drink drink)
     {
-        _drinkInModal = drink;
+        _drinkInModal = ObjectExtensions.Copy(drink);
         _showEditDrinkModal = true;
     }
 
