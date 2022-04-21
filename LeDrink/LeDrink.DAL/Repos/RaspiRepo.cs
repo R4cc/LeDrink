@@ -34,11 +34,15 @@ namespace LeDrink.DAL.Repos
 
         private void FillSlot(int pin, int milliliter)
         {
-            StartPin(pin);
+            var runTime = (milliliter / (1700 / 60));
 
-            Task.Delay((milliliter / (2000 / 60)) * 1000).Wait();
-
-            StopPin(pin);
+            for (int i = 0; i <= (runTime * 2); i++)
+            {
+                StartPin(pin);
+                Task.Delay(1).Wait();
+                StopPin(pin);
+                Task.Delay(1).Wait();
+            }
         }
 
         private void PumpTime()
@@ -50,25 +54,41 @@ namespace LeDrink.DAL.Repos
 
         public Task MakeDrink(Drink drink)
         {
+            List<Task> tasks = new List<Task>();
+
             foreach (var mix in drink.Mixes)
             {
                 switch (mix.Bottle.BottleSlotId)
                 {
                     case 1:
-                        ControlSlot(Slot.Slot1, (int)mix.Milliliters);
+                        tasks.Add(new(() =>
+                        {
+                            ControlSlot(Slot.Slot1, (int)mix.Milliliters);
+                        }));
                         break;
                     case 2:
-                        ControlSlot(Slot.Slot2, (int)mix.Milliliters);
+                        tasks.Add(new(() =>
+                        {
+                            ControlSlot(Slot.Slot2, (int)mix.Milliliters);
+                        }));
                         break;
                     case 3:
-                        ControlSlot(Slot.Slot3, (int)mix.Milliliters);
+                        tasks.Add(new(() =>
+                        {
+                            ControlSlot(Slot.Slot3, (int)mix.Milliliters);
+                        }));
                         break;
                     case 4:
-                        ControlSlot(Slot.Slot4, (int)mix.Milliliters);
+                        tasks.Add(new(() =>
+                        {
+                            ControlSlot(Slot.Slot4, (int)mix.Milliliters);
+                        }));
                         break;
                 }
 
             }
+
+            Task.WaitAll(tasks.ToArray());
 
             return Task.CompletedTask;
         }
