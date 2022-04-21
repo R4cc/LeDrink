@@ -85,12 +85,19 @@ namespace LeDrink.DAL.Repos
                         }));
                         break;
                 }
-
             }
 
             Task.WaitAll(tasks.ToArray());
 
             return Task.CompletedTask;
+        }
+
+        public async Task Flush()
+        {
+            ControlSlot(Slot.Slot1, 1000);
+            ControlSlot(Slot.Slot2, 1000);
+            ControlSlot(Slot.Slot3, 1000);
+            ControlSlot(Slot.Slot4, 1000);
         }
     }
 }

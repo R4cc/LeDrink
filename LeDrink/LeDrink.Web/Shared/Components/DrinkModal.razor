@@ -44,7 +44,7 @@
                         <div class="container" style="width: 100%">
                        <div style="margin-bottom: 5px">
                             <h3  class="fw-bold" style="margin-bottom: -2px">@Loc["DrinkIngredients"]</h3> 
-                            <span style="@(_drinkViewModel.TotalMl >= 450 ? "color: red;" : "")">@(_drinkViewModel.TotalMl)</span> 
+                            <span style="@(_drinkViewModel.TotalMl > 450 ? "color: red;" : "")">@(_drinkViewModel.TotalMl)</span> 
                             <span>/ 450ml</span>
                        </div>
 
@@ -54,11 +54,11 @@
                         </AntDesign.Button>
 
                         <div class="row" style="margin-top: 5%">
-                        <div class="info-div" style="margin-left: 2%;">
-                        <div class="card-container" style="width: 99%">
+                        <div class="info-div" style="margin-left: 2%; ">
+                        <div class="card-container" style="width: 99%; ">
                             @foreach(var mix in _drinkViewModel.Mixes)
                             {
-                                <div class="row">
+                                <div class="row" style="max-width: 110%">
                                     <div style="margin-bottom: 2%; width: 100%;">
                                         <RadzenLabel Text="Bottle" />
                                         <Select DataSource="@_bottles"
@@ -71,7 +71,7 @@
                                     </div>
                                     <div>
                                         <RadzenLabel Text="@Loc["Amount"]" />
-                                        <div style="width: 100%">
+                                        <div>
                                             <Input Type="number" @bind-Value="@mix.Milliliters" Placeholder="Enter Ml Amount" Style="width: 80%" OnBlur=ValidateMlConditions />
                                             <Button @onclick="(() => RemoveMix(mix.Id))" Type="@AntDesign.ButtonType.Primary" Style="width: 18%;" Ghost Danger><span class="oi oi-x"></span></Button>
                                         </div>
@@ -117,7 +117,7 @@
     // Modal Params
     private bool _modalVisible;
 
-    public Drink _drinkViewModel { get; set; } = new();
+    public Drink _drinkViewModel { get; set; }
     private List<Bottle> _bottles { get; set; }
     private Bottle _selectedBottle { get; set; }
 
@@ -129,7 +129,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _drinkViewModel = _drink;
+        _drinkViewModel = (Drink)_drink.Clone();
 
         if(_drink.ImgPath is not null)
         {
@@ -144,14 +144,6 @@
     private async Task LoadBottlesToSelectFrom()
     {
         _bottles = await _uow.BottleRepo.GetBottles();
-
-        foreach(var bottle in _bottles)
-        {
-            if(bottle.BottleSlotId is not null)
-            {
-                bottle.BottleName += " (SLOT " + bottle.BottleSlotId + ")";
-            }
-        }
     }
 
     private async Task LoadImagesFromWWWRoot()
@@ -206,6 +198,9 @@
     private async Task CancelModalSubmit()
     {
         _modalVisible = false;
+        _drinkViewModel = null;
+        _bottles = null;
+        _selectedBottle = null;
         await OnValidSubmit.InvokeAsync(null);
     }
 
