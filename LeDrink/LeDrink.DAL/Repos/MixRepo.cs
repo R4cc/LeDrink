@@ -26,7 +26,9 @@ namespace LeDrink.DAL.Repos
 
         public async Task<Mix> GetMix(int mixId)
         {
-            return await _context.Mixes.FirstOrDefaultAsync(mix => mix.Id == mixId);
+            var mix = await _context.Mixes.FirstOrDefaultAsync(mix => mix.Id == mixId);
+            _context.Entry(mix).Reload();
+            return mix;
         }
 
         public async Task<List<Mix>> GetAll()

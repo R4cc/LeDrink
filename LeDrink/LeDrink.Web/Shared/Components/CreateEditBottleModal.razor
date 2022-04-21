@@ -13,6 +13,7 @@
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
        OnCancel="@CancelModalSubmit"
+       ConfirmLoading="@_confirmLoading"
         Style="top: 0rem"
         Class="fade"> 
         <div class="container" style="height: 38rem; width: 95%;">
@@ -87,6 +88,8 @@
     [Parameter] public EventCallback<Bottle> OnValidSubmit { get; set; }
 
     private bool _modalVisible;
+    private bool _confirmLoading = false;
+
     // Image picker variables
     private List<string> _bottleImgFilePaths = new();
     private string _selectedImg;
@@ -143,19 +146,23 @@
 
     private async Task OkSubmit()
     {
+        _confirmLoading = true;
         if(await ValidateBottleValues())
         {
             // inputs are all valid
             _modalVisible = false;
             await OnValidSubmit.InvokeAsync(_bottle);
         }
+        _confirmLoading = false;
     }
 
     private async Task CancelModalSubmit()
     {
+        _confirmLoading = true;
         _modalVisible = false;
         _bottle = _bottle;
         await OnValidSubmit.InvokeAsync(null);
+        _confirmLoading = false;
     }
 
     // Checks if all values set are valid
@@ -167,7 +174,7 @@
             return false;
         }
 
-        if(_bottle.BottleName.Count() > 8)
+        if(_bottle.BottleName.Count() > 50)
         {
             ShowError(Loc["NameToLargeError"]);
             return false;

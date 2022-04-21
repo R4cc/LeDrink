@@ -9,6 +9,7 @@
        Visible="@_modalVisible"
        OnOk="@OkSubmit"
        OnCancel="@CancelModalSubmit"
+       ConfirmLoading="@_confirmLoading"
         Style="top: 0rem"
         Class="fade"> 
         <div class="container" style="height: 32rem; width: 95%;">
@@ -114,6 +115,7 @@
 
     // Modal Params
     private bool _modalVisible;
+    private bool _confirmLoading = false;
 
     private List<Bottle> _bottles { get; set; }
     private Bottle _selectedBottle { get; set; }
@@ -182,20 +184,24 @@
     // Validation, Cancelation Methods
     private async Task OkSubmit()
     {
+        _confirmLoading = true;
         if(await ValidateMlConditions())
         {
             // inputs are all valid
             _modalVisible = false;
             await OnValidSubmit.InvokeAsync(_drink);
         }
+        _confirmLoading = false;
     }
 
     private async Task CancelModalSubmit()
     {
+        _confirmLoading = true;
         _modalVisible = false;
         _bottles = null;
         _selectedBottle = null;
         await OnValidSubmit.InvokeAsync(null);
+        _confirmLoading = false ;
     }
 
     private async Task RemoveMix(int mixId)

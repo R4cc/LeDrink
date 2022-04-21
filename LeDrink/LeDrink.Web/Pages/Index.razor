@@ -40,7 +40,6 @@
                 <ActionTemplate>
                         <CardAction ><Icon Type="vertical-align-top" OnClick="@(()=> RefillBottle(bottle))"/></CardAction>
                         <CardAction ><Icon Type="edit" OnClick="@(()=> EditBottle(bottle))"/></CardAction>
-                        <CardAction ><Icon Type="close" OnClick="@(()=> RemoveBottleFromSlot(bottle))"/></CardAction>
                 </ActionTemplate>
             </Card>
         }
@@ -71,7 +70,7 @@
                                 @foreach(var mix in drink.Mixes)
                                 {
                                     <div> 
-                                        <a class="@(mix.Bottle.BottleSlotId == null ? "redFont" : "")">@mix.Bottle.BottleName</a>
+                                        <a class="text-wrapper @(mix.Bottle.BottleSlotId == null ? "redFont" : "")">@mix.Bottle.BottleName</a>
                                         <a class="number1 @(mix.Milliliters > mix.Bottle.CurrentMl ? "redFont" : "")" style="float: right;">@mix.Milliliters @(" ml")</a> 
                                     </div>
                                 }
@@ -331,7 +330,7 @@
         try
         {
             await _uow.RaspiRepo.MakeDrink(drink);
-            ShowInfo($"Made drink: {drink.DrinkName}")
+            ShowInfo($"Made drink: {drink.DrinkName}");
         }
         catch (Exception e)
         {
@@ -482,6 +481,8 @@
         _showChangeBottleModal = false;
         _chosenBottle = null;
         _selectedSlotId = 0;
+
+        await RefreshData();
     }
 
     private void ShowError(string Message)

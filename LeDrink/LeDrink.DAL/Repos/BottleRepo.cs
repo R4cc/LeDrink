@@ -2,7 +2,6 @@
 using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace LeDrink.DAL.Repos
 {
@@ -22,12 +21,19 @@ namespace LeDrink.DAL.Repos
 
         public async Task<Bottle> GetBottle(int bottleId)
         {
-            return await _context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId);
+            var bottle = await _context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId);
+            _context.Entry(bottle).Reload();
+            return bottle;
         }
 
         public async Task<List<Bottle>> GetBottles()
         {
-            return await _context.Bottles.ToListAsync();
+            var bottles = await _context.Bottles.ToListAsync();
+            foreach (var bottle in bottles)
+            {
+                _context.Entry(bottle).Reload();
+            }
+            return bottles;
         }
 
         public async Task RemoveBottle(Bottle bottle)

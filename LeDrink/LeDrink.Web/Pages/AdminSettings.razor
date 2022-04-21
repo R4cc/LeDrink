@@ -37,23 +37,13 @@ else
           <h4 class="title my-3">Login For Access</h4>
           <div class="col-12">
             <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
-              </div>
               <input name="username" @bind="@inputUsername" type="text" class="input form-control" id="username" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" />
             </div>
           </div>
           <div class="col-12">
             <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1"><i class="fas fa-lock"></i></span>
-              </div>
               <input name="password" type="password" @bind="@inputPassword" class="input form-control" id="password" placeholder="password" required="true" aria-label="password" aria-describedby="basic-addon1" />
               <div class="input-group-append">
-                <span class="input-group-text" onclick="password_show_hide();">
-                  <i class="fas fa-eye" id="show_eye"></i>
-                  <i class="fas fa-eye-slash d-none" id="hide_eye"></i>
-                </span>
               </div>
             </div>
           </div>
@@ -89,7 +79,7 @@ else
 @code {
     private bool isAuthenticated = false;
     private string adminUsername = "admin";
-    private string adminPassword = "Drink1234";    
+    private string adminPassword = "Drink4binft";    
 
     private string inputUsername = "";
     private string inputPassword = "";

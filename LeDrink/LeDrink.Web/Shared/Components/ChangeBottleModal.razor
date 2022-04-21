@@ -8,7 +8,7 @@
 @{
     RenderFragment footer = @<Template>
         <Button OnClick="@DecreaseSelectedIndex" Type=@AntDesign.ButtonType.Link Disabled=@(_stepsSelectedIndex <= 0)>@Loc["Previous"]</Button>
-        <Button OnClick="@IncreaseSelectedIndex" Type=@AntDesign.ButtonType.Primary Disabled=@(!_bottleSelected)>
+        <Button OnClick="@IncreaseSelectedIndex" Loading=@_confirmLoading Type=@AntDesign.ButtonType.Primary Disabled=@(!_bottleSelected)>
             @(_stepsSelectedIndex >= 2 ? Loc["Confirm"] : Loc["Next"])
         </Button>
     </Template>;
@@ -64,10 +64,8 @@
                                     </div>
                                 </ChildContent>
                                 <ActionTemplate>
-                                    <div style="max-height: 2em">
                                         <CardAction ><Icon Type="edit" OnClick="@(()=> EditBottle(bottle))"/></CardAction>
                                         <CardAction ><Icon Type="delete" OnClick="@(()=> RemoveBottle(bottle))"/></CardAction>
-                                    </div>
                                 </ActionTemplate>
                                 </Card>
 
@@ -76,7 +74,6 @@
                     </div>
                 </div>
             </div>
-
             <br />
         }
 
@@ -284,12 +281,12 @@
     /// -----------------------
     /// BOTTLE CRUD ACTIONS
     /// -----------------------
-    
+
     private async Task EditBottle(Bottle bottle)
     {
         _bottleInModal = bottle;
         _showEditBottleModal = true;
-        
+
         await RefreshData();
     }
 
@@ -297,7 +294,7 @@
     {
         _bottleInModal = new();
         _showCreateBottleModal = true;
-        
+
         await RefreshData();
     }
 
@@ -317,15 +314,16 @@
     private async Task HandleOk()
     {
         _confirmLoading = true;
+        Thread.Sleep(3000);
         StateHasChanged();
         _visible = false;
         _bottleSelected = false;
         _stepsSelectedIndex = 0;
-        _confirmLoading = false;
 
         await RefreshAndValidateBottle();
         await UpdateBottleSlotId();
         await OnValidSubmit.InvokeAsync(_bottle);
+        _confirmLoading = false;
     }
 
     private async Task HandleCancel(MouseEventArgs e)

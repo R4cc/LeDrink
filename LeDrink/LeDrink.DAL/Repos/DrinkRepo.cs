@@ -24,26 +24,29 @@ namespace LeDrink.DAL.Repos
 
         public async Task<Drink?> GetDrink(int drinkId)
         {
-            return await _context.Drinks.FirstOrDefaultAsync(drink => drink.Id == drinkId);
+            var drink = await _context.Drinks.FirstOrDefaultAsync(drink => drink.Id == drinkId);
+            _context.Entry(drink).Reload();
+            return drink;
         }
 
         public async Task<List<Drink>> GetDrinks()
         {
-            return await _context.Drinks.Include(d => d.Mixes).ToListAsync();
+            var drinks = await _context.Drinks.Include(d => d.Mixes).ToListAsync();
+            foreach (var drink in drinks)
+            {
+                _context.Entry(drink).Reload();
+            }
+            return drinks;
         }
 
-        public Task RemoveDrink(Drink drink)
+        public async Task RemoveDrink(Drink drink)
         {
             _context.Remove(drink);
-            return Task.CompletedTask;
         }
 
-        public Task UpdateDrink(Drink drink)
+        public async Task UpdateDrink(Drink drink)
         {
             _context.Update(drink);
-            return Task.CompletedTask;
         }
-
-        
     }
 }

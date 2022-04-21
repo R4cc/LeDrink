@@ -1,7 +1,6 @@
 ﻿using LeDrink.DAL.Interfaces;
 using LeDrink.DAL.Models;
 using System.Device.Gpio;
-using System.Net.NetworkInformation;
 
 namespace LeDrink.DAL.Repos
 {
@@ -14,7 +13,7 @@ namespace LeDrink.DAL.Repos
 
         private void StartPin(int pin)
         {
-            Console.WriteLine("Turning on pin {0}", pin);
+            //Console.WriteLine("Turning on pin {0}", pin);
             controller.OpenPin(pin, PinMode.Output);
             controller.Write(pin, PinValue.High);
             controller.ClosePin(pin);
@@ -22,7 +21,7 @@ namespace LeDrink.DAL.Repos
 
         private void StopPin(int pin)
         {
-            Console.WriteLine("Turning off pin {0}", pin);
+            //Console.WriteLine("Turning off pin {0}", pin);
             controller.OpenPin(pin, PinMode.Output);
             controller.Write(pin, PinValue.Low);
             controller.ClosePin(pin);
@@ -54,31 +53,31 @@ namespace LeDrink.DAL.Repos
                 Task.Delay(1).Wait();
                 StopPin(pin);
                 Task.Delay(1).Wait();
-                Console.WriteLine(i);
             }
 
             Console.WriteLine("DONE");
-
         }
 
         public Task MakeDrink(Drink drink)
         {
-
             foreach (var mix in drink.Mixes)
             {
                 switch (mix.Bottle.BottleSlotId)
                 {
                     case 1:
-                            ControlSlot(Slot.Slot1, (int)mix.Milliliters);
+                        ControlSlot(Slot.Slot1, (int)mix.Milliliters);
                         break;
+
                     case 2:
-                            ControlSlot(Slot.Slot2, (int)mix.Milliliters);
+                        ControlSlot(Slot.Slot2, (int)mix.Milliliters);
                         break;
+
                     case 3:
-                            ControlSlot(Slot.Slot3, (int)mix.Milliliters);
+                        ControlSlot(Slot.Slot3, (int)mix.Milliliters);
                         break;
+
                     case 4:
-                            ControlSlot(Slot.Slot4, (int)mix.Milliliters);
+                        ControlSlot(Slot.Slot4, (int)mix.Milliliters);
                         break;
                 }
             }
