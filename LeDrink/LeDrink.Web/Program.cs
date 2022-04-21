@@ -21,7 +21,7 @@ builder.Services.AddScoped<IFileUpload, FileUpload>();
 builder.Services.AddBlazorContextMenu();
 
 builder.Services.AddDbContext<LeDrink.DAL.Data.ApplicationDBContext>(opt =>
-    opt.UseSqlite("Data Source = Drinks.db"), ServiceLifetime.Scoped);
+    opt.UseSqlite("Data Source = Drinks.db"), ServiceLifetime.Singleton);
 
 
 builder.Services

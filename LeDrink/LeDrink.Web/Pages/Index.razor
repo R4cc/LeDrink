@@ -1,7 +1,6 @@
 ﻿@page "/"
 @using LeDrink.DAL.Interfaces
 @using LeDrink.DAL.Models
-@using LeDrink.DAL.Repos
 @using LeDrink.Web.Shared.Components
 
 @inject IStringLocalizer<Index> Loc
@@ -21,29 +20,29 @@
         <div class="card-container">
         @foreach (var bottle in _allBottles.Where(b => b.BottleSlotId is not null))
         {
-            <RadzenCard style="width: 46%; cursor: pointer; margin: 2%" @onclick="@(() => ChangeBottleInSlot(bottle))">
-            <ContextMenuTrigger MenuId="@(bottle.Id.ToString())">
-                <div class="container" style="text-align: center;">
-                    <div class="row">
-                        <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
+            <Card style="width: 46%; cursor: pointer; margin: 2%" >
+                <ChildContent>
+                    <div class="container" style="text-align: center;" @onclick="@(() => ChangeBottleInSlot(bottle))">
+                        <div class="row">
+                            <h2>@($"SLOT {@bottle.BottleSlotId}")</h2>
+                        </div>
+                            <br/>
+                        <div class="row" style="justify-content: center">
+                            <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover; height: auto; width: 85%" />
+                        </div>
+                            <br/>
+                        <div class="row">
+                            <h4>@bottle.BottleName</h4> 
+                            <Text>@($"{bottle.CurrentMl} / {bottle.MaxMl}ml ")</Text>
+                        </div>
                     </div>
-                        <br/>
-                    <div class="row" style="justify-content: center">
-                        <RadzenImage Path="@bottle.ImgPath" Style="object-fit:cover; height: auto; width: 85%" />
-                    </div>
-                        <br/>
-                    <div class="row">
-                        <h4>@bottle.BottleName</h4> 
-                        <Text>@($"{bottle.CurrentMl} / {bottle.MaxMl}ml ")</Text>
-                    </div>
-                </div>
-            <BlazorContextMenu.ContextMenu Id="@(bottle.Id.ToString())" >
-                    <Item OnClick="@(() => RefillBottle(bottle))" style="color: black !important;">Refill Bottle</Item>
-                    <Item OnClick="@(() => EditBottle(bottle))" style="color: black !important;">Edit Bottle</Item>
-                    <Item OnClick="@(() => RemoveBottleFromSlot(bottle))" style="color: black !important;">Remove from Slot</Item>
-                </BlazorContextMenu.ContextMenu>
-            </ContextMenuTrigger>
-            </RadzenCard> 
+                </ChildContent>
+                <ActionTemplate>
+                        <CardAction ><Icon Type="vertical-align-top" OnClick="@(()=> RefillBottle(bottle))"/></CardAction>
+                        <CardAction ><Icon Type="edit" OnClick="@(()=> EditBottle(bottle))"/></CardAction>
+                        <CardAction ><Icon Type="close" OnClick="@(()=> RemoveBottleFromSlot(bottle))"/></CardAction>
+                </ActionTemplate>
+            </Card>
         }
     </div>
     </div>
@@ -151,11 +150,11 @@
     <!-- Drink modals -->
     @if (_showCreateDrinkModal && _drinkInModal is not null)
     {
-        <DrinkModal ModalTitle="@Loc["CreateDrinkTitle"]" _drink=@ObjectExtensions.Copy(_drinkInModal) OnValidSubmit="ValidSubmitCreateDrink"/>
+        <DrinkModal ModalTitle="@Loc["CreateDrinkTitle"]" _drink=@_drinkInModal OnValidSubmit="ValidSubmitCreateDrink"/>
     }
     @if (_showEditDrinkModal && _drinkInModal is not null)
     {
-        <DrinkModal ModalTitle="@Loc["EditDrinkTitle"]" _drink=@ObjectExtensions.Copy(_drinkInModal) OnValidSubmit="ValidSubmitEditDrink"/>
+        <DrinkModal ModalTitle="@Loc["EditDrinkTitle"]" _drink=@_drinkInModal OnValidSubmit="ValidSubmitEditDrink"/>
     }
 
     <!-- Delete Confirmation Modal-->
@@ -173,7 +172,7 @@
     <!-- Bottle modals -->
     @if (_showEditBottleModal && _bottleInModal is not null)
     {
-        <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@ObjectExtensions.Copy(_bottleInModal) OnValidSubmit=@ValidSubmitEditBottle/>
+        <CreateEditBottleModal ModalTitle="@Loc["EditBottle"]" _bottle=@_bottleInModal OnValidSubmit=@ValidSubmitEditBottle/>
     }
 </div>
 
@@ -264,7 +263,7 @@
 
     private void EditDrink(Drink drink)
     {
-        _drinkInModal = ObjectExtensions.Copy(drink);
+        _drinkInModal = drink;
         _showEditDrinkModal = true;
     }
 
@@ -332,6 +331,7 @@
         try
         {
             await _uow.RaspiRepo.MakeDrink(drink);
+            ShowInfo($"Made drink: {drink.DrinkName}")
         }
         catch (Exception e)
         {

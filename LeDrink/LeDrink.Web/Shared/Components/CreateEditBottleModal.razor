@@ -87,7 +87,6 @@
     [Parameter] public EventCallback<Bottle> OnValidSubmit { get; set; }
 
     private bool _modalVisible;
-    private Bottle _bottleViewModel { get; set; }
     // Image picker variables
     private List<string> _bottleImgFilePaths = new();
     private string _selectedImg;
@@ -95,11 +94,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _bottleViewModel = ObjectExtensions.Copy(_bottle);
         // If an edit, set current image as default selected
-        if(_bottleViewModel.ImgPath is not null)
+        if(_bottle.ImgPath is not null)
         {
-            _selectedImg = _bottleViewModel.ImgPath;
+            _selectedImg = _bottle.ImgPath;
         }
 
         _modalVisible = true;
@@ -149,33 +147,33 @@
         {
             // inputs are all valid
             _modalVisible = false;
-            await OnValidSubmit.InvokeAsync(_bottleViewModel);
+            await OnValidSubmit.InvokeAsync(_bottle);
         }
     }
 
     private async Task CancelModalSubmit()
     {
         _modalVisible = false;
-        _bottle = _bottleViewModel;
+        _bottle = _bottle;
         await OnValidSubmit.InvokeAsync(null);
     }
 
     // Checks if all values set are valid
     private async Task<bool> ValidateBottleValues()
     {
-        if(String.IsNullOrEmpty(_bottleViewModel.BottleName))
+        if(String.IsNullOrEmpty(_bottle.BottleName))
         {
             ShowError(Loc["DrinkNameEmptyError"]);
             return false;
         }
 
-        if(_bottleViewModel.BottleName.Count() > 8)
+        if(_bottle.BottleName.Count() > 8)
         {
             ShowError(Loc["NameToLargeError"]);
             return false;
         }
 
-        if(_bottleViewModel.ImgPath is null)
+        if(_bottle.ImgPath is null)
         {
             ShowError(Loc["ImgPathEmpty"]);
             return false;
