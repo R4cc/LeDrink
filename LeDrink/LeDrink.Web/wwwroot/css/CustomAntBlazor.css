@@ -63,7 +63,3 @@
     color: red !important;
 }
 
-text-wrapper {
-    max-width: 5%;
-    text-overflow: ellipsis;
-}
