@@ -11,7 +11,7 @@ namespace LeDrink.DAL.Repos
     {
         private GpioController controller = new GpioController(PinNumberingScheme.Board);
 
-        private void StartPin(int pin)
+        private async Task StartPin(int pin)
         {
             //Console.WriteLine("Turning on pin {0}", pin);
             controller.OpenPin(pin, PinMode.Output);
@@ -19,7 +19,7 @@ namespace LeDrink.DAL.Repos
             controller.ClosePin(pin);
         }
 
-        private void StopPin(int pin)
+        private async Task StopPin(int pin)
         {
             //Console.WriteLine("Turning off pin {0}", pin);
             controller.OpenPin(pin, PinMode.Output);
@@ -27,19 +27,19 @@ namespace LeDrink.DAL.Repos
             controller.ClosePin(pin);
         }
 
-        public void ControlSlot(Slot slot, int milliliter)
+        public async Task ControlSlot(Slot slot, int milliliter)
         {
             PWMSlot((int)slot, milliliter);
         }
 
-        public void FlushSlot(int slot)
+        public async Task FlushSlot(int slot)
         {
             StartPin(slot);
             Task.Delay(10000).Wait();
             StopPin(slot);
         }
 
-        private void PWMSlot(int pin, int milliliter)
+        private async Task PWMSlot(int pin, int milliliter)
         {
             var runTime = (milliliter / (1750 / 60)) * 1000;
 

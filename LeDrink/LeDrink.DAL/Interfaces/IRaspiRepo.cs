@@ -4,8 +4,9 @@ namespace LeDrink.DAL.Interfaces
 {
     public interface IRaspiRepo
     {
-        void ControlSlot(Slot slot, int milliliter);
-        Task MakeDrink(Drink drink);
+        Task ControlSlot(Slot slot, int milliliter);
         Task Flush();
+        Task FlushSlot(int slot);
+        Task MakeDrink(Drink drink);
     }
 }
