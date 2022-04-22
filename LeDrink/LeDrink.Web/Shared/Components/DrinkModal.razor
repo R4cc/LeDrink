@@ -61,12 +61,13 @@
                                 <div class="row" style="max-width: 110%">
                                     <div style="margin-bottom: 2%; width: 100%;">
                                         <RadzenLabel Text="Bottle" />
-                                    <select class="form-select" aria-label="Default select example" @bind="@mix.Bottle.Id">
-                                        @foreach(var bottle in _bottles)
-                                        {
-                                            <option value="@bottle.Id">@bottle.BottleName</option>
-                                        }
-                                    </select>
+                                  <Select DataSource="@_bottles"
+                                                LabelName="@nameof(Bottle.BottleName)"
+                                                DefaultValue="@mix.Bottle"
+                                                @bind-Value="@mix.Bottle"
+                                                Placeholder="Select a Bottle..."
+                                                Style="width: 100%">
+                                        </Select>
                                     </div>
                                     <div>
                                         <RadzenLabel Text="@Loc["Amount"]" />
@@ -172,10 +173,8 @@
             {
                 drinkId = _drink.Id,
                 Milliliters = null,
-                bottleId = 0
+                bottleId = null
         });
-
-        _drink.Mixes[0].Bottle = _bottles.FirstOrDefault(b => b.Id == 0);
     }
 
     private async Task SetSelectedBottle(int bottleId)
