@@ -172,8 +172,10 @@
             {
                 drinkId = _drink.Id,
                 Milliliters = null,
-                bottleId = null
+                bottleId = 0
         });
+
+        _drink.Mixes[0].Bottle = _bottles.FirstOrDefault(b => b.Id == 0);
     }
 
     private async Task SetSelectedBottle(int bottleId)

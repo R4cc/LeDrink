@@ -11,37 +11,37 @@ namespace LeDrink.DAL.Repos
     {
         private GpioController controller = new GpioController(PinNumberingScheme.Board);
 
-        private async Task StartPin(int pin)
+        private void StartPin(int pin)
         {
-            //Console.WriteLine("Turning on pin {0}", pin);
+            Console.WriteLine("Turning on pin {0}", pin);
             controller.OpenPin(pin, PinMode.Output);
             controller.Write(pin, PinValue.High);
             controller.ClosePin(pin);
         }
 
-        private async Task StopPin(int pin)
+        private void StopPin(int pin)
         {
-            //Console.WriteLine("Turning off pin {0}", pin);
+            Console.WriteLine("Turning off pin {0}", pin);
             controller.OpenPin(pin, PinMode.Output);
             controller.Write(pin, PinValue.Low);
             controller.ClosePin(pin);
         }
 
-        public async Task ControlSlot(Slot slot, int milliliter)
+        public void ControlSlot(Slot slot, int milliliter)
         {
             PWMSlot((int)slot, milliliter);
         }
 
-        public async Task FlushSlot(int slot)
+        public void FlushSlot(int slot)
         {
             StartPin(slot);
             Task.Delay(10000).Wait();
             StopPin(slot);
         }
 
-        private async Task PWMSlot(int pin, int milliliter)
+        private void PWMSlot(int pin, int milliliter)
         {
-            var runTime = (milliliter / (1750 / 60)) * 1000;
+            var runTime = (milliliter / (1800 / 60)) * 1000;
 
             Console.WriteLine("Run for {0} ms", runTime);
 
@@ -85,7 +85,7 @@ namespace LeDrink.DAL.Repos
             return Task.CompletedTask;
         }
 
-        public async Task Flush()
+        public void Flush()
         {
             FlushSlot((int)Slot.Slot1);
             FlushSlot((int)Slot.Slot2);

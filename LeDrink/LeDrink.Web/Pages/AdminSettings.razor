@@ -103,7 +103,7 @@ else
 
     private async Task Flush()
     {
-        await _uow.RaspiRepo.Flush();
+        _uow.RaspiRepo.Flush();
     }
 
     private async Task RebootPi()
